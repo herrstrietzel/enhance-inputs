@@ -576,16 +576,16 @@
         }
     }
 
-    function enhanceTextField(input){
+    function enhanceTextField(input) {
 
-            let wrap = input.closest(".input-wrap-text");
-            if (wrap) return;
+        let wrap = input.closest(".input-wrap-text");
+        if (wrap) return;
 
-            wrap = document.createElement('div');
-            wrap.classList.add('input-wrap', 'input-wrap-boxed', 'input-wrap-text');
+        wrap = document.createElement('div');
+        wrap.classList.add('input-wrap', 'input-wrap-boxed', 'input-wrap-text');
 
-            input.parentNode.insertBefore(wrap, input);
-            wrap.append(input);
+        input.parentNode.insertBefore(wrap, input);
+        wrap.append(input);
 
     }
 
