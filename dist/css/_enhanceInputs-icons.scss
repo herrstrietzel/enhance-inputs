@@ -1,0 +1,226 @@
+@use 'modules' as *;
+
+
+/**
+* input wraps
+* hide/reset default inputs
+* and border styles
+*/
+
+/* emulate native border style by wrapper styles */
+.icn-wrp-input {
+  @extend .dsp-inl-blc, .pst-rlt;
+  border: var(--border-width-input) solid var(--border-color);
+  //display: inline-block;
+  //position: relative;
+}
+
+
+.icn-wrp-picker {
+  @extend .wdt-100;
+  //width: 100%;
+}
+
+.icn-wrp-radio,  
+.icn-wrp-checkbox {
+  width: auto;
+  border: none;
+}
+
+
+/* reset border style */
+.icn-input {
+  @extend .otl-non, .apr-non, .brd-non;
+
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  //border-color: transparent;
+  //outline: none;
+  //appearance: none;
+  //border: 0 transparent;
+}
+
+
+.icn-input-select {
+  @extend .wdt-100;
+  padding-right: calc(var(--icon-width) + var(--margin-icon) * 2);
+  //width: 100%
+}
+
+
+/* clip calendar, date or select icon */
+.icn-input-picker {
+  @extend .apr-non, .wdt-100;
+  //appearance: none;
+  //width: 100%;
+
+
+  /**
+  * make default icon invisible via mask
+  * unlike clip-path – masks don't affect 
+  * the pointer-events hit-area
+  */
+
+  mask-image: linear-gradient(to left, transparent 2.5rem, black 2.5rem);
+  mask-repeat: no-repeat;
+  mask-size: 100%;
+
+}
+
+
+/** 
+* SR-only
+* hide native input visually 
+* but keeping it accessible
+*/
+.icn-input-checkbox,
+.icn-input-radio {
+
+  @extend .sr-only;
+
+  /*
+  line-height:1em;
+  border: 0 !important;
+  clip-path: inset(50%) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  width: 1px !important;
+  white-space: nowrap !important;
+  */
+}
+
+
+/**
+* icon styles
+*/
+.icn-svg {
+  @extend .dsp-inl-blc, .pst-rlt, .pnt-evn-non;
+
+  color: var(--color-icon);
+  //display: inline-block;
+  overflow: visible;
+  font-size: 1em;
+  line-height: 0;
+  height: 1em;
+  width: auto;
+  stroke: currentColor;
+  stroke-width: var(--border-width-svg);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  //position: relative;
+  transform: translateY(0.1em) scale(var(--icn-scale, 1));
+  /* transform: translateY(0.1em);*/
+  /* box-sizing: content-box; */
+  //pointer-events: none;
+}
+
+.icn-picker{
+    /*box-sizing: content-box; */
+}
+
+.icn-svg.icn-box{
+  @extend .pnt-evn-non, .pst-abs;
+
+  //position: absolute;
+  top: 50%;
+  right: 0;
+  padding:0 calc(var(--padding-input) * 2) 0 var(--padding-input);
+  transform: translate(0em, -50%) scale(var(--icn-scale, 1));
+  /* prevent pointer events */
+  pointer-events: none;
+}
+
+.icn-wrp-multi-checkbox,
+.icn-wrp-multi-radio{
+  /* font-size:1.25em; */
+}
+
+/*
+.icn-wrp-boxed .icn-svg {
+  padding:0 var(--padding-input) 0 var(--padding-input);
+  margin:0;
+}
+*/
+
+
+/**
+* alignments and margins
+* for injected icons
+*/
+
+.icn-wrp-multi-left,
+.icn-svg-left {
+  margin-right: var(--margin-icon);
+
+  /* margin: 0 0.3em; */
+  margin-left: 0.2em;
+  margin-right: 0.5em;
+
+}
+
+
+.icn-wrp-multi-right,
+.icn-svg-right {
+  margin-left: var(--margin-icon);
+}
+
+
+/**
+* multi icon toggling
+*/
+
+.icn-wrp-multi {
+  @extend .dsp-inl-blc, .pst-rlt;
+
+  //display: inline-block;
+  //position: relative;
+  line-height: 0em;
+
+
+  .icn-svg {
+    margin-right: 0;
+    /* transition: 0.3s opacity; */
+  }
+
+  .icn-svg-0 {
+    opacity: 1;
+    /* transition-timing-function: ease-in; */
+  }
+
+  .icn-svg-1 {
+    position: absolute;
+    /* margin-left: -1em; */
+    left: 0;
+    opacity: 0;
+    /* transition-timing-function: ease-out;*/
+    mix-blend-mode: darken;
+  }
+
+}
+
+
+/*
+.icn-wrp-checkbox .icn-checkbox-switch{
+  color:var(--color-text, #999);
+}
+*/
+
+.icn-wrp-checkbox:has(input:checked) .icn-checkbox-switch{
+   color:var(--color-icon);
+}
+
+.icn-wrp-input:has(input:checked) {
+
+  .icn-svg-0 {
+    opacity: 0
+  }
+
+  .icn-svg-1 {
+    opacity: 1
+  }
+
+}

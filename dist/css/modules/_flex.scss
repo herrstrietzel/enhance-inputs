@@ -1,0 +1,80 @@
+@use 'vars' as *;
+
+
+.flx-wrp {
+    flex-wrap: wrap;
+}
+
+.flx-jst-cnt-cnt {
+    justify-content: center;
+}
+
+.flx-row {
+    flex-wrap: nowrap;
+}
+
+.flx-grw-0 {
+    flex-grow: 0
+}
+
+.flx-grw-1 {
+    flex-grow: 1
+}
+
+.flx-shr-0 {
+    flex-shrink: 0
+}
+
+.flx-shr-1 {
+    flex-shrink: 1
+}
+
+
+.flx-1-0-aut {
+    flex: 1 1 auto;
+}
+
+.flx-0-0-aut{
+    flex: 0 0 auto;
+}
+
+.flx-1 {
+    flex: 1 1 auto;
+}
+
+.flx-0 {
+    flex: 0;
+}
+
+.flx-drc-clm{
+    flex-direction: column;
+}
+
+
+.alg-itm-cnt {
+    align-items: center;
+}
+
+.alg-itm-flx-end {
+    align-items: flex-end;
+}
+
+.alg-itm-flx-str {
+    align-items: flex-start;
+}
+
+.jst-cnt-flx-end{
+    justify-content: flex-end;
+}
+
+.jst-cnt-spc-btw{
+    justify-content: space-between;
+}
+
+.jst-cnt-spc-arn{
+    justify-content:space-around;
+}
+
+.flx-jst-cnt-cnt {
+    justify-content: center;
+}

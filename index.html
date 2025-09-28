@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>enhance inputs</title>
+
+    <style>
+
+
+
+        body{
+            font-family:'Fira Sans', sans-serif;
+        }
+
+        .pdd-1{
+            padding:0em;
+        }
+    </style>
+
+    <!-- 
+        <link rel="stylesheet" href="demo/css/style.css">
+        
+        <link rel="stylesheet" href="dist/enhanceInputs.css">
+            <link rel="stylesheet" href="dist/enhanceInputs-deuglify.css">
+    <link rel="stylesheet" href="dist/enhanceInputs-icons.css">
+
+    -->
+
+
+    <link rel="stylesheet" href="dist/css/enhanceInputs.css">
+
+    <script src="dist/enhanceInputs.js" defer></script>
+    <script src="app.js" defer></script>
+
+
+</head>
+
+<body>
+
+
+    <main class="pdd-1 enhanceInputs">
+
+
+        <label class="label">textarea</label>
+        <textarea class="input" name="markup" id="markupText"
+
+        data-tools="size copy upload download" data-file="test.svg"
+        >
+        M8.5 0h183c4.6 </textarea>
+
+
+
+
+        <p><input type="file" multiple accept=".svg, .ttf"></p>
+        <!-- 
+            <p><input type="file" multiple data-type="input-file-dropzone"></p>
+
+        -->
+
+        <p><button id="btnResetSettings" class="btn-default btn-neg" type="button" data-icon="arrow-path" data-pos="left">Reset settings</button>
+        </p>
+        <p>
+            <button class="btn-default --btn-neg" type="button" 
+            
+            data-icon="arrow-path" data-icon-pos="left"
+            >Reset settings</button> 
+            <input type="text" class="input" name="textVal-inline" placeholder="text" title="Enter your text">
+        </p>
+
+        <p>
+            <label>Text</label>
+            <input type="text" class="input" name="textVal" placeholder="text" title="Enter your text">
+        </p>
+
+        <p>
+            <label>Search</label>
+            <input type="search" class="input" name="search1" value="" placeholder="search">
+        </p>
+
+        <!-- 
+            <p>
+                <label>password</label>
+                <input type="password" class="input" name="password" value="" >
+            </p>
+
+        -->
+
+        <p>
+            <label>select</label>
+            <select class="input" name="select1" id="">
+                <option value="option1">option1</option>
+                <option value="option2">option2</option>
+                <option value="option3">option3</option>
+            </select>
+
+        </p>
+
+
+
+
+
+        <p>
+            <label class="label label-inl-blc">number1</label>
+            <input type="number" class="input" name="num1" min="0" max="10" step="0.1">
+
+            <label class="label label-inl-blc">number1</label>
+            <input type="number" class="input" name="num2" min="0" max="1000" step="0.1">
+
+        </p>
+
+        <p>
+            <label class="label">range</label>
+            <input type="range" class="input" name="testrange">
+    
+        </p>
+
+        <p>
+            <label class="label">range</label>
+            <input type="range" data-type="range-number" class="input --input-range-num" min="0" max="10" step="1" name="testrange2">
+    
+        </p>
+
+        <p>
+            <label class="label">date</label>
+            <input type="date" class="input" name="date">    
+
+            <label class="label">time</label>
+            <input type="time" class="input" name="time">    
+
+
+        </p>
+
+        <p>
+            <label class="label">
+                <input type="checkbox" class="input" name="switch1" data-type="checkbox-switch" checked>
+                checkbox 1</label>
+
+            <label class="label">
+                <input type="checkbox" class="input" name="switch2" data-type="checkbox-switch">
+                checkbox 2</label>
+
+
+        </p>
+
+        <p>
+            <label class="label">
+                <input type="checkbox" class="input" name="checkbox1" checked>
+                checkbox 1</label>
+
+            <label class="label">
+                <input type="checkbox" class="input" name="checkbox2">
+                checkbox 2</label>
+
+            <label class="label">
+                <input type="checkbox" class="input" name="checkbox3">
+                checkbox 3</label>
+
+        </p>
+
+        <p>
+            <label class="label">
+                <input type="radio" class="input" name="radio" value="radioVal1" checked>
+                radio 1</label>
+
+            <label class="label">
+                <input type="radio" class="input" name="radio" value="radioVal2">
+                radio 2</label>
+
+            <label class="label">
+                <input type="radio" class="input" name="radio" value="radioVal3">
+                radio 3</label>
+
+        </p>
+
+
+
+
+
+
+    </main>
+
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+
+/* background */
+
+.bck-clr-wht {
+    background-color: var(--color-bg);
+}
+
+.bck-img-rpt {
+    background-repeat: repeat;
+}
+
+.bck-img-no-rpt {
+    background-repeat: no-repeat;
+}
+
+.bck-neg {
+    background-color: var(--color-text);
+    color: var(--color-bg);
+}
+
+.bck-gry {
+    background-color: var(--hellgrau);
+}
+
+
+.bck-ngt a:before {
+    color: inherit;
+}
+
+.bck-ngt a.link {
+    border-color: #fff;
+}
+
+.bck-trn {
+    background-color: transparent;
+}
+
+.bck-col1 {
+    background: var(--color1);
+}
+
+.bck-trn-wht,
+.bg-trn-wht {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.bck-trn-blc,
+.bg-trn-blc {
+    background: rgba(0, 0, 0, 0.8);
+}
