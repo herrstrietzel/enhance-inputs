@@ -3,6 +3,8 @@
  * add mouse controls
  * to number fields
  */
+
+
 export function enhanceNumberFields(selector = '.enhanceInputs') {
 
     let numberFields = document.querySelectorAll(`${selector} input[type=number]`);
@@ -18,22 +20,34 @@ export function enhanceNumberFields(selector = '.enhanceInputs') {
 export function enhanceNumberField(input) {
 
     let wrap = input.closest(".input-wrap-number");
-    if (wrap) return;
 
-    let maxLen = input.max ? input.max.toString().length : 0;
-    let stepLen = input.step ? input.step.toString().length : 0;
+    if(!wrap){
+        wrap = document.createElement('div')
+        wrap.classList.add('input-wrap-number');
+        input.parentNode.insertBefore(wrap, input);
+        wrap.append(input)
+    }
+
+
+    let btnsNum = wrap.querySelector('.input-number-btns');
+    if (btnsNum) return;
+
+    let {min=0, max=100, step=1, value=0} = input;
+    let maxLen = max ? max.toString().length : 0;
+    let stepLen = step ? step.toString().length : 0;
+    stepLen = stepLen>1 ? stepLen : 0;
+    input.value=value;
+
+
     let charLen = maxLen + stepLen;
+    //let charLen = maxLen;
 
     if (charLen) {
-        //let charLen = maxLen.toString().length;
         input.classList.add(`input-number-${charLen}`)
     }
 
-    wrap = document.createElement('div')
-    wrap.classList.add('input-wrap', 'input-wrap-boxed', 'input-wrap-number');
 
-    input.parentNode.insertBefore(wrap, input);
-    wrap.append(input)
+
 
     // convert type number to text
     input.type = "text";
@@ -57,6 +71,7 @@ export function enhanceNumberField(input) {
     // add event listeners
     bindNumberEvents(input);
 }
+
 
 
 export function bindNumberEvents(input, syncInput = null) {
@@ -90,14 +105,14 @@ export function bindNumberEvents(input, syncInput = null) {
 
     btnMinus.addEventListener('click', e => {
         let newVal = +(+input.value - step).toFixed(12)
-        input.value = newVal;
+        input.value = newVal>= min ?  newVal : min;
         //console.log('minus', newVal);
         upDateSynced(syncInput, input)
     })
 
     btnPlus.addEventListener('click', e => {
         let newVal = +(+input.value + step).toFixed(12)
-        input.value = newVal;
+        input.value = newVal<=max ? newVal : max;
         upDateSynced(syncInput, input)
     })
 

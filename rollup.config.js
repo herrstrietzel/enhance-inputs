@@ -74,6 +74,7 @@ export default [
                 targets: [
                     //{ src: `src/css/${libName}.css`, dest: "dist" },
                     //{ src: `src/css/${libName}.min.css`, dest: "dist" },
+                    { src: `src/img/iconSprite_inputs.svg`, dest: "dist" },
                     { src: `src/img/iconSprite.svg`, dest: "dist" }
                 ],
                 //hook: "writeBundle", 

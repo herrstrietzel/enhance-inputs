@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+
+    <symbol viewBox="0 0 24 24" id="spinner2">
+        <path id="pathSpinner2" stroke-linejoin="round" fill="none" stroke="red" 
+        d="M 12 2.4 a 9.6 9.6 90 1 1 -9.6 9.6" />
+
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="0.75s"
+        values="0 12 12;320 12 12" repeatCount="indefinite" href="#pathSpinner2" />
+    </symbol>
+
+
+
+</svg>

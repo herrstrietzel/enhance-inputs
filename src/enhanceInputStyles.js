@@ -1,100 +1,152 @@
 //import {inputIcons} from './enhanceInputStyles_icons.js';
-import { enhanceTextarea } from './enhanceInputStyles_textarea.js';
-import { enhanceSelects } from './enhanceInputStyles_select.js';
-import { enhanceNumberFields } from './enhanceInputStyles_num.js';
-import { enhanceTextFields } from './enhanceInputStyles_text.js';
 import { enhanceRangeInputs } from './enhanceInputStyles_range.js';
-import { enhanceFileinputs } from './enhanceInputStyles_file.js';
+import { enhancePasswordFields } from './enhanceInputStyles_password.js';
+import { enhanceColorInputs } from './enhanceInputStyles_color.js';
 
-import { injectHeroIcons } from './injectIcons.js';
+import { enhanceTextareas } from './enhanceInputStyles_textarea.js';
+//import { enhanceSelects } from './enhanceInputStyles_select.js';
+import { enhanceNumberFields } from './enhanceInputStyles_num.js';
+import { enhanceFileinputs } from './enhanceInputStyles_file.js';
+import { injectIcons } from './injectIcons.js';
 import { addToolTips } from './enhanceInputStyles_tooltips.js';
 
+//import { enhanceTextLikeFields } from './enhanceInputStyles_textlike.js';
+//import { enhanceDateAndTimeFields } from './enhanceInputStyles_time.js';
+//import { enhanceCheckboxAndRadios } from './enhanceInputStyles_checkboxAndRadio.js';
+//import { enhanceCheckboxAndRadio } from './enhanceInputStyles_checkboxAndRadio.js';
 
-export async function enhanceInputStyles(inputs = []) {
+
+/**
+ * wrap input elements
+ * to add new functionality
+ */
+export async function enhanceInputStyles(inputs = [], embedSprite = true, iconFile = "iconSprite_inputs.svg") {
+
+    //let iconInputs = ['select', 'textarea', 'date', 'time'];
+    let inputsInline = ['radio', 'checkbox', 'range', 'submit'];
+    let classNameWrap = 'input-wrap';
+    let classNameInput = 'input';
 
 
-    addIconAtts(inputs);
-    //addIconAtts(inputs);
+    for (let i = 0, l = inputs.length; l && i < l; i++) {
 
-    // text fields
-    enhanceTextFields();
+        let input = inputs[i];
+        let nodeName = input.nodeName.toLowerCase();
+        let type = input.type ? input.type : nodeName;
+        let label = input.closest('label');
+        //let labelClass = label ? 'labeled' : '';
+        input.classList.add(`input`, `${classNameInput}-${type}`);
 
-    // file inputs
-    enhanceFileinputs();
+        // ignore hidden fields
+        if (type === 'hidden') continue;
 
-    //selects
-    enhanceSelects();
+        // wrap elements
+        let wrap = label ? label : document.createElement('div');
+        wrap.classList.add(`${classNameWrap}`, `${classNameWrap}-${type}`);
+
+        // boxed inputs - all but checkboxes and radio
+        if (!inputsInline.includes(type)) {
+            wrap.classList.add(`${classNameWrap}-boxed`);
+        }
+
+
+        // wrap label text
+        if (label) {
+            let labelSpan = document.createElement('span')
+            labelSpan.classList.add('label-span', `label-span-${type}`);
+            let textNode = [...label.childNodes].find(node => node.nodeType === 3 && node.textContent.trim());
+            //console.log(textNode, label.childNodes);
+            input.parentNode.insertBefore(labelSpan, textNode);
+            labelSpan.append(textNode)
+
+            if (label.dataset.icon) {
+                label.classList.add('input-wrap-icon');
+            }
+        }
+
+        if (!label) {
+            input.parentNode.insertBefore(wrap, input);
+            wrap.append(input)
+        }
+
+
+        /**
+         * add icons
+         */
+        let isPicker = type === 'select-one' || type === 'date' || type === 'time' || type === 'datetime-local';
+        if (isPicker) {
+            input.classList.add('input-picker');
+            wrap.classList.add('input-wrap-picker');
+        }
+
+        if (type !== 'checkbox' && type !== 'radio' && type !== 'number') {
+            input.classList.add('input-wide');
+            wrap.classList.add('input-wrap-wide');
+        }
+
+
+        let inputIcons = {
+            checkbox: 'checkbox checkbox-checked',
+            'checkbox-switch': 'checkbox-switch checkbox-switch-checked',
+            radio: 'radio radio-checked',
+            'select-one': 'chevron-down',
+            date: 'calendar',
+            'datetime-local': 'calendar',
+            time: 'clock',
+            search: 'magnifying-glass'
+        }
+
+        let { icon = '', iconPos = 'left' } = input.dataset;
+        let dataType = input.dataset.type || null;
+        //let dataPos = input.dataset.iconPos || 'left';
+
+        if (inputIcons[type] || icon) {
+            type = dataType ? dataType : type
+            let iconNames = icon ? icon : inputIcons[type];
+
+            // remove data att
+            input.removeAttribute('data-icon')
+            wrap.classList.add('input-wrap-icon');
+
+            //let classPicker = isPicker ? 'input-icon-picker' : '';
+            let classPicker = isPicker ? 'icn-input-picker' : '';
+
+            if (type === 'select-one' || type === 'date' || type === 'time') iconPos = 'right';
+            let injectPos = iconPos === 'left' ? 'beforebegin' : 'afterend';
+
+            let iconArr = iconNames.split(' ')
+            let wrapClass = iconArr.length > 1 ? 'icn-wrp-multi' : '';
+            let iconWrp = `<span class="icn-wrp icn-wrp ${wrapClass} ${classPicker} icn-pos-${iconPos} " data-icon="${iconNames}" ></span>`;
+
+            input.insertAdjacentHTML(injectPos, iconWrp)
+
+        }
+
+    }
+
+    //color fields
+    enhanceColorInputs();
+
+    // password fields
+    enhancePasswordFields();
+
 
     // range fields
     enhanceRangeInputs();
 
-
     // enhance number field mouse controls
     enhanceNumberFields();
 
-
     // add tools to textareas
-    enhanceTextarea();
+    enhanceTextareas();
 
+    // file inputs
+    enhanceFileinputs();
 
-
-    let useExternalSprite = false;
-    injectHeroIcons(useExternalSprite);
-
+    injectIcons(embedSprite, iconFile);
 
     addToolTips();
 
-
-
-}
-
-
-
-/**
- * prepare for icon incetion
- */
-function addIconAtts(inputs = []) {
-
-    for (let i = 0, l = inputs.length; i < l; i++) {
-        let inp = inputs[i]
-
-        if(inp.dataset.icon) {
-            //console.log('processed');
-            continue
-        }
-
-        let nodeName = inp.nodeName.toLowerCase();
-        let type = inp.type ? (inp.type === 'select-one' ? 'select' : inp.type ) : nodeName;
-        //let isSelect = type === 'select-one' || type === 'select-multiple';
-
-        let dataType = inp.dataset.type || null;
-    
-        if (type === 'checkbox') {
-
-
-            inp.dataset.icon = dataType === 'checkbox-switch' ? 'checkbox-switch checkbox-switch-checked' : 'checkbox checkbox-checked';
-        } 
-        else if (type === 'radio') {
-            inp.dataset.icon = 'radio radio-checked'
-        }
-
-        else if (type === 'select') {
-            inp.dataset.icon = 'chevron-down'
-        }
-        else if (type === 'date') {
-            inp.dataset.icon = 'calendar'
-        }
-        else if (type === 'time') {
-            inp.dataset.icon = 'clock'
-        }
-
-
-        else if (type === 'search') {
-            inp.dataset.icon = 'magnifying-glass'
-            //inp.dataset.iconPos = 'right'
-        }
-
-    }
 }
 
 
@@ -110,129 +162,6 @@ function addIconAtts(inputs = []) {
 
 
 
-
-
-
-
-
-
-export function enhanceInputStyles_old(inputs = []) {
-
-    //console.log(inputIcons);
-
-    //let inputs = document.querySelectorAll(selector);
-
-    for (let i = 0; i < inputs.length; i++) {
-        let inp = inputs[i];
-        let type = inp.type ? inp.type : inp.nodeName.toLowerCase();
-        let isSelect = type === 'select-one' || type === 'select-multiple'
-
-
-        let parent = inp.parentNode;
-        let needsWrapping =
-            parent.nodeName.toLowerCase() === "label" ? false : true;
-
-        let style = window.getComputedStyle(inp)
-        let { marginLeft, marginRight } = style;
-
-        //already processed
-        if (parent.classList.contains('input-wrap')) continue
-        if (parent.querySelector('svg')) continue
-
-        // wrap inputs
-        if (needsWrapping) {
-            let label = inp.previousElementSibling;
-            label = label.nodeName.toLowerCase() === "label" ? label : "";
-
-            let sibling = inp.nextSibling;
-            parent = label ? label : document.createElement("span");
-
-            if (label) {
-                label.insertBefore(inp, label.childNodes[0]);
-            } else {
-                inp.parentNode.insertBefore(parent, parent.children[0]);
-            }
-            parent.append(inp, sibling);
-        }
-
-
-        parent.classList.add("input-wrap");
-
-        let iconWrap, icons;
-
-        iconWrap = document.createElement("span");
-        iconWrap.classList.add("input-icon-wrap");
-        parent.insertBefore(iconWrap, parent.children[0]);
-
-        iconWrap.style.marginLeft = parseFloat(marginLeft) - 1 + 'px';
-        iconWrap.style.marginRight = parseFloat(marginRight) - 1 + 'px';;
-
-
-        switch (type) {
-            case "checkbox":
-                icons = addinputIcons([
-                    inputIcons["checkbox"],
-                    inputIcons["checkboxChecked"]
-                ]);
-                //append
-                iconWrap.append(...icons);
-                break;
-
-            case "radio":
-                icons = addinputIcons([
-                    inputIcons["radio"],
-                    inputIcons["radioChecked"]
-                ]);
-                //append
-                iconWrap.append(...icons);
-                break;
-
-            default:
-            // input
-        }
-    }
-
-    //selects
-    enhanceSelects();
-
-
-    // enhance number field mouse controls
-    enhanceNumberFields();
-
-    // add tools to textareas
-    enhanceTextarea();
-
-}
-
-
-
-function parseSvgIcon(markup) {
-    let svg = new DOMParser()
-        .parseFromString(markup, "text/html")
-        .querySelector("svg");
-    svg.removeAttribute("xmlns");
-    svg.removeAttribute("width");
-    svg.removeAttribute("height");
-    return svg;
-}
-
-function addinputIcons(iconNames = [], inputIcons = {}) {
-    let icons = [];
-    iconNames.forEach((iconName, i) => {
-        let iconMarkup;
-
-        // take svg markup or retrieve via feather object
-        if (typeof inputIcons == "object" && !iconName.includes("<svg")) {
-            iconMarkup = inputIcons.icons[iconName].toSvg();
-        } else {
-            iconMarkup = iconName;
-        }
-        let icon = parseSvgIcon(iconMarkup);
-        icon.classList.add("feather-input-icon", `feather-input-icon${i + 1}`);
-        icons.push(icon);
-    });
-    return icons;
-}
 
 
 

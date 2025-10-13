@@ -1,5 +1,6 @@
 import { bindNumberEvents } from './enhanceInputStyles_num';
 
+
 export function enhanceRangeInputs(selector = '.enhanceInputs') {
 
     let inputs = document.querySelectorAll(`${selector} input[type=range].input-range-num, ${selector} input[data-type=range-number]`);
@@ -16,27 +17,32 @@ export function enhanceRangeInputs(selector = '.enhanceInputs') {
 
 export function enhanceRangeInput(input) {
 
-    let min = input.min ? +input.min : 0;
-    let max = input.max ? +input.max : Infinity;
-    let step = input.step ? +input.step : 0.1;
-    let value = input.value ? +input.value : 0;
-
     let wrap = input.closest(".input-wrap-range");
-    if (wrap) return;
 
-    //let charLen = max.toString().length+min.toString().length + step.toString().length;
-    let charLen = 5;
-    //console.log(charLen, min, max, step);
+    if(!wrap){
+        wrap = document.createElement('div')
+        wrap.classList.add('input-wrap-range');
+        input.parentNode.insertBefore(wrap, input);
+        wrap.append(input)
+    }
+
+    wrap.classList.add('input-wrap-range-num');
+
+
+    let btnsNum = wrap.querySelector('.input-number-btns');
+    if (btnsNum) return;
+
+    let {min=0, max=100, step=1, value=0} = input;
+    let maxLen = max ? max.toString().length : 0;
+    let stepLen = step ? step.toString().length : 0;
+    stepLen = stepLen>1 ? stepLen : 0;
+    let charLen = maxLen + stepLen;
+
 
     if (charLen) {
-        //let charLen = maxLen.toString().length;
         input.classList.add(`input-number-${charLen}`)
     }
 
-
-
-    wrap = document.createElement('div')
-    wrap.classList.add('input-wrap', 'input-wrap-range', 'input-wrap-range-num');
 
     // add number field
     let inputNumberMarkup =
@@ -48,12 +54,6 @@ export function enhanceRangeInput(input) {
                 <button type="button" class="input-number-btn input-number-btn-plus no-focus">+</button>
             </div>
         </div>`;
-
-    //document.createElement('input');
-    //inputNumber.classList.add('input-number')
-
-    input.parentNode.insertBefore(wrap, input);
-    wrap.append(input)
 
     wrap.insertAdjacentHTML('beforeend', inputNumberMarkup)
 

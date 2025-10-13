@@ -81,7 +81,18 @@
         let prop = inp.name;
         let type = inp.type ? inp.type : inp.nodeName.toLowerCase();
         let isSelect = type === 'select-one' || type === 'select-multiple';
-        let value = inp.value;
+        let value = type==='number' && !inp.value ? 0 : inp.value;
+
+        if(!prop){
+            return;
+        }
+
+        // never save passwords
+        if (type === 'password') {
+            settings[prop] = '';
+
+            return;
+        }
 
         if (type === 'checkbox') {
             settings[prop] = inp.checked ? true : false;
@@ -105,10 +116,11 @@
         }
         else {
             // convert numbers
-            let isNum = parseFloat(value).toString() === value;
+
+            let isNum = !isNaN(value) && value!=='';
 
             if(type!=='password'){
-                settings[prop] = isNum ? +value : inp.value;
+                settings[prop] = isNum ? +value : (inp.value);
             }
         }
 
@@ -116,11 +128,71 @@
 
     }
 
+    function updateSettingsFromQuery(query = {}, settings = {}) {
+        let settingsNew = settings;
+
+        for (let prop in query) {
+            let value = query[prop];
+            value = value==='true' ? true : (value==='false'? false: value);
+            settingsNew[prop] = value;
+        }
+
+        return settingsNew
+    }
+
+    function updateQueryParams(settings={}, replace = true) {
+        let query = settingsToQueryString(settings);
+        let newUrl = window.location.pathname + query;
+
+        if (replace) {
+            window.history.replaceState({}, "", newUrl);
+        } else {
+            window.history.pushState({}, "", newUrl);
+        }
+    }
+
+    function settingsToQueryString(settings = {}, exclude = ["defaults"], maxLength = 8000) {
+        let queryParts = [];
+        let currentLength = 1; // account for leading "?"
+
+        for (let key in settings) {
+            if (!Object.prototype.hasOwnProperty.call(settings, key) || exclude.includes(key)) continue;
+
+            let value = settings[key];
+            if (value === undefined || value === null) continue;
+
+            let addParam = (k, v) => {
+                let param = encodeURIComponent(k) + "=" + encodeURIComponent(String(v).trim());
+                let projectedLength = currentLength + (queryParts.length > 0 ? 1 : 0) + param.length; // +1 for '&'
+
+                if (projectedLength <= maxLength) {
+                    queryParts.push(param);
+                    currentLength = projectedLength;
+                } else {
+                    console.warn(`Skipping "${k}" — adding it would exceed maxLength (${maxLength}).`);
+                }
+            };
+
+            if (Array.isArray(value)) {
+                for (let item of value) {
+                    if (item !== undefined && item !== null) {
+                        addParam(key, item);
+                    }
+                }
+            } else {
+                let cleanValue = isNaN(value) ? String(value).trim() : value;
+                addParam(key, cleanValue);
+            }
+        }
+
+        return queryParts.length > 0 ? "?" + queryParts.join("&") : "";
+    }
+
     // custom event for settings update
     const settingsUpdate = new Event('settingsChange');
 
     // add event listeners
-    function bindSettingUpdates(inputs, settings = {}, storageName = 'settings') {
+    function bindSettingUpdates(inputs, settings = {}, storageName = 'settings', toQuery=false) {
 
         inputs.forEach((inp) => {
 
@@ -132,6 +204,12 @@
 
                     // update localStorage
                     saveSettingsToLocalStorage(settings, storageName);
+
+                    if(toQuery){
+
+                        updateQueryParams(settings);
+                    
+                    }
 
                     // trigger custom event
 
@@ -148,7 +226,6 @@
      * reset btn
      */
     function resetSettings(settings = {}) {
-
         if(settings.defaults) Object.assign(settings, settings.defaults);  
     }
 
@@ -168,6 +245,9 @@
                 // update localStorage
                 saveSettingsToLocalStorage(settings, storageName);
 
+                // delete query params
+                updateQueryParams({});
+
                 // trigger custom event
                 document.dispatchEvent(settingsUpdate);
 
@@ -176,219 +256,10 @@
     }
 
     /**
-     * enhance textareas
-     */
-
-    function enhanceTextarea() {
-
-        let classWrap = 'input-wrap-textarea';
-        let classWrapHeader = 'input-wrap-textarea-header';
-        let classWrapToolbar = 'input-wrap-textarea-header-toolbar';
-
-        addtextareaTools(classWrap, classWrapHeader, classWrapToolbar);
-
-    }
-
-    /**
-     * add tools
-     */
-
-    function addtextareaTools(classWrap = '', classWrapHeader = '', classWrapToolbar = '') {
-        let textareas = document.querySelectorAll('[data-tools]');
-
-        for (let i = 0, len = textareas.length; i < len; i++) {
-            let el = textareas[i];
-
-            let parent = el.closest(`.${classWrap}`);
-            if (parent) {
-                continue;
-            }
-
-            el.spellcheck = false;
-
-            // search for previous label
-            let prevSibling = el.previousElementSibling;
-            let label = prevSibling && prevSibling.nodeName.toLowerCase() === 'label' ? prevSibling : null;
-            label.classList.add('label-textarea');
-            let accept = el.getAttribute('accept');
-
-            // create outer wrapper
-            let wrap = document.createElement('div');
-            wrap.classList.add(classWrap, 'input-wrap-boxed', 'input-wrap-wide');
-            el.parentNode.insertBefore(wrap, el);
-            el.classList.add('input-textarea', 'no-focus');
-
-            // create header
-            let header = document.createElement('header');
-            header.classList.add(classWrapHeader);
-            wrap.append(header);
-
-            // add label
-            if (label) header.append(label);
-
-            // move textarea to wrap
-            wrap.append(el);
-
-            // file name for downloads
-            let filename = el.dataset.file;
-
-            let tools = el.dataset.tools.split(' ');
-            let html = `<div class="${classWrapToolbar}">`;
-
-            // map to hero icons
-            let icons = {
-                copy: 'square-2-stack',
-                download: 'arrow-down-tray',
-                upload: 'arrow-up-tray',
-            };
-
-            tools.forEach(tool => {
-
-                if (tool !== 'size') {
-                    html += `<button type="button" data-icon="${icons[tool]}" class="btn btn-non btn-toolbar btn-${tool}" title="${tool}" data-btn="${tool}"></button>`;
-                }
-                else if (tool == 'size') {
-                    html += `<div  class="textarea-size usr-slc-non" title="${tool}"></div>`;
-                }
-
-                // add hidden inputs
-                if (tool === 'download') {
-                    html += `<a href="" class="sr-only link-download" download="${filename}"></div>`;
-                }
-
-                if (tool === 'upload') {
-                    html += `<input type="file" class="sr-only input-file" accept="${accept}" >`;
-                }
-            });
-
-            header.insertAdjacentHTML('beforeend', html);
-
-            // add toolbar funcionality
-            bindTextAreaToolbar(header, classWrap, classWrapHeader, classWrapToolbar);
-        }
-    }
-
-    function bindTextAreaToolbar(header = null, classWrap = '', classWrapHeader = '', classWrapToolbar = '') {
-
-        let btns = header.querySelectorAll('.btn-toolbar');
-
-        // size indicator
-        let textareaSizeIndicator = header.querySelector('.textarea-size');
-
-        const getTextareaByteSize = (textarea) => {
-            let len = textarea.value.trim().length;
-            let kb = len / 1024;
-            let mb = kb / 1024;
-            let bytesize = kb < 1024 ? kb : mb;
-            let unit = kb < 1024 ? 'KB' : 'MB';
-            return +bytesize.toFixed(3) + ' ' + unit
-        };
-
-        const trackTextareaValue = (textarea, sizeEl) => {
-            let lastValue = textarea.value;
-
-            function checkForChanges() {
-                if (textarea.value !== lastValue) {
-                    lastValue = textarea.value;
-                    sizeEl.textContent = getTextareaByteSize(textarea);
-                }
-                requestAnimationFrame(checkForChanges);
-            }
-
-            requestAnimationFrame(checkForChanges);
-        };
-
-        let textarea = textareaSizeIndicator.closest(`.${classWrap}`).querySelector('textarea');
-
-        if (textarea) {
-            textareaSizeIndicator.textContent = getTextareaByteSize(textarea);
-            trackTextareaValue(textarea, textareaSizeIndicator);
-        }
-
-        btns.forEach(btn => {
-            let type = btn.dataset.btn;
-            let parent = btn.closest(`.${classWrap}`);
-
-            if (type === 'upload') {
-
-                let fileInput = parent.querySelector('input[type=file]');
-                fileInput.addEventListener('input', async (e) => {
-                    let current = e.currentTarget;
-                    let textarea = current.closest(`.${classWrap}`).querySelector('textarea');
-                    let file = current.files[0];
-                    if (file) {
-                        let cnt = await file.text();
-                        textarea.value = cnt;
-                        textarea.dispatchEvent(new Event('input'));
-                    }
-                });
-            }
-
-            btn.addEventListener('click', e => {
-                let current = e.currentTarget;
-                let parent = current.closest(`.${classWrap}`);
-                let text = parent.querySelector('textarea').value;
-
-                if (type === 'copy') {
-                    navigator.clipboard.writeText(text);
-                }
-
-                else if (type === 'download') {
-                    let linkDownload = parent.querySelector('.link-download');
-                    let mime = linkDownload.getAttribute('download') ? linkDownload.getAttribute('download').split('.').slice(-1)[0] : 'plain';
-                    let objectUrl = URL.createObjectURL(new Blob([text], { type: `text/${mime}` }));
-
-                    linkDownload.href = objectUrl;
-                    linkDownload.click();
-                }
-
-                else if (type === 'upload') {
-                    let fileInput = parent.querySelector('input[type=file]');
-                    fileInput.click();
-                }
-
-            });
-        });
-    }
-
-    function enhanceSelects(selector = ".enhanceInputs") {
-
-        let selects = document.querySelectorAll(`${selector} select`);
-
-        for (let i = 0; i < selects.length; i++) {
-
-            let select = selects[i];
-            if (select.classList.contains('.input-active')) {
-
-                continue;
-            }
-
-            let options = [...select.options];
-
-            options.forEach(option=>{
-                option.classList.add('option');
-            });
-
-            select.onfocus = () => {
-                select.classList.add('input-select-focus');
-            };
-
-            select.oninput = () => {
-                select.classList.remove('input-select-focus');
-            };
-
-            select.onblur = () => {
-                select.classList.remove('input-select-focus');
-            };
-
-        }
-
-    }
-
-    /**
      * add mouse controls
      * to number fields
      */
+
     function enhanceNumberFields(selector = '.enhanceInputs') {
 
         let numberFields = document.querySelectorAll(`${selector} input[type=number]`);
@@ -403,22 +274,28 @@
     function enhanceNumberField(input) {
 
         let wrap = input.closest(".input-wrap-number");
-        if (wrap) return;
 
-        let maxLen = input.max ? input.max.toString().length : 0;
-        let stepLen = input.step ? input.step.toString().length : 0;
+        if(!wrap){
+            wrap = document.createElement('div');
+            wrap.classList.add('input-wrap-number');
+            input.parentNode.insertBefore(wrap, input);
+            wrap.append(input);
+        }
+
+        let btnsNum = wrap.querySelector('.input-number-btns');
+        if (btnsNum) return;
+
+        let {min=0, max=100, step=1, value=0} = input;
+        let maxLen = max ? max.toString().length : 0;
+        let stepLen = step ? step.toString().length : 0;
+        stepLen = stepLen>1 ? stepLen : 0;
+        input.value=value;
+
         let charLen = maxLen + stepLen;
 
         if (charLen) {
-
             input.classList.add(`input-number-${charLen}`);
         }
-
-        wrap = document.createElement('div');
-        wrap.classList.add('input-wrap', 'input-wrap-boxed', 'input-wrap-number');
-
-        input.parentNode.insertBefore(wrap, input);
-        wrap.append(input);
 
         // convert type number to text
         input.type = "text";
@@ -471,14 +348,14 @@
 
         btnMinus.addEventListener('click', e => {
             let newVal = +(+input.value - step).toFixed(12);
-            input.value = newVal;
+            input.value = newVal>= min ?  newVal : min;
 
             upDateSynced(syncInput, input);
         });
 
         btnPlus.addEventListener('click', e => {
             let newVal = +(+input.value + step).toFixed(12);
-            input.value = newVal;
+            input.value = newVal<=max ? newVal : max;
             upDateSynced(syncInput, input);
         });
 
@@ -566,29 +443,6 @@
 
     // Initialize the triple click listener globally
 
-    function enhanceTextFields(selector = '.enhanceInputs') {
-
-        let inputs = document.querySelectorAll(`${selector} input[type=text]`);
-
-        for (let i = 0, len = inputs.length; len && i < len; i++) {
-            let input = inputs[i];
-            enhanceTextField(input);
-        }
-    }
-
-    function enhanceTextField(input) {
-
-        let wrap = input.closest(".input-wrap-text");
-        if (wrap) return;
-
-        wrap = document.createElement('div');
-        wrap.classList.add('input-wrap', 'input-wrap-boxed', 'input-wrap-text');
-
-        input.parentNode.insertBefore(wrap, input);
-        wrap.append(input);
-
-    }
-
     function enhanceRangeInputs(selector = '.enhanceInputs') {
 
         let inputs = document.querySelectorAll(`${selector} input[type=range].input-range-num, ${selector} input[data-type=range-number]`);
@@ -605,23 +459,29 @@
 
     function enhanceRangeInput(input) {
 
-        let min = input.min ? +input.min : 0;
-        let max = input.max ? +input.max : Infinity;
-        let step = input.step ? +input.step : 0.1;
-        let value = input.value ? +input.value : 0;
-
         let wrap = input.closest(".input-wrap-range");
-        if (wrap) return;
 
-        let charLen = 5;
-
-        {
-
-            input.classList.add(`input-number-${charLen}`);
+        if(!wrap){
+            wrap = document.createElement('div');
+            wrap.classList.add('input-wrap-range');
+            input.parentNode.insertBefore(wrap, input);
+            wrap.append(input);
         }
 
-        wrap = document.createElement('div');
-        wrap.classList.add('input-wrap', 'input-wrap-range', 'input-wrap-range-num');
+        wrap.classList.add('input-wrap-range-num');
+
+        let btnsNum = wrap.querySelector('.input-number-btns');
+        if (btnsNum) return;
+
+        let {min=0, max=100, step=1, value=0} = input;
+        let maxLen = max ? max.toString().length : 0;
+        let stepLen = step ? step.toString().length : 0;
+        stepLen = stepLen>1 ? stepLen : 0;
+        let charLen = maxLen + stepLen;
+
+        if (charLen) {
+            input.classList.add(`input-number-${charLen}`);
+        }
 
         // add number field
         let inputNumberMarkup =
@@ -634,9 +494,6 @@
             </div>
         </div>`;
 
-        input.parentNode.insertBefore(wrap, input);
-        wrap.append(input);
-
         wrap.insertAdjacentHTML('beforeend', inputNumberMarkup);
 
         let inputNumber = wrap.querySelector('.input-number');
@@ -645,26 +502,215 @@
 
     }
 
+    function enhancePasswordFields(selector = '.enhanceInputs'){
+
+        let inputs = document.querySelectorAll(`${selector} input[type=password]`);
+
+        for (let i = 0, len = inputs.length; len && i < len; i++) {
+            let input = inputs[i];
+            enhancePasswordField(input);
+        }
+
+    }
+
+    function enhancePasswordField(input) {
+        let wrap = input.closest('.input-wrap');
+
+        // add button
+
+        let btnHTML = `<button type="button" class="icon-wrap btn-non btn-password btn-password" title="Show password">
+    <span class="icn-wrp icon-wrap icn-wrp-multi icn-pos-left" data-icon="eye-slash eye" ></span>
+    </button>`;
+        wrap.insertAdjacentHTML('beforeend', btnHTML);
+
+        let btn = wrap.querySelector('.btn-password');
+        btn.addEventListener('click', (e)=>{
+
+            let input = wrap.querySelector('input');
+            let {type} = input;
+            let icnWrp = btn.querySelector('.icn-wrp-multi');
+
+            if(type==='password'){
+                input.type='text';
+                icnWrp.classList.add('icn-wrp-multi-1');
+            }else {
+                input.type='password';
+                icnWrp.classList.remove('icn-wrp-multi-1');
+            }
+
+        });
+
+    }
+
+    function enhanceColorInputs(selector = '.enhanceInputs') {
+
+        let inputs = document.querySelectorAll(`${selector} input[type=color]`);
+
+        for (let i = 0, l = inputs.length; l && i < l; i++) {
+            let input = inputs[i];
+            enhanceColorInput(input);
+        }
+
+    }
+
+    function enhanceColorInput(input) {
+
+        let wrap = input.closest(".input-wrap-color");
+
+        if (!wrap) {
+            wrap = document.createElement("div");
+            wrap.classList.add('input-wrap', 'input-wrap-color');
+            input.parentNode.insertBefore(wrap, input);
+            wrap.append(input);
+        }
+
+        let colorInput = wrap.querySelector('.input-color-value');
+
+        if (colorInput) return;
+
+        let colorInputHTML =
+`<span class="input-color-value-span">
+    <input type="text" class="input-color-value" value="" title="Enter color value" >
+</span>`    ;
+
+        let label = document.createElement('label');
+        label.classList.add('label-input-color');
+        input.classList.add('sr-only');
+        label.append(input);
+
+        label.insertAdjacentHTML('afterbegin', `<span class="input-color-value-preview" ></span>`);
+        wrap.append(label);
+
+        wrap.insertAdjacentHTML('afterbegin', colorInputHTML);
+        bindColorInput(input, wrap);
+
+    }
+
+    function bindColorInput(input, wrap = null) {
+        if (!wrap) return;
+
+        // numeric input
+        let inputValue = wrap.querySelector(".input-color-value");
+        inputValue.value = input.value;
+
+        // tempory el for color conversions
+        let colorEl = wrap.querySelector('.input-color-value-preview');
+        colorEl.style.backgroundColor = input.value;
+        let rbga = [];
+
+        // native color picker
+        input.addEventListener('input', (e) => {
+            let colorVal = input.value;
+            rbga = hexToRgbaArray(colorVal);
+            let rgbVal = rbga.length === 4 ? `rgba(${rbga.join(', ')})` : `rgb(${rbga.join(', ')})`;
+            inputValue.value = rgbVal;
+            colorEl.style.backgroundColor = rgbVal;
+
+        });
+
+        inputValue.addEventListener('input', (e) => {
+
+            let value = inputValue.value;
+            colorEl.style.backgroundColor = value;
+
+            let style = window.getComputedStyle(colorEl);
+            let color = style.backgroundColor.replace(/[rgb|rgba|\(|\)]/g, '').split(', ').map(Number);
+
+            color.length === 4 ? color[3] : 1;
+
+            let rgbaHex = rgbaArrayToHex(color);
+            let rgbaHexHtml = rgbaHex.substring(0, 7);
+
+            // full rgba value
+            input.value = rgbaHexHtml;
+
+        });
+
+        function hexToRgbaArray(hex) {
+            if (typeof hex !== 'string' || !hex.startsWith('#')) {
+                throw new Error('Expected a hex color string starting with "#"');
+            }
+
+            // Remove #
+            let value = hex.slice(1).trim();
+
+            // Expand shorthand forms (#rgb or #rgba → #rrggbb or #rrggbbaa)
+            if (value.length === 3 || value.length === 4) {
+                value = value.split('').map(c => c + c).join('');
+            }
+
+            if (value.length !== 6 && value.length !== 8) {
+                throw new Error('Invalid hex color format');
+            }
+
+            let hasAlpha = value.length === 8;
+
+            // Parse RGB
+            let r = parseInt(value.slice(0, 2), 16);
+            let g = parseInt(value.slice(2, 4), 16);
+            let b = parseInt(value.slice(4, 6), 16);
+            let a = hasAlpha ? parseInt(value.slice(6, 8), 16) / 255 : 1;
+
+            return hasAlpha ? [r, g, b, a] : [r, g, b];
+        }
+
+        function rgbaArrayToHex(rgba) {
+            if (!Array.isArray(rgba) || (rgba.length !== 3 && rgba.length !== 4)) {
+                throw new Error('Expected an array of 3 (RGB) or 4 (RGBA) numeric values');
+            }
+
+            let hasAlpha = rgba.length === 4;
+
+            let [r, g, b, a = 1] = rgba;
+            let toHex = v => round(v).toString(16).padStart(2, '0');
+
+            let baseHex =
+                '#' +
+                [r, g, b, a]
+                    .map(toHex)
+                    .join('')
+                    .toLowerCase();
+
+            if (!hasAlpha) {
+                console.log('alpha', rgba);
+                baseHex = baseHex.substring(0, baseHex.length - 2);
+            }
+            return baseHex;
+        }
+
+    }
+
     function enhanceFileinputs(selector = '.enhanceInputs', labelFileBtn = "Upload File", labelFileBtnDrop="Drop File") {
 
         let inputs = document.querySelectorAll(`${selector} input[type=file]`);
 
-        for (let i = 0, l = inputs.length; i < l; i++) {
+        for (let i = 0, l = inputs.length; l&& i < l; i++) {
             let input = inputs[i];
             let wrap = input.closest(".input-wrap-file");
-            if (wrap) continue;
 
-            wrap = document.createElement("div");
-            wrap.classList.add('input-wrap', '--input-wrap-boxed', 'input-wrap-file');
+            // skip for textarea toolbars
+            let hasHeader =  input.closest('.input-wrap-textarea-header');
+            if(hasHeader) continue
 
-            input.parentNode.insertBefore(wrap, input);
-            wrap.append(input);
+            if(!wrap){
+                wrap = document.createElement("div");
+                wrap.classList.add('input-wrap', 'input-wrap-file');  
+                input.parentNode.insertBefore(wrap, input);
+                wrap.append(input);
+          
+            }
+
+            let icons = wrap.querySelector('.icn-svg');
+
+            let btnCustom = wrap.querySelector('.btn-file-custom');
+            if (btnCustom || icons) continue;
 
             // hide default btn
             input.classList.add("sr-only");
 
             // add new UI elements
-            let fileUiHTML = `<div class="btn-default btn-file" type="button" aria-hidden="true" data-icon="arrow-up-tray" data-icon-pos="left">
+            let fileUiHTML = `<div class="btn-default btn-file btn-file-custom " type="button" aria-hidden="true" >
+        <span class="icn-wrp icn-wrp-file" data-icon="arrow-up-tray" data-icon-pos="left"></span>
             <span class="label-file">${labelFileBtn}</span><span class="label-file label-drop">${labelFileBtnDrop}</span>
           </div>
           <p class="input-file-info"></p>`;
@@ -716,12 +762,12 @@
     function bindFileInputDropArea(dropArea = null, inputFile = null, dragOverClass = 'input-file-drag-over') {
 
         // prevent duplicate event listeners
-        if (!dropArea || dropArea.classList.contains('input-active')) return;
+        if (!dropArea || dropArea.classList.contains('droparea-active')) return;
 
         // if input is in drop area or in parent element
         inputFile = inputFile ? inputFile : dropArea.querySelector("input[type=file]");
 
-        let accepted = inputFile.accept ? inputFile.accept.split(',').filter(Boolean).map(type=>type.trim() ) : [];
+        let accepted = inputFile.accept ? inputFile.accept.split(',').filter(Boolean).map(type=>type.trim() ) : ['.txt', '.svg'];
 
         // Add event listeners for drag and drop events
         ["dragenter", "dragover"].forEach((event) => {
@@ -758,6 +804,8 @@
 
                 if(accepted.includes(type) || accepted.includes(ext)){
                     filesFiltered.items.add(file);
+                }else {
+                    console.warn('File type not allowed', type, ext, accepted);
                 }
 
             }
@@ -769,12 +817,217 @@
                 // Trigger a change event on the file input to notify any listeners
                 let changeEvent = new Event("input");
                 inputFile.dispatchEvent(changeEvent);
+
             }else {
                 if(fileInfo) fileInfo.textContent='Invalid filetype';
             }
         });
 
-        dropArea.classList.add('input-active');
+        dropArea.classList.add('droparea-active');
+    }
+
+    function enhanceTextareas(selector = '.enhanceInputs') {
+
+        let inputs = document.querySelectorAll(`${selector} textarea`);
+
+        for (let i = 0, l = inputs.length; l && i < l; i++) {
+            let input = inputs[i];
+            enhanceTextarea(input);
+        }
+
+    }
+
+    function enhanceTextarea(el = null, classWrap = 'input-wrap-textarea', classWrapHeader = 'input-wrap-textarea-header', classWrapToolbar = 'input-wrap-textarea-header-toolbar') {
+
+        let wrap = el.closest(`.${classWrap}`);
+
+        if (!wrap) {
+            wrap = document.createElement('div');
+            wrap.classList.add(classWrap, 'input-wrap', 'input-wrap-boxed', 'input-wrap-textarea');
+            el.parentNode.insertBefore(wrap, el);
+
+        }
+
+        let header = wrap.querySelector(`${classWrapHeader}`);
+
+        if (header) {
+            return
+        }
+
+        // disable spell check
+        el.spellcheck = false;
+        el.classList.add('input-textarea', 'no-focus', 'scrollbar', 'scroll-content', 'scroll-content-notrack', 'scroll-content-thin', 'scroll-content-hover');
+
+        // search for label
+        let hasLabelWrap = wrap.nodeName.toLowerCase() === 'label';
+        let prevSibling = !hasLabelWrap ? wrap.previousElementSibling : null;
+        let hasLabelPrev = !hasLabelWrap ? prevSibling.nodeName.toLowerCase() === 'label' : false;
+
+        let label = hasLabelWrap ? wrap : (hasLabelPrev ? prevSibling : null);
+
+        if (label) {
+            label.classList.add('label-textarea');
+        }
+
+        let accept = el.getAttribute('accept') || '.txt,.svg';
+
+        // create header
+        header = document.createElement('header');
+        header.classList.add(classWrapHeader);
+        wrap.append(header);
+
+        // add label to toolbar
+        if (hasLabelWrap) {
+            let labelSpan = wrap.querySelector('.label-span');
+            if (labelSpan) header.append(labelSpan);
+        }
+
+        // file name for downloads
+        let filename = el.dataset.file || 'output.txt';
+        let dataTools = el.dataset.tools;
+        let tools = dataTools ? dataTools.split(' ') : [];
+
+        if(!tools.length) return;
+
+        let html = `<div class="${classWrapToolbar}">`;
+
+        // map to icon names
+        let icons = {
+            copy: 'square-2-stack',
+            download: 'arrow-down-tray',
+            upload: 'arrow-up-tray',
+        };
+
+        tools.forEach(tool => {
+
+            if (tool !== 'size') {
+                html += `<button type="button" data-icon="${icons[tool]}" class="btn btn-non btn-toolbar btn-${tool}" title="${tool}" data-btn="${tool}"></button>`;
+            }
+            else if (tool == 'size') {
+                html += `<span class="textarea-toolbar-span textarea-toolbar-span-size usr-slc-non" title="${tool}"></span>`;
+            }
+
+            // add hidden inputs
+            if (tool === 'download') {
+                html += `<a href="" class="sr-only link-download" download="${filename}"></div>`;
+            }
+
+            if (tool === 'upload') {
+                html += `<input type="file" class="sr-only input-file" accept="${accept}" >`;
+            }
+        });
+
+        header.insertAdjacentHTML('beforeend', html);
+
+        // add toolbar funcionality
+        bindTextAreaToolbar(header, classWrap, classWrapHeader, classWrapToolbar);
+
+    }
+
+    /**
+     * add tools
+     */
+
+    function bindTextAreaToolbar(header = null, classWrap = '', classWrapHeader = '', classWrapToolbar = '') {
+
+        let btns = header.querySelectorAll('.btn-toolbar');
+
+        // size indicator
+        let textareaSizeIndicator = header.querySelector('.textarea-toolbar-span-size');
+
+        const getTextareaByteSize = (textarea) => {
+            let len = textarea.value.trim().length;
+            let kb = len / 1024;
+            let mb = kb / 1024;
+            let bytesize = kb < 1024 ? kb : mb;
+            let unit = kb < 1024 ? 'KB' : 'MB';
+            return +bytesize.toFixed(3) + ' ' + unit
+        };
+
+        const trackTextareaValue = (textarea, sizeEl) => {
+            let lastValue = textarea.value;
+
+            function checkForChanges() {
+                if (textarea.value !== lastValue) {
+                    lastValue = textarea.value;
+                    sizeEl.textContent = getTextareaByteSize(textarea);
+                }
+                requestAnimationFrame(checkForChanges);
+            }
+
+            requestAnimationFrame(checkForChanges);
+        };
+
+        let textarea = textareaSizeIndicator?.closest(`.${classWrap}`)?.querySelector('textarea');
+
+        if (textarea) {
+            textareaSizeIndicator.textContent = getTextareaByteSize(textarea);
+            trackTextareaValue(textarea, textareaSizeIndicator);
+        }
+
+        btns.forEach(btn => {
+            let type = btn.dataset.btn;
+            let parent = btn.closest(`.${classWrap}`);
+
+            if (type === 'upload') {
+
+                let fileInput = parent.querySelector('input[type=file]');
+                let textarea = parent.querySelector('textarea');
+
+                bindFileInputDropArea(textarea, fileInput);
+
+                if (!fileInput.classList.contains('input-active')) {
+
+                    fileInput.addEventListener('input', async (e) => {
+                        let current = e.currentTarget;
+                        let textarea = current.closest(`.${classWrap}`).querySelector('textarea');
+                        let file = current.files[0];
+
+                        if (file) {
+
+                            let cnt = await file.text();
+                            textarea.value = cnt;
+
+                            textarea.dispatchEvent(new Event('input'));
+                        }
+                    });
+
+                    fileInput.classList.add('input-active');
+                }
+
+            }
+
+            if (!btn.classList.contains('input-active')) {
+
+                btn.addEventListener('click', e => {
+                    let current = e.currentTarget;
+                    let parent = current.closest(`.${classWrap}`);
+                    let text = parent.querySelector('textarea').value;
+
+                    if (type === 'copy') {
+                        navigator.clipboard.writeText(text);
+                    }
+
+                    else if (type === 'download') {
+                        let linkDownload = parent.querySelector('.link-download');
+                        let mime = linkDownload.getAttribute('download') ? linkDownload.getAttribute('download').split('.').slice(-1)[0] : 'plain';
+                        let objectUrl = URL.createObjectURL(new Blob([text], { type: `text/${mime}` }));
+
+                        linkDownload.href = objectUrl;
+                        linkDownload.click();
+                    }
+
+                    else if (type === 'upload') {
+                        let fileInput = parent.querySelector('input[type=file]');
+                        fileInput.click();
+                    }
+
+                });
+
+                btn.classList.add('input-active');
+            }
+
+        });
     }
 
     function getCurrentScriptUrl() {
@@ -805,22 +1058,28 @@
         }
     }
 
-    async function injectHeroIcons(externalSprite = false) {
+    async function injectIcons(embedSprite = true, iconFile = "iconSprite_inputs.svg") {
 
         /**
          * load icon asset sprite or use external svg
          */
-
         let scriptUrl = getCurrentScriptUrl();
 
-        let iconSvg = `${scriptUrl}/iconSprite.svg`;
+        let iconSvg = `${scriptUrl}/${iconFile}`;
 
-        if (!externalSprite) {
-            let res = await fetch(iconSvg);
-            if (res.ok) {
-                let markup = await res.text();
+        if (embedSprite) {
+            let spriteWrapper = document.querySelector('.svgAssets');
 
-                document.body.insertAdjacentHTML('beforeend', markup);
+            if (!spriteWrapper) {
+                spriteWrapper = document.createElement('div');
+                spriteWrapper.classList.add('.svgAssets');
+                let res = await fetch(iconSvg);
+                if (res.ok) {
+                    let markup = await res.text();
+
+                    spriteWrapper.insertAdjacentHTML('beforeend', markup);
+                    document.body.append(spriteWrapper);
+                }
             }
         }
 
@@ -830,13 +1089,12 @@
 
             let el = iconTargets[i];
 
-            injectIcon(el, externalSprite);
-
+            injectIcon(el, embedSprite, iconSvg);
         }
 
     }
 
-    function injectIcon(el = null, externalSprite = false) {
+    function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_inputs.svg') {
 
         // get ID and position
         let iconIDs = el.dataset.icon.split(' ');
@@ -846,85 +1104,56 @@
             return;
         }
 
-        let useRefFile = externalSprite ? iconSvg : '';
-        let useRefs = iconIDs.map(id => { return `${useRefFile}#${id}` });
-
         let multiIcons = iconIDs.length > 1;
         let iconID = iconIDs[0];
 
-        // if target is select or input
-        let nodeName = el.nodeName.toLowerCase();
-        let type = el.type ? el.type : nodeName;
-        let isSelect = type === 'select-one' || type === 'select-multiple';
+        // symbol references
+        let useRefFile = !embedSprite ? iconSvg : '';
+        let useRefs = iconIDs.map(id => { return `${useRefFile}#${id}` });
+        let symbol = embedSprite ? document.getElementById(iconID) : null;
 
-        let isInput = nodeName === 'input' || isSelect;
-        let hasPicker = isSelect || type === 'date' || type === 'time';
-        let wrap = null;
+        /**
+         * check types to add wrapping elements
+         * replacing input box outline 
+         */
 
-        // assume right position if not defined
-        let isCheckable = type === 'checkbox' || type === 'radio';
-        let isBoxInput = type === 'select' || !isCheckable && type !== 'button' && type !== 'div';
-        let iconPosition = el.dataset.iconPos ? el.dataset.iconPos : (isBoxInput ? 'right' : 'left');
-
-        let hasToolbar = el.closest('.toolbar-wrap');
-
-        // wrap elements
-
-        if (isInput && !hasToolbar) {
-            type = isSelect ? 'select' : type;
-            el.classList.add(`icn-input`, `icn-input-${type}`, 'icn-inj');
-
-            wrap = document.createElement('div');
-            wrap.classList.add(`icn-wrp-input`, `icn-wrp-${type}`);
-
-            if (hasPicker) {
-                wrap.classList.add(`icn-wrp-picker`);
-                el.classList.add(`icn-input-picker`);
-            }
-
-            if (isBoxInput) {
-                wrap.classList.add(`input-wrap`, `input-wrap-boxed`);
-            }
-
-            el.parentNode.insertBefore(wrap, el);
-            wrap.append(el);
-            el = wrap;
-        }
-
-        // find symbol
-        let symbol = !externalSprite ? document.getElementById(iconID) : null;
+        let iconPosition = el.dataset.iconPos ? el.dataset.iconPos :  'left';
         let pos = iconPosition === 'left' ? 'afterbegin' : 'beforeend';
-        let posClass = iconPosition === 'left' ? 'icn-svg-left' : 'icn-svg-right';
-        let posClassWrp = iconPosition === 'left' ? 'icn-wrp-multi-left' : 'icn-wrp-multi-right';
-        let classPicker = hasPicker ? `icn-picker icn-box` : (isBoxInput ? 'icn-box' : '');
+        let posClass = `icn-pos-${iconPosition}`;
+
+        // check if already wrapped
+        let wrap = el.closest('.icn-wrp');
+        let iconMarkup = ``;
+
+        // viewBox exceptions for external use refs
+        let viewBoxLookup = {
+            'checkbox-switch': '0 0 36 24',
+        };
 
         // multiple icons
         if (multiIcons) {
 
-            let iconWrp = `<div class="icn-wrp-multi icn-wrp-multi-${type} ${posClassWrp} ">`;
-
             for (let i = 0, l = iconIDs.length; i < l; i++) {
                 let ref = useRefs[i];
-                let vB = symbol ? symbol.getAttribute('viewBox') : '0 0 24 24';
-                iconWrp += `<svg class="icn-svg icn-${iconID} ${posClass} ${classPicker} icn-svg-${i}" viewBox="${vB}"><use  href="${ref}"/></svg>`;
+                let vB = symbol ? symbol.getAttribute('viewBox') : (viewBoxLookup[iconID] ? viewBoxLookup[iconID] : '0 0 24 24');
+                iconMarkup += `<svg class="icn-svg icn-${iconID} ${posClass}  icn-svg-${i}" viewBox="${vB}"><use  href="${ref}"/></svg>`;
 
             }
-            iconWrp += '</div>';
-            el.insertAdjacentHTML(pos, iconWrp);
-            el.classList.add('icn-inj');
-
         }
         // single icon
         else {
 
             let vB = symbol ? symbol.getAttribute('viewBox') : '0 0 24 24';
             let ref = useRefs[0];
-
-            let iconSVG = `<svg class="icn-svg icn-${iconID} ${posClass} ${classPicker}" viewBox="${vB}"><use  href="${ref}"/></svg>`;
-            el.insertAdjacentHTML(pos, iconSVG);
-            el.classList.add('icn-inj');
+            iconMarkup = `<svg class="icn-svg icn-${iconID} ${posClass}" viewBox="${vB}"><use  href="${ref}"/></svg>`;
 
         }
+
+        if(!wrap) iconMarkup =`<span class="icn-wrp icn-wrp-${iconID} icn-wrp-${iconPosition}">${iconMarkup}</span>`;
+
+        // add class to indicate injection
+        el.insertAdjacentHTML(pos, iconMarkup);
+        el.classList.add('icn-inj');
 
     }
 
@@ -937,7 +1166,8 @@
             let el = titeleEls[i];
             if(el.classList.contains('has-tooltip')) continue;
             
-            let wrp = el.closest('.input-wrap');
+            let isButton = el.nodeName.toLowerCase()==='button';
+            let wrp = isButton ? el : el.closest('.input-wrap');
 
             if(!wrp ){
                 wrp = document.createElement('div');
@@ -958,17 +1188,111 @@
 
     }
 
-    async function enhanceInputStyles(inputs = []) {
+    /**
+     * wrap input elements
+     * to add new functionality
+     */
+    async function enhanceInputStyles(inputs = [], embedSprite = true, iconFile = "iconSprite_inputs.svg") {
 
-        addIconAtts(inputs);
+        let inputsInline = ['radio', 'checkbox', 'range', 'submit'];
+        let classNameWrap = 'input-wrap';
+        let classNameInput = 'input';
 
-        // text fields
-        enhanceTextFields();
+        for (let i = 0, l = inputs.length; l && i < l; i++) {
 
-        // file inputs
-        enhanceFileinputs();
+            let input = inputs[i];
+            let nodeName = input.nodeName.toLowerCase();
+            let type = input.type ? input.type : nodeName;
+            let label = input.closest('label');
 
-        enhanceSelects();
+            input.classList.add(`input`, `${classNameInput}-${type}`);
+
+            // ignore hidden fields
+            if (type === 'hidden') continue;
+
+            // wrap elements
+            let wrap = label ? label : document.createElement('div');
+            wrap.classList.add(`${classNameWrap}`, `${classNameWrap}-${type}`);
+
+            // boxed inputs - all but checkboxes and radio
+            if (!inputsInline.includes(type)) {
+                wrap.classList.add(`${classNameWrap}-boxed`);
+            }
+
+            // wrap label text
+            if (label) {
+                let labelSpan = document.createElement('span');
+                labelSpan.classList.add('label-span', `label-span-${type}`);
+                let textNode = [...label.childNodes].find(node => node.nodeType === 3 && node.textContent.trim());
+
+                input.parentNode.insertBefore(labelSpan, textNode);
+                labelSpan.append(textNode);
+
+                if (label.dataset.icon) {
+                    label.classList.add('input-wrap-icon');
+                }
+            }
+
+            if (!label) {
+                input.parentNode.insertBefore(wrap, input);
+                wrap.append(input);
+            }
+
+            /**
+             * add icons
+             */
+            let isPicker = type === 'select-one' || type === 'date' || type === 'time' || type === 'datetime-local';
+            if (isPicker) {
+                input.classList.add('input-picker');
+                wrap.classList.add('input-wrap-picker');
+            }
+
+            if (type !== 'checkbox' && type !== 'radio' && type !== 'number') {
+                input.classList.add('input-wide');
+                wrap.classList.add('input-wrap-wide');
+            }
+
+            let inputIcons = {
+                checkbox: 'checkbox checkbox-checked',
+                'checkbox-switch': 'checkbox-switch checkbox-switch-checked',
+                radio: 'radio radio-checked',
+                'select-one': 'chevron-down',
+                date: 'calendar',
+                'datetime-local': 'calendar',
+                time: 'clock',
+                search: 'magnifying-glass'
+            };
+
+            let { icon = '', iconPos = 'left' } = input.dataset;
+            let dataType = input.dataset.type || null;
+
+            if (inputIcons[type] || icon) {
+                type = dataType ? dataType : type;
+                let iconNames = icon ? icon : inputIcons[type];
+
+                // remove data att
+                input.removeAttribute('data-icon');
+                wrap.classList.add('input-wrap-icon');
+
+                let classPicker = isPicker ? 'icn-input-picker' : '';
+
+                if (type === 'select-one' || type === 'date' || type === 'time') iconPos = 'right';
+                let injectPos = iconPos === 'left' ? 'beforebegin' : 'afterend';
+
+                let iconArr = iconNames.split(' ');
+                let wrapClass = iconArr.length > 1 ? 'icn-wrp-multi' : '';
+                let iconWrp = `<span class="icn-wrp icn-wrp ${wrapClass} ${classPicker} icn-pos-${iconPos} " data-icon="${iconNames}" ></span>`;
+
+                input.insertAdjacentHTML(injectPos, iconWrp);
+
+            }
+
+        }
+
+        enhanceColorInputs();
+
+        // password fields
+        enhancePasswordFields();
 
         // range fields
         enhanceRangeInputs();
@@ -977,68 +1301,55 @@
         enhanceNumberFields();
 
         // add tools to textareas
-        enhanceTextarea();
+        enhanceTextareas();
 
-        let useExternalSprite = false;
-        injectHeroIcons(useExternalSprite);
+        // file inputs
+        enhanceFileinputs();
+
+        injectIcons(embedSprite, iconFile);
 
         addToolTips();
 
     }
 
-    /**
-     * prepare for icon incetion
-     */
-    function addIconAtts(inputs = []) {
-
-        for (let i = 0, l = inputs.length; i < l; i++) {
-            let inp = inputs[i];
-
-            if(inp.dataset.icon) {
-
-                continue
-            }
-
-            let nodeName = inp.nodeName.toLowerCase();
-            let type = inp.type ? (inp.type === 'select-one' ? 'select' : inp.type ) : nodeName;
-
-            let dataType = inp.dataset.type || null;
-        
-            if (type === 'checkbox') {
-
-                inp.dataset.icon = dataType === 'checkbox-switch' ? 'checkbox-switch checkbox-switch-checked' : 'checkbox checkbox-checked';
-            } 
-            else if (type === 'radio') {
-                inp.dataset.icon = 'radio radio-checked';
-            }
-
-            else if (type === 'select') {
-                inp.dataset.icon = 'chevron-down';
-            }
-            else if (type === 'date') {
-                inp.dataset.icon = 'calendar';
-            }
-            else if (type === 'time') {
-                inp.dataset.icon = 'clock';
-            }
-
-            else if (type === 'search') {
-                inp.dataset.icon = 'magnifying-glass';
-
-            }
-
+    function bindDarkmodeBtn() {
+        // dark mode toggle
+        let inputDarkmode = document.getElementById('inputDarkmode');
+        if (inputDarkmode) {
+            inputDarkmode.addEventListener('input', (e) => {
+                if (inputDarkmode.checked) {
+                    document.body.classList.add('darkmode');
+                }
+                else {
+                    document.body.classList.remove('darkmode');
+                }
+            });
         }
+
     }
 
+    // get quer params
+    const queryParams = Object.fromEntries(new URLSearchParams(document.location.search));
+
+    /**
+     * new version
+     */
+
     function enhanceInputs({
-        selector = 'input',
+        selector = 'input, select, textarea',
         parent = 'main',
-        storageName = 'settings'
+
+        cacheToUrl = true,
+        // save settings to local storage
+        cacheToStorage = true,
+        storageName = 'settings',
+        embedSprite = true,
     } = {}) {
 
         let settings = {};
-        let settingsStorage = localStorage.getItem(storageName);
-        let settingsCache = settingsStorage ? JSON.parse(settingsStorage) : null;
+        storageName = cacheToStorage ? storageName : '';
+        let settingsStorage = storageName ? localStorage.getItem(storageName) : '';
+        let settingsCache = settingsStorage ? JSON.parse(settingsStorage) : {};
         let parentEl = document.querySelector(parent) ? document.querySelector(parent) : document;
         let inputs = parentEl.querySelectorAll(selector);
 
@@ -1051,25 +1362,45 @@
         // save defaults to settings object for resetting
         settings.defaults = defaults;
 
-        
+        /**
+         * get settings from query
+         * and update inputs
+         */
+        if (cacheToUrl && Object.values(queryParams).length) {
 
-        // sync with cache
-        if (settingsCache) {
+            let settingsQuery = updateSettingsFromQuery(queryParams, settings);
+
+            settingsCache = {
+                ...settingsCache,
+                ...settingsQuery
+            };
+
+            // take query cache for syncing
+            if (!cacheToStorage) {
+                syncInputsWithCache(settingsCache);
+            }
+        }
+
+        // sync with cache - update inputs
+        if (cacheToStorage && Object.values(settingsCache).length) {
             syncInputsWithCache(settingsCache);
         }
 
         settings = getSettingValueFromInputs(inputs, settings);
 
         // bind input events
-        bindSettingUpdates(inputs, settings, storageName);
+        bindSettingUpdates(inputs, settings, storageName, cacheToUrl);
 
         // bind reset btn
-
         bindResetBtn(settings, storageName);
 
-        // enhance styles
-        inputs = document.querySelectorAll('input, select, textarea');
-        enhanceInputStyles(inputs);
+        /**
+         * enhance styles by wrapping
+         * and adding extra buttons
+         */
+        enhanceInputStyles(inputs, embedSprite);
+
+        bindDarkmodeBtn();
 
         return settings;
 
@@ -1078,6 +1409,7 @@
     // Browser global
     if (typeof window !== 'undefined') {
         window.enhanceInputs = enhanceInputs;
+        window.injectIcons = injectIcons;
     }
 
     exports.PI = PI;

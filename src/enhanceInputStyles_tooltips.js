@@ -8,7 +8,8 @@ export function addToolTips(selector='.enhanceInputs [title]'){
         let el = titeleEls[i];
         if(el.classList.contains('has-tooltip')) continue;
         
-        let wrp = el.closest('.input-wrap');
+        let isButton = el.nodeName.toLowerCase()==='button';
+        let wrp = isButton ? el : el.closest('.input-wrap');
         //let wrpToolbar = el.closest('.toolbar-wrap');
         //wrpToolbar = false;
 

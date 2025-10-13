@@ -2,10 +2,35 @@
 
 :where(.enhanceInputs) {
 
+    fieldset {
+        padding-top: 1rem;
+        padding-left: 0;
+        padding-right: 0;
+        border-color: var(--color-focus);
+        border-width: calc(var(--border-width-input) * 2);
+        border-style: solid none none none;
+        border-width: 1cap;
+    }
+
+    legend {
+        font-weight: 700;
+        padding-right: 0.5em;
+        transform: translateY(0em);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--color-focus);
+    }
+
+    h1,h2,h3,h4,
+    p{
+        margin: 0 0 1rem 0;
+    }
+
     textarea {
         min-height: 10lh;
+        width: 100%;
         //@extend .wdt-100, .dsp-blc;
-        /*width: 100%;
+        /*
         display: block;
         resize: vertical;
         */
@@ -17,6 +42,14 @@
     button {
         cursor: pointer;
         position: relative;
+    }
+
+    /* multi selects*/
+    select[multiple] {
+        width: 100%;
+        border: var(--border-width-input) solid var(--color-border);
+        background-color: var(--color-background-input);
+        border-radius: var(--border-radius)
     }
 
 
@@ -51,6 +84,12 @@
         padding-inline: 0;
         border: none;
         background-color: transparent;
+
+        &:focus-within{
+            outline:none;
+        }
+
+
     }
 
 
@@ -105,6 +144,8 @@
         width: 1.25em;
         border-radius: 50%;
         border: 0.2rem solid var(--color-background, #fff);
+        //background: var(--color-background, #fff);
+
     }
 
 

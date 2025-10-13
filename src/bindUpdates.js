@@ -5,14 +5,14 @@ import { getSettingValueFromInputs, getSettingValueFromInput } from './getSettin
 
 import { syncInputsWithCache, setInputValueFromSettings, saveSettingsToLocalStorage } from './localStorage.js';
 
+import {updateQueryParams, settingsToQueryString} from './getSettings_query.js';
+
 // custom event for settings update
 export const settingsUpdate = new Event('settingsChange');
 
 
 // add event listeners
-export function bindSettingUpdates(inputs, settings = {}, storageName = 'settings') {
-
-
+export function bindSettingUpdates(inputs, settings = {}, storageName = 'settings', toQuery=false) {
 
     inputs.forEach((inp) => {
 
@@ -21,11 +21,17 @@ export function bindSettingUpdates(inputs, settings = {}, storageName = 'setting
             inp.addEventListener("input", (e) => {
 
                 //console.log('inp', inp);
-
                 getSettingValueFromInput(inp, settings)
 
                 // update localStorage
                 saveSettingsToLocalStorage(settings, storageName)
+
+                if(toQuery){
+                    //let queryStr = settingsToQueryString(settings)
+                    //console.log('queryStr', queryStr);
+                    updateQueryParams(settings)
+                
+                }
 
                 // trigger custom event
                 //document.dispatchEvent(new Event('settingsChange'))
@@ -43,7 +49,6 @@ export function bindSettingUpdates(inputs, settings = {}, storageName = 'setting
  * reset btn
  */
 export function resetSettings(settings = {}) {
-    //return settings.defaults ? settings.defaults : settings;
     if(settings.defaults) Object.assign(settings, settings.defaults);  
 }
 
@@ -63,6 +68,10 @@ export function bindResetBtn(settings = {}, storageName = 'settings') {
 
             // update localStorage
             saveSettingsToLocalStorage(settings, storageName)
+
+            // delete query params
+            updateQueryParams({})
+
 
             // trigger custom event
             document.dispatchEvent(settingsUpdate)

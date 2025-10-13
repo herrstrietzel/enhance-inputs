@@ -31,22 +31,30 @@ function getCurrentScriptUrl() {
 }
 
 
-export async function injectHeroIcons(externalSprite = false) {
+
+
+export async function injectIcons(embedSprite = true, iconFile = "iconSprite_inputs.svg") {
 
     /**
      * load icon asset sprite or use external svg
      */
-
     let scriptUrl = getCurrentScriptUrl();
 
-    let iconSvg = `${scriptUrl}/iconSprite.svg`;
+    let iconSvg = `${scriptUrl}/${iconFile}`;
 
-    if (!externalSprite) {
-        let res = await fetch(iconSvg);
-        if (res.ok) {
-            let markup = await res.text()
-            //console.log(markup);
-            document.body.insertAdjacentHTML('beforeend', markup);
+    if (embedSprite) {
+        let spriteWrapper = document.querySelector('.svgAssets');
+
+        if (!spriteWrapper) {
+            spriteWrapper = document.createElement('div')
+            spriteWrapper.classList.add('.svgAssets')
+            let res = await fetch(iconSvg);
+            if (res.ok) {
+                let markup = await res.text()
+                //console.log(markup);
+                spriteWrapper.insertAdjacentHTML('beforeend', markup);
+                document.body.append(spriteWrapper)
+            }
         }
     }
 
@@ -57,13 +65,13 @@ export async function injectHeroIcons(externalSprite = false) {
 
         let el = iconTargets[i];
 
-        injectIcon(el, externalSprite);
-        //el.classList.add('icon-active')
+        injectIcon(el, embedSprite, iconSvg);
     }
 
 }
 
-export function injectIcon(el = null, externalSprite = false) {
+
+export function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_inputs.svg') {
 
     // get ID and position
     let iconIDs = el.dataset.icon.split(' ');
@@ -75,94 +83,62 @@ export function injectIcon(el = null, externalSprite = false) {
     }
 
 
-    let useRefFile = externalSprite ? iconSvg : '';
-    let useRefs = iconIDs.map(id => { return `${useRefFile}#${id}` });
-    //console.log('useRefs', useRefs);
-
-
     let multiIcons = iconIDs.length > 1;
     let iconID = iconIDs[0];
 
 
-    // if target is select or input
-    let nodeName = el.nodeName.toLowerCase();
-    let type = el.type ? el.type : nodeName;
-    let isSelect = type === 'select-one' || type === 'select-multiple';
-    //let isInput = nodeName === 'input' || nodeName === 'button' || isSelect;
-    let isInput = nodeName === 'input' || isSelect;
-    let hasPicker = isSelect || type === 'date' || type === 'time';
-    let wrap = null;
-
-    // assume right position if not defined
-    let isCheckable = type === 'checkbox' || type === 'radio';
-    let isBoxInput = type === 'select' || !isCheckable && type !== 'button' && type !== 'div';
-    let iconPosition = el.dataset.iconPos ? el.dataset.iconPos : (isBoxInput ? 'right' : 'left');
+    // symbol references
+    let useRefFile = !embedSprite ? iconSvg : '';
+    let useRefs = iconIDs.map(id => { return `${useRefFile}#${id}` });
+    let symbol = embedSprite ? document.getElementById(iconID) : null;
 
 
-    let hasToolbar = el.closest('.toolbar-wrap');
-    //console.log('hasToolbar', hasToolbar);
+    /**
+     * check types to add wrapping elements
+     * replacing input box outline 
+     */
 
-    // wrap elements
-
-    if (isInput && !hasToolbar) {
-        type = isSelect ? 'select' : type;
-        el.classList.add(`icn-input`, `icn-input-${type}`, 'icn-inj');
-
-        wrap = document.createElement('div')
-        wrap.classList.add(`icn-wrp-input`, `icn-wrp-${type}`)
-
-        if (hasPicker) {
-            wrap.classList.add(`icn-wrp-picker`);
-            el.classList.add(`icn-input-picker`);
-        }
-
-        if (isBoxInput) {
-            wrap.classList.add(`input-wrap`, `input-wrap-boxed`);
-        }
-
-        el.parentNode.insertBefore(wrap, el);
-        wrap.append(el);
-        el = wrap
-    }
-
-
-
-    // find symbol
-    let symbol = !externalSprite ? document.getElementById(iconID) : null;
+    //let iconPosition = el.dataset.iconPos ? el.dataset.iconPos : (isBoxInput ? 'right' : 'left');
+    let iconPosition = el.dataset.iconPos ? el.dataset.iconPos :  'left';
     let pos = iconPosition === 'left' ? 'afterbegin' : 'beforeend';
-    let posClass = iconPosition === 'left' ? 'icn-svg-left' : 'icn-svg-right';
-    let posClassWrp = iconPosition === 'left' ? 'icn-wrp-multi-left' : 'icn-wrp-multi-right';
-    let classPicker = hasPicker ? `icn-picker icn-box` : (isBoxInput ? 'icn-box' : '');
+    let posClass = `icn-pos-${iconPosition}`
 
+
+    // check if already wrapped
+    let wrap = el.closest('.icn-wrp');
+    let iconMarkup = ``
+
+    // viewBox exceptions for external use refs
+    let viewBoxLookup = {
+        'checkbox-switch': '0 0 36 24',
+    }
 
     // multiple icons
     if (multiIcons) {
 
-        let iconWrp = `<div class="icn-wrp-multi icn-wrp-multi-${type} ${posClassWrp} ">`
-
         for (let i = 0, l = iconIDs.length; i < l; i++) {
             let ref = useRefs[i];
-            let vB = symbol ? symbol.getAttribute('viewBox') : '0 0 24 24';
-            iconWrp += `<svg class="icn-svg icn-${iconID} ${posClass} ${classPicker} icn-svg-${i}" viewBox="${vB}"><use  href="${ref}"/></svg>`;
+            let vB = symbol ? symbol.getAttribute('viewBox') : (viewBoxLookup[iconID] ? viewBoxLookup[iconID] : '0 0 24 24');
+            iconMarkup += `<svg class="icn-svg icn-${iconID} ${posClass}  icn-svg-${i}" viewBox="${vB}"><use  href="${ref}"/></svg>`;
 
         }
-        iconWrp += '</div>';
-        el.insertAdjacentHTML(pos, iconWrp)
-        el.classList.add('icn-inj')
-
-
     }
     // single icon
     else {
 
         let vB = symbol ? symbol.getAttribute('viewBox') : '0 0 24 24';
         let ref = useRefs[0];
-
-        let iconSVG = `<svg class="icn-svg icn-${iconID} ${posClass} ${classPicker}" viewBox="${vB}"><use  href="${ref}"/></svg>`;
-        el.insertAdjacentHTML(pos, iconSVG)
-        el.classList.add('icn-inj')
-
+        iconMarkup = `<svg class="icn-svg icn-${iconID} ${posClass}" viewBox="${vB}"><use  href="${ref}"/></svg>`;
 
     }
 
+    if(!wrap) iconMarkup =`<span class="icn-wrp icn-wrp-${iconID} icn-wrp-${iconPosition}">${iconMarkup}</span>`;
+
+
+    // add class to indicate injection
+    el.insertAdjacentHTML(pos, iconMarkup)
+    el.classList.add('icn-inj')
+
+
 }
+

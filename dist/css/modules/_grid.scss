@@ -137,10 +137,6 @@
 
 @media (min-width: $md) {
 
-  .grd{
-    gap: var(--gap-md);
-    row-gap: var(--row-gap-md);
-  }
 
   .spn-md-auto {
     grid-column: auto;
@@ -211,10 +207,7 @@
 
 @media (min-width: $ld) {
 
-  .grd{
-    gap: var(--gap-ld);
-    row-gap: var(--row-gap-ld);
-  }
+
 
   .spn-ld-auto {
     grid-column: auto;

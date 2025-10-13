@@ -4,22 +4,37 @@ export function enhanceFileinputs(selector = '.enhanceInputs', labelFileBtn = "U
     let inputs = document.querySelectorAll(`${selector} input[type=file]`);
 
 
-    for (let i = 0, l = inputs.length; i < l; i++) {
+    for (let i = 0, l = inputs.length; l&& i < l; i++) {
         let input = inputs[i];
         let wrap = input.closest(".input-wrap-file");
-        if (wrap) continue;
 
-        wrap = document.createElement("div");
-        wrap.classList.add('input-wrap', '--input-wrap-boxed', 'input-wrap-file');
+        // skip for textarea toolbars
+        let hasHeader =  input.closest('.input-wrap-textarea-header')
+        if(hasHeader) continue
 
-        input.parentNode.insertBefore(wrap, input);
-        wrap.append(input);
+
+        if(!wrap){
+            wrap = document.createElement("div");
+            wrap.classList.add('input-wrap', 'input-wrap-file');  
+            input.parentNode.insertBefore(wrap, input);
+            wrap.append(input);
+      
+        }
+
+        let icons = wrap.querySelector('.icn-svg')
+        //if(icons.classList.contains('input-active')) continue;
+
+
+        let btnCustom = wrap.querySelector('.btn-file-custom');
+        if (btnCustom || icons) continue;
+
 
         // hide default btn
         input.classList.add("sr-only");
 
         // add new UI elements
-        let fileUiHTML = `<div class="btn-default btn-file" type="button" aria-hidden="true" data-icon="arrow-up-tray" data-icon-pos="left">
+        let fileUiHTML = `<div class="btn-default btn-file btn-file-custom " type="button" aria-hidden="true" >
+        <span class="icn-wrp icn-wrp-file" data-icon="arrow-up-tray" data-icon-pos="left"></span>
             <span class="label-file">${labelFileBtn}</span><span class="label-file label-drop">${labelFileBtnDrop}</span>
           </div>
           <p class="input-file-info"></p>`;
@@ -74,12 +89,14 @@ export function bindFileInput(wrap = null) {
 export function bindFileInputDropArea(dropArea = null, inputFile = null, dragOverClass = 'input-file-drag-over') {
 
     // prevent duplicate event listeners
-    if (!dropArea || dropArea.classList.contains('input-active')) return;
+    if (!dropArea || dropArea.classList.contains('droparea-active')) return;
 
     // if input is in drop area or in parent element
     inputFile = inputFile ? inputFile : dropArea.querySelector("input[type=file]");
 
-    let accepted = inputFile.accept ? inputFile.accept.split(',').filter(Boolean).map(type=>type.trim() ) : [];
+    let accepted = inputFile.accept ? inputFile.accept.split(',').filter(Boolean).map(type=>type.trim() ) : ['.txt', '.svg'];
+
+    //console.log('accepted', accepted, inputFile.accept);
 
     // Add event listeners for drag and drop events
     ["dragenter", "dragover"].forEach((event) => {
@@ -109,6 +126,7 @@ export function bindFileInputDropArea(dropArea = null, inputFile = null, dragOve
 
         let filesFiltered=new DataTransfer();
 
+
         for(let i=0,l=files.length; i<l;i++){
             let file=files[i];
             let type = file.type ? '.'+file.type.split('/').slice(-1) : null;
@@ -117,11 +135,11 @@ export function bindFileInputDropArea(dropArea = null, inputFile = null, dragOve
 
             if(accepted.includes(type) || accepted.includes(ext)){
                 filesFiltered.items.add(file)
+            }else{
+                console.warn('File type not allowed', type, ext, accepted);
             }
             //console.log(type, file.type , ext, 'check');
         }
-
-        //console.log('filesFiltered', filesFiltered);
 
         if (filesFiltered.files.length > 0) {
 
@@ -130,10 +148,12 @@ export function bindFileInputDropArea(dropArea = null, inputFile = null, dragOve
             // Trigger a change event on the file input to notify any listeners
             let changeEvent = new Event("input");
             inputFile.dispatchEvent(changeEvent);
+            //inputFile.dispatchEvent('input');
+
         }else{
             if(fileInfo) fileInfo.textContent='Invalid filetype';
         }
     });
 
-    dropArea.classList.add('input-active');
+    dropArea.classList.add('droparea-active');
 }

@@ -20,9 +20,21 @@ export function getSettingValueFromInput(inp, settings = {}) {
     let prop = inp.name;
     let type = inp.type ? inp.type : inp.nodeName.toLowerCase();
     let isSelect = type === 'select-one' || type === 'select-multiple'
-    let value = inp.value;
-
+    let value = type==='number' && !inp.value ? 0 : inp.value;
+    //let value = inp.value;
     //console.log(type, inp.value );
+
+    if(!prop){
+        return;
+    }
+
+    // never save passwords
+    if (type === 'password') {
+        settings[prop] = '';
+        //console.log('pass');
+        return;
+    }
+
 
     if (type === 'checkbox') {
         settings[prop] = inp.checked ? true : false;
@@ -40,17 +52,18 @@ export function getSettingValueFromInput(inp, settings = {}) {
         }
     }
 
+
     else if (type === 'radio') {
         let selected = document.querySelector(`[name=${prop}]:checked`);
         settings[prop] = selected ? selected.value : null;
     }
     else {
         // convert numbers
-        let isNum = parseFloat(value).toString() === value;
-        //console.log(isNum, value);
+        //let isNum = parseFloat(value).toString() === value;
+        let isNum = !isNaN(value) && value!=='';
 
         if(type!=='password'){
-            settings[prop] = isNum ? +value : inp.value;
+            settings[prop] = isNum ? +value : (inp.value);
         }
     }
 

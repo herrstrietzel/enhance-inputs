@@ -4,27 +4,47 @@ export {
 } from './constants';
 
 //import {bindResetBtn} from './src/reset.js';
-import {syncInputsWithCache, setInputValueFromSettings, saveSettingsToLocalStorage} from './localStorage.js';
-import {bindSettingUpdates, bindResetBtn} from './bindUpdates.js';
+import { syncInputsWithCache, setInputValueFromSettings, saveSettingsToLocalStorage } from './localStorage.js';
+import { bindSettingUpdates, bindResetBtn } from './bindUpdates.js';
 
-import {getSettingValueFromInputs, getSettingValueFromInput} from './getSettings.js';
+import { getSettingValueFromInputs } from './getSettings.js';
+import { updateSettingsFromQuery } from './getSettings_query.js';
 
-import {enhanceInputStyles} from './enhanceInputStyles.js';
+import { enhanceInputStyles } from './enhanceInputStyles.js';
+
+import { injectIcons } from "./injectIcons";
+import { bindDarkmodeBtn } from './bindDarkmode';
 
 
+// get quer params
+const queryParams = Object.fromEntries(new URLSearchParams(document.location.search));
+
+
+/**
+ * new version
+ */
 
 export function enhanceInputs({
-    selector = 'input',
+    selector = 'input, select, textarea',
     parent = 'main',
-    storageName = 'settings'
+    //save updates to URL query
+    cacheToUrl = true,
+    // save settings to local storage
+    cacheToStorage = true,
+    storageName = 'settings',
+    embedSprite = true,
 } = {}) {
+
+    //console.log('enhanceInputs');
 
 
     let settings = {}
-    let settingsStorage = localStorage.getItem(storageName);
-    let settingsCache = settingsStorage ? JSON.parse(settingsStorage) : null
+    storageName = cacheToStorage ? storageName : '';
+    let settingsStorage = storageName ? localStorage.getItem(storageName) : '';
+    let settingsCache = settingsStorage ? JSON.parse(settingsStorage) : {}
     let parentEl = document.querySelector(parent) ? document.querySelector(parent) : document;
     let inputs = parentEl.querySelectorAll(selector);
+
 
     /**
      * check defaults 
@@ -32,15 +52,32 @@ export function enhanceInputs({
      */
     let defaults = settings.defaults ? settings.defaults : getSettingValueFromInputs(inputs);
 
+
     // save defaults to settings object for resetting
     settings.defaults = defaults;
-    //console.log('defaults', defaults);
 
-    
+    /**
+     * get settings from query
+     * and update inputs
+     */
+    if (cacheToUrl && Object.values(queryParams).length) {
+
+        let settingsQuery = updateSettingsFromQuery(queryParams, settings)
+
+        settingsCache = {
+            ...settingsCache,
+            ...settingsQuery
+        }
+
+        // take query cache for syncing
+        if (!cacheToStorage) {
+            syncInputsWithCache(settingsCache, inputs)
+        }
+    }
 
 
-    // sync with cache
-    if (settingsCache) {
+    // sync with cache - update inputs
+    if (cacheToStorage && Object.values(settingsCache).length) {
         syncInputsWithCache(settingsCache, inputs)
     }
 
@@ -48,26 +85,29 @@ export function enhanceInputs({
 
 
     // bind input events
-    bindSettingUpdates(inputs, settings, storageName)
+    bindSettingUpdates(inputs, settings, storageName, cacheToUrl)
 
 
     // bind reset btn
-    //bindResetBtn(settings, storageName)
     bindResetBtn(settings, storageName)
 
 
+    /**
+     * enhance styles by wrapping
+     * and adding extra buttons
+     */
+    enhanceInputStyles(inputs, embedSprite)
 
-    // enhance styles
-    inputs = document.querySelectorAll('input, select, textarea')
-    enhanceInputStyles(inputs)
-
+    bindDarkmodeBtn();
 
     return settings;
 
 }
 
 
+
 // Browser global
 if (typeof window !== 'undefined') {
     window.enhanceInputs = enhanceInputs;
+    window.injectIcons = injectIcons;
 }

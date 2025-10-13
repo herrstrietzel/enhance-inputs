@@ -163,18 +163,29 @@ iframe {
 }
 
 //text decoration for links
+/*
 .txt-dcr {
-    text-decoration-color: var(--color-link-undeline, currentColor);
+    text-decoration-color: var(--color-focus, currentColor);
     text-decoration-style: solid;
     text-decoration-line: underline;
     text-decoration-thickness: var(--stroke-width, 1px);
     font-weight: var(--font-weight-link, 400);
-    text-underline-offset: 0.1em;
 }
 
 a {
+    color:inherit;
     @extend .txt-dcr
 }
+*/
+
+
+a{
+    color:inherit;
+    text-decoration-color: var(--color-focus, currentColor);
+    text-decoration-thickness: var(--stroke-width, 2px);
+    text-underline-offset: 0.2em;
+}
+
 
 
 span[style*=text-decoration] {
