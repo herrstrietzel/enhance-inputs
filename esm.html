@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>enhance inputs</title>
+
+    <style>
+        body {
+            font-family: 'Fira Sans', sans-serif;
+            background-color: var(--color-background);
+        }
+
+        .grd .input-wrap-email,
+        .grd .input-wrap-text {
+            width: 100%
+        }
+    </style>
+
+    <!-- 
+        <link rel="stylesheet" href="demo/css/style.css">
+        
+        <link rel="stylesheet" href="dist/enhanceInputs.css">
+            <link rel="stylesheet" href="dist/enhanceInputs-deuglify.css">
+    <link rel="stylesheet" href="dist/enhanceInputs-icons.css">
+
+    -->
+
+
+    <link rel="stylesheet" href="dist/enhanceInputs.css">
+
+
+    <!-- 
+        <script type="module" src="dist/enhanceInputs.esm.js"></script>
+
+    -->
+
+
+    <style>
+        /*
+        :root {
+            --color-border: blue;
+
+        }
+        */
+    </style>
+
+
+</head>
+
+<!-- auto init by class name enhanceInputsInit -->
+
+<body class="enhanceInputs scrollbar scroll-content scroll-content-notrack" >
+
+
+    <main class="pdd-1 ">
+        <fieldset>
+
+            <legend>Date</legend>
+            <div class="grd-input grd grd-1 grd-md-2 gap-1em mrg-1em mrg-btt">
+                <label>Start<input type="date" name="dateLabel"></label>
+                <label>time<input type="time" name="timeStart"></label>
+            </div>
+
+
+            <p>
+                <label class="label">date</label>
+                <input type="date" class="input" name="date">
+
+                <label class="label">time</label>
+                <input type="time" class="input" name="time">
+            </p>
+
+        </fieldset>
+
+        <p>
+            <label class="label">
+                <input type="checkbox" class="input" name="switch1" data-type="checkbox-switch" checked>
+                checkbox 1</label>
+
+            <label class="label">
+                <input type="checkbox" class="input" name="switch2" data-type="checkbox-switch">
+                checkbox 2</label>
+        </p>
+
+
+        <h3>Wrapped inputs</h3>
+
+        <div class="grd-input grd grd-1 grd-md-2 gap-1em mrg-1em mrg-btt">
+
+            <div class="col">
+                <label class="--label-block">Password
+                    <input type="password" name="password" autocomplete="current-password">
+                </label>
+            </div>
+
+
+            <div class="col">
+                <label class="--label-block" data-icon="user">Name
+                    <input type="text" class="" name="firstNameW">
+                </label>
+            </div>
+
+            <div class="col">
+                <label class="--label-block" data-icon="envelope">Mail
+                    <input type="email" class="" name="lastNameW">
+                </label>
+            </div>
+
+            <div class="col">
+                <label class="--label-block" data-data-icon="envelope">Mail
+                    <input type="text" class="" name="lastNameW2">
+                </label>
+            </div>
+
+            <input type="submit" value="Sign in" class="spn-md-full" />
+
+
+        </div>
+
+
+
+        <div class="grd-input grd grd-1 grd-md-2 gap-1em mrg-1em mrg-btt">
+
+            <div class="col">
+                <label class="label-block">Name</label>
+                <input type="text" class="--wdt-100" name="firstName" data-icon="user">
+            </div>
+
+            <div class="col">
+                <label class="label-block">Last name</label>
+                <input type="text" class="--wdt-100" name="lastName" data-data-icon="">
+            </div>
+
+            <div class="col">
+                <label class="label-block">Email</label>
+                <input type="email" class="--wdt-100" name="email" data-icon="envelope">
+            </div>
+            <div class="col">
+                <label class="label-block">Phone</label>
+                <input type="text" class="--wdt-100" name="phone" data-icon="phone">
+            </div>
+
+        </div>
+
+
+        <p><button id="btnResetSettings" class="btn-default btn-neg" type="button" data-icon="arrow-path"
+                data-pos="left">Reset settings</button>
+        </p>
+        <p>
+            <button class="btn-default --btn-neg" type="button" data-icon="arrow-path" data-icon-pos="left">Reset
+                settings</button>
+            <input type="text" class="input" name="textVal-inline" placeholder="text" title="Enter your text">
+        </p>
+
+
+        <p>
+            <select class="input" name="selelectmulti" multiple>
+                <option value="multi1">multi1</option>
+                <option value="multi2">multi2</option>
+                <option value="multi3">multi3</option>
+            </select>
+        </p>
+
+        <h3>Checkbox single</h3>
+        <p>
+            <label class="label">
+                <input type="checkbox" class="input" name="checkbox11">
+                checkbox 1</label>
+
+            <label class="label">
+                <input type="checkbox" class="input" name="checkbox21" checked>
+                checkbox 2</label>
+
+            <label class="label">
+                <input type="checkbox" class="input" name="checkbox31">
+                checkbox 3</label>
+
+        </p>
+
+        <!-- 
+
+
+        <h3>Checkbox multi</h3>
+
+
+        <p>
+            <label class="label">
+                <input type="checkbox" class="input" name="checkboxMulti[]" value="multi1" checked>
+                checkbox 1</label>
+
+            <label class="label">
+                <input type="checkbox" class="input" name="checkboxMulti[]" value="multi2">
+                checkbox 2</label>
+
+            <label class="label">
+                <input type="checkbox" class="input" name="checkboxMulti[]" value="multi3">
+                checkbox 3</label>
+
+        </p>
+                -->
+
+
+
+
+
+
+        <label class="label">textarea</label>
+        <textarea class="input" name="markup" id="markupText" data-tools="size copy upload download"
+            data-file="test.svg">
+        M8.5 0h183c4.6 </textarea>
+
+
+
+
+        <p><input type="file" multiple accept=".svg, .ttf"></p>
+        <!-- 
+            <p><input type="file" multiple data-type="input-file-dropzone"></p>
+
+        -->
+
+
+
+        <p>
+            <label>Text</label>
+            <input type="text" class="input" name="textVal" placeholder="text" title="Enter your text">
+        </p>
+
+        <p>
+            <label>Search</label>
+            <input type="search" class="input" name="search1" value="" placeholder="search">
+        </p>
+
+        <!-- 
+            <p>
+                <label>password</label>
+                <input type="password" class="input" name="password" value="" >
+            </p>
+
+        -->
+
+        <p>
+            <label>select</label>
+            <select class="input" name="select1" id="">
+                <option value="option1">option1</option>
+                <option value="option2">option2</option>
+                <option value="option3">option3</option>
+            </select>
+
+        </p>
+
+
+
+
+
+        <p>
+            <label class="label label-inl-blc">number1</label>
+            <input type="number" class="input" name="num1" min="0" max="10" step="0.1">
+
+            <label class="label label-inl-blc">number1</label>
+            <input type="number" class="input" name="num2" min="0" max="1000" step="0.1">
+
+        </p>
+
+        <p>
+            <label class="label">range</label>
+            <input type="range" class="input" name="testrange">
+
+        </p>
+
+        <p>
+            <label class="label">range</label>
+            <input type="range" data-type="range-number" class="input --input-range-num" min="0" max="10" step="1"
+                name="testrange2">
+
+        </p>
+
+
+        <p>
+            <label class="label">
+                <input type="radio" class="input" name="radio" value="radioVal1" checked>
+                radio 1</label>
+
+            <label class="label">
+                <input type="radio" class="input" name="radio" value="radioVal2">
+                radio 2</label>
+
+            <label class="label">
+                <input type="radio" class="input" name="radio" value="radioVal3">
+                radio 3</label>
+
+        </p>
+
+
+
+
+
+
+    </main>
+
+
+
+    <script type="module">
+
+
+        import { enhanceInputs } from "https://cdn.jsdelivr.net/npm/enhance-inputs@latest/dist/enhanceInputs.esm.min.js";
+
+        let options = {
+            storageName: 'enhance_settings',
+            parent: 'main',
+            selector: 'input, select, textarea',
+            cacheToUrl: true,
+            cacheToStorage: false,
+        }
+
+        // all settings are nor stored and updated on inputs to this variable
+        let settings = enhanceInputs(options);
+
+        console.log(settings);
+
+
+
+        // listen to updates
+        document.addEventListener('settingsChange', () => {
+            console.log('settings update:', settings);
+        });
+
+
+
+
+
+    </script>
+
+
+
+</body>
+
+</html>

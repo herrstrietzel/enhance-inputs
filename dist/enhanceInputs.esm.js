@@ -1327,10 +1327,9 @@ function bindDarkmodeBtn() {
 
 // get quer params
 const queryParams = Object.fromEntries(new URLSearchParams(document.location.search));
-let enhanceInputsSettings = {};
 
 function enhanceInputsAutoInit() {
-    const inputWrap = document.querySelector('.enhanceInputsInit, [data-enhance-inputs]');
+    const inputWrap = document.querySelector('[data-enhance-inputs]');
     let enhanceInputsSettings = {};
 
     if (inputWrap) {
@@ -1365,40 +1364,6 @@ function enhanceInputsAutoInit() {
     }
 
     return enhanceInputsSettings;
-}
-
-function enhanceInputsAutoInit0() {
-    let inputWrap = document.querySelector('.enhanceInputsInit, [data-enhance-inputs]');
-
-    if(inputWrap){
-
-        let optionDataAtt = inputWrap.dataset.enhanceInputs;
-        let optionsData = {};
-
-        if (optionDataAtt) {
-            try {
-                optionsData = JSON.parse(optionDataAtt);
-            } catch {
-                console.warn('Not a valid JSON');
-            }
-        }
-
-        let options = {
-            ...{
-                storageName: 'enhance_settings',
-                parent: 'body',
-                selector: 'input, select, textarea',
-                cacheToUrl: false,
-                cacheToStorage: false,
-            },
-            ...optionsData,
-        };
-
-        enhanceInputsSettings = enhanceInputs(options);
-    }
-
-    return enhanceInputsSettings;
-
 }
 
 /**
@@ -1489,4 +1454,4 @@ if (typeof window !== 'undefined') {
 
 }
 
-export { PI, abs, acos, asin, atan, atan2, ceil, cos, enhanceInputs, enhanceInputsAutoInit, enhanceInputsAutoInit0, exp, floor, hypot, log, max, min, pow, random, round, sin, sqrt, tan };
+export { PI, abs, acos, asin, atan, atan2, ceil, cos, enhanceInputs, enhanceInputsAutoInit, exp, floor, hypot, log, max, min, pow, random, round, sin, sqrt, tan };

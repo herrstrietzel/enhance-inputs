@@ -14,16 +14,18 @@ Multiple input elements are enhanced
 
 ## Usage
 
-### Load CSS and script
+### IIFE: Load CSS and script
 ```
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/enhance-inputs@latest/dist/enhanceInputs.css">
     <script src="https://cdn.jsdelivr.net/npm/enhance-inputs@latest/dist/enhanceInputs.js"></script>
 ```
 Or use a local path.
 
+
+
 ### Init 
 
-#### 1. Auto init
+#### Auto init
 For auto initialisation just add a data attribute to a container containing inputs that should be enhanced
 
 ```
@@ -37,7 +39,7 @@ For auto initialisation just add a data attribute to a container containing inpu
 </body>
 ```
 
-#### 2. Manual init
+#### IIFE: Manual init
 
 ```
 let options = {
@@ -48,9 +50,28 @@ let options = {
     cacheToStorage:false,
 }
 
-// all settings are nor stored and updated on inputs to this cariable
+// all settings are nor stored and updated on inputs to this variable
 let settings = enhanceInputs(options);
 ```
+
+### ESM: Manual init
+Import `enhanceInputs()` function in a module:  
+
+```
+import { enhanceInputs } from "https://cdn.jsdelivr.net/npm/enhance-inputs@latest/dist/enhanceInputs.esm.min.js";
+
+let options = {
+    storageName: 'enhance_settings',
+    parent: 'main',
+    selector: 'input, select, textarea',
+    cacheToUrl:true,
+    cacheToStorage:false,
+}
+
+let settings = enhanceInputs(options);
+
+```
+
 
 
 #### 3. Listen to setting updates
