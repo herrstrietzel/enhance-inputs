@@ -1,5 +1,4 @@
 //import { enhanceInputs } from "./src";
-
 //import { injectIcons } from "./src/injectIcons";
 
 let options = {
@@ -8,7 +7,6 @@ let options = {
     selector: 'input, select, textarea',
     cacheToUrl:true,
     cacheToStorage:false,
-
 }
 
 let settings = enhanceInputs(options);
