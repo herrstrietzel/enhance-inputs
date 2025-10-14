@@ -1,6 +1,6 @@
 @use 'modules' as *;
 
-:where(.enhanceInputs) {
+:where(.enhanceInputs, [data-enhance-inputs]) {
 
     fieldset {
         padding-top: 1rem;

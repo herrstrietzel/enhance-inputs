@@ -17,12 +17,12 @@ iframe {
 }
 
 .apr-non, .input-number-btns .input-number-btn, .input-select-one, .icn-input-select,
-.option, :where(.enhanceInputs) input[type=range], :where(.enhanceInputs) input[type=range]::-moz-range-thumb {
+.option, :where(.enhanceInputs, [data-enhance-inputs]) input[type=range], :where(.enhanceInputs, [data-enhance-inputs]) input[type=range]::-moz-range-thumb {
   appearance: none;
   -webkit-appearance: none;
 }
 
-.wdt-100, .btn-file, .input-textarea, :where(.enhanceInputs) input[type=range], :where(.enhanceInputs) .input-wrap-range-num {
+.wdt-100, .btn-file, .input-textarea, :where(.enhanceInputs, [data-enhance-inputs]) input[type=range], :where(.enhanceInputs, [data-enhance-inputs]) .input-wrap-range-num {
   width: 100%;
 }
 
@@ -90,11 +90,11 @@ iframe {
   display: inline;
 }
 
-.dsp-inl-blc, .input-wrap-file, .input-wrap-inline, :where(.enhanceInputs) input[type=range]::before {
+.dsp-inl-blc, .input-wrap-file, .input-wrap-inline, :where(.enhanceInputs, [data-enhance-inputs]) input[type=range]::before {
   display: inline-block;
 }
 
-.dsp-blc, .tooltip, .tooltip:before, .input-textarea, .label-textarea, :where(.enhanceInputs) input[type=range] {
+.dsp-blc, .tooltip, .tooltip:before, .input-textarea, .label-textarea, :where(.enhanceInputs, [data-enhance-inputs]) input[type=range] {
   display: block;
 }
 
@@ -106,7 +106,7 @@ iframe {
   display: table-cell;
 }
 
-.dsp-flx, .input-wrap-textarea-header, :where(.enhanceInputs) .input-wrap-range-num {
+.dsp-flx, .input-wrap-textarea-header, :where(.enhanceInputs, [data-enhance-inputs]) .input-wrap-range-num {
   display: flex;
 }
 
@@ -321,13 +321,13 @@ span[style*=text-decoration] {
 }
 
 /* outline */
-.otl-non, .no-focus:focus, .input-select-one, :where(.enhanceInputs) input[type=range]:focus-visible,
-:where(.enhanceInputs) input[type=range]:focus {
+.otl-non, .no-focus:focus, .input-select-one, :where(.enhanceInputs, [data-enhance-inputs]) input[type=range]:focus-visible,
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]:focus {
   outline: none;
 }
 
 /********** border **********/
-.brd-non, .input-number-btns .input-number-btn, .input-select-one, :where(.enhanceInputs) input[type=range]::-moz-range-thumb,
+.brd-non, .input-number-btns .input-number-btn, .input-select-one, :where(.enhanceInputs, [data-enhance-inputs]) input[type=range]::-moz-range-thumb,
 .brd-0 {
   border: 0;
 }
@@ -871,7 +871,7 @@ body.scroll-content::-webkit-scrollbar-thumb {
   flex-shrink: 1;
 }
 
-.flx-1-0-aut, :where(.enhanceInputs) .input-wrap-number {
+.flx-1-0-aut, :where(.enhanceInputs, [data-enhance-inputs]) .input-wrap-number {
   flex: 1 1 auto;
 }
 
@@ -891,7 +891,7 @@ body.scroll-content::-webkit-scrollbar-thumb {
   flex-direction: column;
 }
 
-.alg-itm-cnt, .input-wrap-textarea-header, .input-wrap-textarea-header-toolbar, :where(.enhanceInputs) .input-wrap-range-num {
+.alg-itm-cnt, .input-wrap-textarea-header, .input-wrap-textarea-header-toolbar, :where(.enhanceInputs, [data-enhance-inputs]) .input-wrap-range-num {
   align-items: center;
 }
 
@@ -919,7 +919,7 @@ body.scroll-content::-webkit-scrollbar-thumb {
   justify-content: center;
 }
 
-:where(.enhanceInputs) {
+:where(.enhanceInputs, [data-enhance-inputs]) {
   /* multi selects*/
   /* hide search delete buttons */
   /* Firefox */
@@ -932,7 +932,7 @@ body.scroll-content::-webkit-scrollbar-thumb {
   /* slider thumb */
   /* range with number */
 }
-:where(.enhanceInputs) fieldset {
+:where(.enhanceInputs, [data-enhance-inputs]) fieldset {
   padding-top: 1rem;
   padding-left: 0;
   padding-right: 0;
@@ -941,7 +941,7 @@ body.scroll-content::-webkit-scrollbar-thumb {
   border-style: solid none none none;
   border-width: 1cap;
 }
-:where(.enhanceInputs) legend {
+:where(.enhanceInputs, [data-enhance-inputs]) legend {
   font-weight: 700;
   padding-right: 0.5em;
   transform: translateY(0em);
@@ -949,11 +949,11 @@ body.scroll-content::-webkit-scrollbar-thumb {
   letter-spacing: 0.04em;
   color: var(--color-focus);
 }
-:where(.enhanceInputs) h1, :where(.enhanceInputs) h2, :where(.enhanceInputs) h3, :where(.enhanceInputs) h4,
-:where(.enhanceInputs) p {
+:where(.enhanceInputs, [data-enhance-inputs]) h1, :where(.enhanceInputs, [data-enhance-inputs]) h2, :where(.enhanceInputs, [data-enhance-inputs]) h3, :where(.enhanceInputs, [data-enhance-inputs]) h4,
+:where(.enhanceInputs, [data-enhance-inputs]) p {
   margin: 0 0 1rem 0;
 }
-:where(.enhanceInputs) textarea {
+:where(.enhanceInputs, [data-enhance-inputs]) textarea {
   min-height: 10lh;
   width: 100%;
   /*
@@ -961,33 +961,33 @@ body.scroll-content::-webkit-scrollbar-thumb {
   resize: vertical;
   */
 }
-:where(.enhanceInputs) .btn-default, :where(.enhanceInputs) .input-submit,
-:where(.enhanceInputs) input[type=button],
-:where(.enhanceInputs) input[type=submit],
-:where(.enhanceInputs) button {
+:where(.enhanceInputs, [data-enhance-inputs]) .btn-default, :where(.enhanceInputs, [data-enhance-inputs]) .input-submit,
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=button],
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=submit],
+:where(.enhanceInputs, [data-enhance-inputs]) button {
   cursor: pointer;
   position: relative;
 }
-:where(.enhanceInputs) select[multiple] {
+:where(.enhanceInputs, [data-enhance-inputs]) select[multiple] {
   width: 100%;
   border: var(--border-width-input) solid var(--color-border);
   background-color: var(--color-background-input);
   border-radius: var(--border-radius);
 }
-:where(.enhanceInputs) input[type=search]::-webkit-search-decoration,
-:where(.enhanceInputs) input[type=search]::-webkit-search-cancel-button,
-:where(.enhanceInputs) input[type=search]::-webkit-search-results-button,
-:where(.enhanceInputs) input[type=search]::-webkit-search-results-decoration {
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=search]::-webkit-search-decoration,
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=search]::-webkit-search-cancel-button,
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=search]::-webkit-search-results-button,
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=search]::-webkit-search-results-decoration {
   display: none;
 }
-:where(.enhanceInputs) input[type=search]::-moz-search-clear-button {
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=search]::-moz-search-clear-button {
   display: none;
 }
-:where(.enhanceInputs) input::file-selector-button,
-:where(.enhanceInputs) button,
-:where(.enhanceInputs) input,
-:where(.enhanceInputs) textarea,
-:where(.enhanceInputs) select {
+:where(.enhanceInputs, [data-enhance-inputs]) input::file-selector-button,
+:where(.enhanceInputs, [data-enhance-inputs]) button,
+:where(.enhanceInputs, [data-enhance-inputs]) input,
+:where(.enhanceInputs, [data-enhance-inputs]) textarea,
+:where(.enhanceInputs, [data-enhance-inputs]) select {
   appearance: none;
   font-family: inherit;
   font-size: inherit;
@@ -999,14 +999,14 @@ body.scroll-content::-webkit-scrollbar-thumb {
   border: none;
   background-color: transparent;
 }
-:where(.enhanceInputs) input::file-selector-button:focus-within,
-:where(.enhanceInputs) button:focus-within,
-:where(.enhanceInputs) input:focus-within,
-:where(.enhanceInputs) textarea:focus-within,
-:where(.enhanceInputs) select:focus-within {
+:where(.enhanceInputs, [data-enhance-inputs]) input::file-selector-button:focus-within,
+:where(.enhanceInputs, [data-enhance-inputs]) button:focus-within,
+:where(.enhanceInputs, [data-enhance-inputs]) input:focus-within,
+:where(.enhanceInputs, [data-enhance-inputs]) textarea:focus-within,
+:where(.enhanceInputs, [data-enhance-inputs]) select:focus-within {
   outline: none;
 }
-:where(.enhanceInputs) input[type=range] {
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range] {
   /*
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -1020,17 +1020,17 @@ body.scroll-content::-webkit-scrollbar-thumb {
   background: transparent;
   cursor: pointer;
 }
-:where(.enhanceInputs) input[type=range]::before {
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]::before {
   width: 0.75em;
   line-height: 0px;
   transform: translateY(0.05em);
 }
-:where(.enhanceInputs) input[type=range]::-webkit-slider-runnable-track {
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]::-webkit-slider-runnable-track {
   background-color: var(--color-range-track);
   border-radius: 1em;
   height: var(--height-range-track);
 }
-:where(.enhanceInputs) input[type=range]::-webkit-slider-thumb {
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]::-webkit-slider-thumb {
   appearance: none;
   transform: translateY(calc(-50% + var(--height-range-track) * 0.5));
   background-color: var(--color-range-thumb);
@@ -1039,24 +1039,24 @@ body.scroll-content::-webkit-scrollbar-thumb {
   border-radius: 50%;
   border: 0.2rem solid var(--color-background, #fff);
 }
-:where(.enhanceInputs) input[type=range]:focus::-webkit-slider-thumb {
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]:focus::-webkit-slider-thumb {
   background-color: var(--color-focus, #000);
 }
-:where(.enhanceInputs) input[type=range]:focus::-webkit-slider-thumb,
-:where(.enhanceInputs) input[type=range]:focus-visible::-webkit-slider-thumb {
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]:focus::-webkit-slider-thumb,
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]:focus-visible::-webkit-slider-thumb {
   filter: drop-shadow(0 0 0.1rem var(--color-focus));
 }
-:where(.enhanceInputs) input[type=range]:focus,
-:where(.enhanceInputs) input[type=range]:focus-within {
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]:focus,
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]:focus-within {
   --color-range-track: var(--color-focus);
   --color-range-thumb: var(--color-focus);
 }
-:where(.enhanceInputs) input[type=range]::-moz-range-track {
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]::-moz-range-track {
   background-color: var(--color-range-track);
   border-radius: 1em;
   height: var(--height-range-track);
 }
-:where(.enhanceInputs) input[type=range]::-moz-range-thumb {
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]::-moz-range-thumb {
   /* transform: translateY(calc(-50% + var(--height-range-track) * 0.5)); */
   transform: translateY(0%);
   /*custom styles*/
@@ -1066,14 +1066,14 @@ body.scroll-content::-webkit-scrollbar-thumb {
   border-radius: 1em;
   border: 0.2rem solid var(--color-background, #fff);
 }
-:where(.enhanceInputs) input[type=range]:focus::-moz-range-thumb {
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]:focus::-moz-range-thumb {
   background-color: var(--color-focus);
 }
-:where(.enhanceInputs) input[type=range]:focus::-moz-slider-thumb,
-:where(.enhanceInputs) input[type=range]:focus-visible::-moz-slider-thumb {
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]:focus::-moz-slider-thumb,
+:where(.enhanceInputs, [data-enhance-inputs]) input[type=range]:focus-visible::-moz-slider-thumb {
   filter: var(--filter-focus);
 }
-:where(.enhanceInputs) .input-wrap-range-num {
+:where(.enhanceInputs, [data-enhance-inputs]) .input-wrap-range-num {
   gap: 1em;
 }
 /**

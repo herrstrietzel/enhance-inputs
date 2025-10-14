@@ -18,6 +18,81 @@ import { bindDarkmodeBtn } from './bindDarkmode';
 
 // get quer params
 const queryParams = Object.fromEntries(new URLSearchParams(document.location.search));
+let enhanceInputsSettings = {};
+
+
+export function enhanceInputsAutoInit() {
+    const inputWrap = document.querySelector('.enhanceInputsInit, [data-enhance-inputs]');
+    let enhanceInputsSettings = {};
+
+    if (inputWrap) {
+        // Parse options from data attribute
+        let optionsData = {};
+        const optionDataAttr = inputWrap.dataset.enhanceInputs;
+
+        if (optionDataAttr) {
+            try {
+                optionsData = JSON.parse(optionDataAttr);
+            } catch (err) {
+                console.warn('enhance-inputs: Invalid JSON in data-enhance-inputs', err);
+            }
+        }
+
+        // Merge defaults with custom options
+        const options = {
+            storageName: 'enhance_settings',
+            parent: 'body',
+            selector: 'input, select, textarea',
+            cacheToUrl: false,
+            cacheToStorage: false,
+            ...optionsData,
+        };
+
+        // Initialize
+        enhanceInputsSettings = enhanceInputs(options);
+
+        // Dispatch event to notify others that settings are ready
+        const event = new CustomEvent('settingsChange');
+        document.dispatchEvent(event);
+    }
+
+    return enhanceInputsSettings;
+}
+
+
+export function enhanceInputsAutoInit0() {
+    let inputWrap = document.querySelector('.enhanceInputsInit, [data-enhance-inputs]');
+
+    if(inputWrap){
+
+        let optionDataAtt = inputWrap.dataset.enhanceInputs;
+        let optionsData = {}
+
+        if (optionDataAtt) {
+            try {
+                optionsData = JSON.parse(optionDataAtt);
+            } catch {
+                console.warn('Not a valid JSON');
+            }
+        }
+
+        let options = {
+            ...{
+                storageName: 'enhance_settings',
+                parent: 'body',
+                selector: 'input, select, textarea',
+                cacheToUrl: false,
+                cacheToStorage: false,
+            },
+            ...optionsData,
+        }
+        //console.log(JSON.stringify(options));
+        enhanceInputsSettings = enhanceInputs(options)
+    }
+
+    return enhanceInputsSettings;
+
+}
 
 
 /**
@@ -42,7 +117,7 @@ export function enhanceInputs({
     storageName = cacheToStorage ? storageName : '';
     let settingsStorage = storageName ? localStorage.getItem(storageName) : '';
     let settingsCache = settingsStorage ? JSON.parse(settingsStorage) : {}
-    let parentEl = document.querySelector(parent) ? document.querySelector(parent) : document;
+    let parentEl = document.querySelector(parent) ? document.querySelector(parent) : document.body;
     let inputs = parentEl.querySelectorAll(selector);
 
 
@@ -110,4 +185,11 @@ export function enhanceInputs({
 if (typeof window !== 'undefined') {
     window.enhanceInputs = enhanceInputs;
     window.injectIcons = injectIcons;
+
+    // Initialize automatically
+    const settingsInputs = enhanceInputsAutoInit();
+
+    // Make settings globally accessible
+    window.enhanceInputsSettings = settingsInputs;
+
 }

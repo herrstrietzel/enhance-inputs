@@ -29,9 +29,7 @@
 
 
     <link rel="stylesheet" href="dist/enhanceInputs.css">
-
     <script src="dist/enhanceInputs.js" defer></script>
-    <script src="app.js" defer></script>
 
 
     <style>
@@ -46,25 +44,16 @@
 
 </head>
 
-<body class="enhanceInputs enhanceInputsInit scrollbar scroll-content scroll-content-notrack">
+<!-- auto init by class name enhanceInputsInit -->
+
+<body class="--enhanceInputs --enhanceInputsInit scrollbar scroll-content scroll-content-notrack"
+
+data-enhance-inputs=''
+
+    data-enhance-inputs2='{"storageName":"enhance_inputs_settings","parent":"body","selector":"input, select, textarea","cacheToUrl":false,"cacheToStorage":false}'>
 
 
     <main class="pdd-1 ">
-
-
-        <!-- main form -->
-        <!-- 
-            <form  id="mainForm"></form>
-
-            <h3>Icons</h3>
-            <p><a href="#" data-icon="arrow-right">Open modal</a></p>
-            <p><a href="#" data-icon="spinner">Open modal</a></p>
-            <p><label><input type="checkbox" data-icon="sun moon" id="inputDarkmode" name="darkmode">Darkmode</label></p>
-
-        -->
-
-
-
         <fieldset>
 
             <legend>Date</legend>
@@ -484,6 +473,31 @@
 
         </svg>
     </div>
+
+
+    <script>
+
+
+        window.addEventListener('DOMContentLoaded', e => {
+
+
+            // get all inputs settings
+            let settings = enhanceInputsSettings;
+            console.log('settings', settings);
+
+
+            // listen to updates
+            document.addEventListener('settingsChange', () => {
+                console.log('settings update:', settings);
+            });
+
+
+        })
+
+
+    </script>
+
+
 
 </body>
 
