@@ -39,6 +39,35 @@ For auto initialisation just add a data attribute to a container containing inpu
 </body>
 ```
 
+##### Add parameters via data attribute
+A stringified JSON object can be added to the `data-enhance-inputs` attribute:  
+
+```
+    data-enhance-inputs='{"storageName":"enhance_inputs_settings","parent":"body","selector":"input, select, textarea","cacheToUrl":false,"cacheToStorage":false}'
+```
+
+adds these options 
+
+```
+let options = {
+    // local strorage name
+    storageName: 'enhance_settings',
+
+    // parent element
+    parent: 'main',
+
+    // input elements to enhance
+    selector: 'input, select, textarea',
+
+    // save updated input values to URL parameters
+    cacheToUrl:false,
+
+    // save input data to local storage
+    cacheToStorage:false,
+}
+```
+
+
 #### IIFE: Manual init
 
 ```
