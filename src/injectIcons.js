@@ -43,7 +43,7 @@ export async function injectIcons(embedSprite = true, promise = false, iconFile 
     }
 
     await promise;
-    console.log('promise', promise);
+    //console.log('promise', promise);
 
     for (let i = 0, l = iconTargets.length; l && i < l; i++) {
 

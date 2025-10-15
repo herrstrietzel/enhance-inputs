@@ -206,10 +206,21 @@ function bindTextAreaToolbar(header = null, classWrap = '', classWrapHeader = ''
             btn.addEventListener('click', e => {
                 let current = e.currentTarget
                 let parent = current.closest(`.${classWrap}`)
-                let text = parent.querySelector('textarea').value;
+                let textarea = parent.querySelector('textarea');
+                let text = textarea.value;
 
                 if (type === 'copy') {
-                    navigator.clipboard.writeText(text)
+                    //navigator.clipboard.writeText(text)
+
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(text)
+                        //console.log('copied', text)
+                      }else{
+                        textarea.focus();
+                        textarea.select();
+                        document.execCommand('copy');
+                      }
+
                 }
 
                 else if (type === 'download') {

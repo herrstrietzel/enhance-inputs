@@ -1005,10 +1005,20 @@
                 btn.addEventListener('click', e => {
                     let current = e.currentTarget;
                     let parent = current.closest(`.${classWrap}`);
-                    let text = parent.querySelector('textarea').value;
+                    let textarea = parent.querySelector('textarea');
+                    let text = textarea.value;
 
                     if (type === 'copy') {
-                        navigator.clipboard.writeText(text);
+
+                        if (navigator.clipboard && window.isSecureContext) {
+                            navigator.clipboard.writeText(text);
+
+                          }else {
+                            textarea.focus();
+                            textarea.select();
+                            document.execCommand('copy');
+                          }
+
                     }
 
                     else if (type === 'download') {
@@ -1092,7 +1102,6 @@
         }
 
         await promise;
-        console.log('promise', promise);
 
         for (let i = 0, l = iconTargets.length; l && i < l; i++) {
 
