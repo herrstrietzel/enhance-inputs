@@ -203,19 +203,24 @@ function bindTextAreaToolbar(header = null, classWrap = '', classWrapHeader = ''
 
         if (!btn.classList.contains('input-active')) {
 
+            const inIframe = window.self !== window.top;
+
             btn.addEventListener('click', e => {
                 let current = e.currentTarget
                 let parent = current.closest(`.${classWrap}`)
                 let textarea = parent.querySelector('textarea');
                 let text = textarea.value;
 
+
                 if (type === 'copy') {
                     //navigator.clipboard.writeText(text)
 
-                    if (navigator.clipboard && window.isSecureContext) {
+                    if (!inIframe && navigator.clipboard && window.isSecureContext) {
+                        console.log('clipboard');
                         navigator.clipboard.writeText(text)
                         //console.log('copied', text)
                       }else{
+                        console.log('in iframe');
                         textarea.focus();
                         textarea.select();
                         document.execCommand('copy');

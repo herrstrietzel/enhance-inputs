@@ -64,6 +64,9 @@ let options = {
 
     // save input data to local storage
     cacheToStorage:false,
+
+    // load only input icons or complete set
+    icons: 'all'
 }
 ```
 
@@ -77,6 +80,7 @@ let options = {
     selector: 'input, select, textarea',
     cacheToUrl:true,
     cacheToStorage:false,
+    icons:''
 }
 
 // all settings are nor stored and updated on inputs to this variable

@@ -14,23 +14,85 @@ export async function injectSpriteSheet(embedSprite = true, iconFile = "iconSpri
 
     if (embedSprite) {
         let spriteWrapper = document.querySelector('.svgAssets');
+        let spriteSrc = '';
+        let sameSource = false;
+        let hasWrapper = spriteWrapper ? true : false
 
-        if (!spriteWrapper) {
-            spriteWrapper = document.createElement('div')
-            spriteWrapper.classList.add('svgAssets', 'sr-only');
-            let res = await fetch(iconSpriteSVG);
-            if (res.ok) {
-                let markup = await res.text()
-                //console.log(markup);
-                spriteWrapper.insertAdjacentHTML('beforeend', markup);
-                document.body.append(spriteWrapper)
+
+        if (spriteWrapper) {
+            //console.log('spriteWrapper', spriteWrapper);
+            spriteSrc = spriteWrapper.dataset.src;
+            sameSource = iconFile === spriteWrapper.dataset.src
+
+            if (sameSource) {
+                //console.log('skip');
+                return;
             }
         }
+
+
+        // add wrapper
+        if (!hasWrapper) {
+            spriteWrapper = document.createElement('div')
+            spriteWrapper.dataset.src = iconFile;
+            spriteWrapper.classList.add('svgAssets', 'sr-only');
+            document.body.append(spriteWrapper)
+        }
+
+        // add icons
+        let res = await fetch(iconSpriteSVG);
+        if (res.ok) {
+            let markup = await res.text()
+
+            // reconvert inline styles to circumvent CSP issues
+            markup = markup.replaceAll('style="', 'data-style="');
+            let svgDom = new DOMParser().parseFromString(markup, 'text/html').querySelector('svg')
+
+            // when other icons are added - check for duplicates
+            if (hasWrapper) {
+                let svgPrev = spriteWrapper.querySelector('svg')
+                //console.log('deduplicate');
+                let symbols = svgDom.querySelectorAll('symbol');
+                symbols.forEach(symbol => {
+                    if (document.getElementById(symbol.id)) {
+                        symbol.remove()
+                    }
+                    // move to existing SVG
+                    svgPrev.append(symbol)
+                })
+                svgDom = svgPrev
+            }
+
+
+
+            let styled = svgDom.querySelectorAll('[data-style]');
+            styled.forEach(el => {
+                let style = el.dataset.style;
+                el.removeAttribute('data-style')
+                el.style.cssText = style;
+            })
+            //console.log(svgDom);
+            spriteWrapper.append(svgDom);
+
+            //let svgComplete = new XMLSerializer().serializeToString(svgDom)
+            //console.log('svgComplete', svgComplete);
+            //spriteWrapper.insertAdjacentHTML('beforeend', markup);
+        }
     }
+
+    /**
+     * append spritemap 
+     * only for visualization
+     * if "#spriteMap" element is present
+     */
+    injectIconSpriteMap();
 
     return true;
 
 }
+
+
+
 
 export async function injectIcons(embedSprite = true, promise = false, iconFile = "iconSprite_inputs.svg", iconSpriteSVG = '') {
 
@@ -125,3 +187,44 @@ export function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_
 
 }
 
+
+
+/**
+ * append spritemap for visualization
+ */
+export function injectIconSpriteMap() {
+
+    //inject spritemap - only for testing
+    let spriteMapEl = document.getElementById('spriteMap');
+    if (!spriteMapEl) return;
+
+    let spriteWrap = document.querySelector('.svgAssets');
+    let symbols = spriteWrap.querySelectorAll('symbol');
+
+    //spriteMapEl = document.createElement('div')
+    spriteMapEl.classList.add('spritemap', 'grd', 'grd-3', 'grd-md-8')
+
+    symbols.forEach(symbol => {
+
+        let col = document.createElement('div')
+        col.classList.add('col')
+
+        let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', symbol.getAttribute('viewBox'));
+        svg.classList.add('icn-svg');
+
+        let children = [...symbol.children];
+
+        children.forEach(child => {
+            let clone = child.cloneNode(true)
+            svg.append(clone)
+        })
+        col.append(svg)
+        col.insertAdjacentHTML('beforeend', `<p class="icon-label">${symbol.id}</p>`)
+        spriteMapEl.append(col)
+
+    })
+
+    // document.body.append(spriteMap)
+
+}

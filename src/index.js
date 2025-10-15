@@ -12,7 +12,7 @@ import { updateSettingsFromQuery } from './getSettings_query.js';
 
 import { enhanceInputStyles } from './enhanceInputStyles.js';
 
-import {injectSpriteSheet, injectIcons } from "./injectIcons";
+import {injectSpriteSheet, injectIcons, injectIconSpriteMap } from "./injectIcons";
 import { bindDarkmodeBtn } from './bindDarkmode';
 
 
@@ -28,7 +28,7 @@ export function enhanceInputsAutoInit() {
     if (inputWrap) {
         // Parse options from data attribute
         let optionsData = {};
-        const optionDataAttr = inputWrap.dataset.enhanceInputs;
+        let optionDataAttr = inputWrap.dataset.enhanceInputs;
 
         if (optionDataAttr) {
             try {
@@ -68,19 +68,23 @@ export function enhanceInputsAutoInit() {
 
 export function enhanceInputs({
     selector = 'input, select, textarea',
-    parent = 'body',
+
+    parent = '[data-enhance-inputs]',
     //save updates to URL query
     cacheToUrl = true,
     // save settings to local storage
     cacheToStorage = true,
     storageName = 'settings',
     embedSprite = true,
+    icons='inputs'
 } = {}) {
 
 
+    // load only base icons or all
+    let iconFile = icons!=='all' ? "iconSprite_inputs.svg" : "iconSprite.svg";
+    
     // load sprite sheet
-    let spritePromise = injectSpriteSheet(embedSprite);
-
+    let spritePromise = injectSpriteSheet(embedSprite, iconFile);
 
     /**
      * retrieve cached settings
@@ -110,6 +114,14 @@ export function enhanceInputs({
     let settings = {}
     let parentEl = document.querySelector(parent) ? document.querySelector(parent) : document.body;
     let inputs = parentEl.querySelectorAll(selector);
+
+    // default button style 
+    let buttons = parentEl.querySelectorAll('button');
+    buttons.forEach(btn=>{
+        if(!btn.getAttribute('class')){
+            btn.classList.add('btn-default', 'wdt-100', 'txt-cnt')
+        }
+    })
 
     /**
      * check defaults 
@@ -174,6 +186,18 @@ export function enhanceInputs({
     injectIcons(embedSprite, spritePromise);
 
 
+    // additional icons
+    (async ()=>{
+        await spritePromise;
+        let spritePromise2 = injectSpriteSheet(embedSprite, 'iconSprite.svg' );
+        injectIcons(embedSprite, spritePromise2);
+
+    })();
+
+
+    //injectSpriteSheet(embedSprite, )
+
+
     return settings;
 
 }
@@ -184,6 +208,7 @@ export function enhanceInputs({
 if (typeof window !== 'undefined') {
     window.enhanceInputs = enhanceInputs;
     window.injectIcons = injectIcons;
+    window.injectIconSpriteMap = injectIconSpriteMap;
 
     // Initialize automatically
     const settingsInputs = enhanceInputsAutoInit();

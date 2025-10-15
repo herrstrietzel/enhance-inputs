@@ -6,13 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>enhance inputs</title>
 
-    <style>
-        body {
-            font-family: 'Fira Sans', sans-serif;
-            background-color: var(--color-background);
-        }
+    <!-- 
+        <style>
+            body {
+                font-family: 'Fira Sans', sans-serif;
+                background-color: var(--color-background);
+            }
+        </style>
 
-    </style>
+    -->
 
     <!-- 
         <link rel="stylesheet" href="demo/css/style.css">
@@ -29,32 +31,24 @@
     <link rel="stylesheet" href="dist/enhanceInputs.min.css">
     <script src="dist/enhanceInputs.js" defer></script>
 
+    <script src="__testfiles/test1.js" defer></script>
+
     <!-- 
 
 
     -->
 
 
-    <style>
-        /*
-        :root {
-            --color-border: blue;
-
-        }
-        */
-    </style>
 
 
 </head>
 
 <!-- auto init by class name enhanceInputsInit -->
 
-<body class=" --enhanceInputsInit scrollbar scroll-content scroll-content-notrack"
-
-    >
+<body class=" --enhanceInputsInit scrollbar scroll-content scroll-content-notrack">
 
 
-    <main class="pdd-1 " data-enhance-inputs='{"storageName":"","parent":"body","selector":"input, select, textarea","cacheToUrl":false,"cacheToStorage":true}'>
+    <main class="pdd-1 " data-enhance-inputs='{"storageName":"","parent":"body","selector":"input, select, textarea","cacheToUrl":false,"cacheToStorage":true,"icons":""}'>
 
         <label class="label">textarea</label>
         <textarea class="input" name="markup" data-tools="size copy upload download"
@@ -80,10 +74,16 @@
         </p>
 
 
+        <h3>Icons</h3>
+        <button data-icon="printer">Test</button>
 
+<!-- 
 
+    
+-->
 
-
+<h3>Spritemap</h3>
+<div id="spriteMap"></div>
 
 
 
@@ -92,9 +92,8 @@
 
 
 
+    <!-- 
     <script>
-
-
         window.addEventListener('DOMContentLoaded', e => {
 
 
@@ -110,9 +109,8 @@
 
 
         })
-
-
     </script>
+    -->
 
 
 

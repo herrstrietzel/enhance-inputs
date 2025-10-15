@@ -999,6 +999,8 @@ function bindTextAreaToolbar(header = null, classWrap = '', classWrapHeader = ''
 
         if (!btn.classList.contains('input-active')) {
 
+            const inIframe = window.self !== window.top;
+
             btn.addEventListener('click', e => {
                 let current = e.currentTarget;
                 let parent = current.closest(`.${classWrap}`);
@@ -1007,10 +1009,12 @@ function bindTextAreaToolbar(header = null, classWrap = '', classWrapHeader = ''
 
                 if (type === 'copy') {
 
-                    if (navigator.clipboard && window.isSecureContext) {
+                    if (!inIframe && navigator.clipboard && window.isSecureContext) {
+                        console.log('clipboard');
                         navigator.clipboard.writeText(text);
 
                       }else {
+                        console.log('in iframe');
                         textarea.focus();
                         textarea.select();
                         document.execCommand('copy');
@@ -1071,19 +1075,70 @@ async function injectSpriteSheet(embedSprite = true, iconFile = "iconSprite_inpu
 
     if (embedSprite) {
         let spriteWrapper = document.querySelector('.svgAssets');
+        let sameSource = false;
+        let hasWrapper = spriteWrapper ? true : false;
 
-        if (!spriteWrapper) {
-            spriteWrapper = document.createElement('div');
-            spriteWrapper.classList.add('svgAssets', 'sr-only');
-            let res = await fetch(iconSpriteSVG);
-            if (res.ok) {
-                let markup = await res.text();
+        if (spriteWrapper) {
 
-                spriteWrapper.insertAdjacentHTML('beforeend', markup);
-                document.body.append(spriteWrapper);
+            spriteWrapper.dataset.src;
+            sameSource = iconFile === spriteWrapper.dataset.src;
+
+            if (sameSource) {
+
+                return;
             }
         }
+
+        // add wrapper
+        if (!hasWrapper) {
+            spriteWrapper = document.createElement('div');
+            spriteWrapper.dataset.src = iconFile;
+            spriteWrapper.classList.add('svgAssets', 'sr-only');
+            document.body.append(spriteWrapper);
+        }
+
+        // add icons
+        let res = await fetch(iconSpriteSVG);
+        if (res.ok) {
+            let markup = await res.text();
+
+            // reconvert inline styles to circumvent CSP issues
+            markup = markup.replaceAll('style="', 'data-style="');
+            let svgDom = new DOMParser().parseFromString(markup, 'text/html').querySelector('svg');
+
+            // when other icons are added - check for duplicates
+            if (hasWrapper) {
+                let svgPrev = spriteWrapper.querySelector('svg');
+
+                let symbols = svgDom.querySelectorAll('symbol');
+                symbols.forEach(symbol => {
+                    if (document.getElementById(symbol.id)) {
+                        symbol.remove();
+                    }
+                    // move to existing SVG
+                    svgPrev.append(symbol);
+                });
+                svgDom = svgPrev;
+            }
+
+            let styled = svgDom.querySelectorAll('[data-style]');
+            styled.forEach(el => {
+                let style = el.dataset.style;
+                el.removeAttribute('data-style');
+                el.style.cssText = style;
+            });
+
+            spriteWrapper.append(svgDom);
+
+        }
     }
+
+    /**
+     * append spritemap 
+     * only for visualization
+     * if "#spriteMap" element is present
+     */
+    injectIconSpriteMap();
 
     return true;
 
@@ -1168,6 +1223,44 @@ function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_inputs.
     // add class to indicate injection
     el.insertAdjacentHTML(pos, iconMarkup);
     el.classList.add('icn-inj');
+
+}
+
+/**
+ * append spritemap for visualization
+ */
+function injectIconSpriteMap() {
+
+    let spriteMapEl = document.getElementById('spriteMap');
+    if (!spriteMapEl) return;
+
+    let spriteWrap = document.querySelector('.svgAssets');
+    let symbols = spriteWrap.querySelectorAll('symbol');
+
+    spriteMapEl.classList.add('spritemap', 'grd', 'grd-3', 'grd-md-8');
+
+    symbols.forEach(symbol => {
+
+        let col = document.createElement('div');
+        col.classList.add('col');
+
+        let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', symbol.getAttribute('viewBox'));
+        svg.classList.add('icn-svg');
+
+        let children = [...symbol.children];
+
+        children.forEach(child => {
+            let clone = child.cloneNode(true);
+            svg.append(clone);
+        });
+        col.append(svg);
+        col.insertAdjacentHTML('beforeend', `<p class="icon-label">${symbol.id}</p>`);
+        spriteMapEl.append(col);
+
+    });
+
+    // document.body.append(spriteMap)
 
 }
 
@@ -1350,7 +1443,7 @@ function enhanceInputsAutoInit() {
     if (inputWrap) {
         // Parse options from data attribute
         let optionsData = {};
-        const optionDataAttr = inputWrap.dataset.enhanceInputs;
+        let optionDataAttr = inputWrap.dataset.enhanceInputs;
 
         if (optionDataAttr) {
             try {
@@ -1387,17 +1480,22 @@ function enhanceInputsAutoInit() {
 
 function enhanceInputs({
     selector = 'input, select, textarea',
-    parent = 'body',
+
+    parent = '[data-enhance-inputs]',
 
     cacheToUrl = true,
     // save settings to local storage
     cacheToStorage = true,
     storageName = 'settings',
     embedSprite = true,
+    icons='inputs'
 } = {}) {
 
+    // load only base icons or all
+    let iconFile = icons!=='all' ? "iconSprite_inputs.svg" : "iconSprite.svg";
+    
     // load sprite sheet
-    let spritePromise = injectSpriteSheet(embedSprite);
+    let spritePromise = injectSpriteSheet(embedSprite, iconFile);
 
     /**
      * retrieve cached settings
@@ -1426,6 +1524,14 @@ function enhanceInputs({
     let settings = {};
     let parentEl = document.querySelector(parent) ? document.querySelector(parent) : document.body;
     let inputs = parentEl.querySelectorAll(selector);
+
+    // default button style 
+    let buttons = parentEl.querySelectorAll('button');
+    buttons.forEach(btn=>{
+        if(!btn.getAttribute('class')){
+            btn.classList.add('btn-default', 'wdt-100', 'txt-cnt');
+        }
+    });
 
     /**
      * check defaults 
@@ -1483,6 +1589,14 @@ function enhanceInputs({
 
     injectIcons(embedSprite, spritePromise);
 
+    // additional icons
+    (async ()=>{
+        await spritePromise;
+        let spritePromise2 = injectSpriteSheet(embedSprite, 'iconSprite.svg' );
+        injectIcons(embedSprite, spritePromise2);
+
+    })();
+
     return settings;
 
 }
@@ -1491,6 +1605,7 @@ function enhanceInputs({
 if (typeof window !== 'undefined') {
     window.enhanceInputs = enhanceInputs;
     window.injectIcons = injectIcons;
+    window.injectIconSpriteMap = injectIconSpriteMap;
 
     // Initialize automatically
     const settingsInputs = enhanceInputsAutoInit();
