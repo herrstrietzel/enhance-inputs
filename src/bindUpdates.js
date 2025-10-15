@@ -54,29 +54,31 @@ export function resetSettings(settings = {}) {
 
 
 export function bindResetBtn(settings = {}, storageName = 'settings') {
-    let btnReset = document.getElementById('btnResetSettings')
-    if (btnReset) {
-        btnReset.addEventListener('click', e => {
+    let btnsReset = document.querySelectorAll('#btnReset, .btnReset');
 
+
+    btnsReset.forEach(btn=>{
+        btn.addEventListener('click', e => {
+    
             resetSettings(settings) 
-
+    
             // delete local storage
             localStorage.removeItem(storageName)
-
+    
             // update inputs
             setInputValueFromSettings(settings)
-
+    
             // update localStorage
             saveSettingsToLocalStorage(settings, storageName)
-
+    
             // delete query params
             updateQueryParams({})
-
-
+    
             // trigger custom event
             document.dispatchEvent(settingsUpdate)
-
-
+    
         })
-    }
+
+    })
+
 }

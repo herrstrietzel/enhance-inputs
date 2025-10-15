@@ -30,6 +30,11 @@ iframe {
   height: 100%;
 }
 
+.txt-cnt {
+  text-align: center;
+  justify-content: center;
+}
+
 /**
 * visible for screen readers
 **/

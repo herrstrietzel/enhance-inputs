@@ -5,7 +5,7 @@
  */
 
 
-export function enhanceNumberFields(selector = '.enhanceInputs') {
+export function enhanceNumberFields(selector = '[data-enhance-inputs]') {
 
     let numberFields = document.querySelectorAll(`${selector} input[type=number]`);
 

@@ -1,54 +1,24 @@
 
 
-function getCurrentScriptUrl() {
-    try {
 
-        /** 1. try performance API */
-        let urlPerf = performance.getEntries()
-            .slice(1)[0].name.split('/')
-            .slice(0, -1)
-            .join('/');
-
-        //if(urlPerf) return urlPerf;
-
-        /** 2. try error API */
-        let stackLines = new Error().stack.split('\n');
-        let relevantLine = stackLines[1] || stackLines[2];
-        if (!relevantLine) return null;
-
-        // Extract URL using a more comprehensive regex
-        let urlError = relevantLine.match(/(https?:\/\/[^\s]+)/)[1]
-            .split('/')
-            .slice(0, -1)
-            .join('/');
-
-        return urlError;
-
-    } catch (e) {
-        console.warn("Could not retrieve script path", e);
-        return null;
-    }
-}
+import { getCurrentScriptUrl } from './getUrl';
 
 
-
-
-export async function injectIcons(embedSprite = true, iconFile = "iconSprite_inputs.svg") {
+export async function injectSpriteSheet(embedSprite = true, iconFile = "iconSprite_inputs.svg") {
 
     /**
      * load icon asset sprite or use external svg
      */
     let scriptUrl = getCurrentScriptUrl();
-
-    let iconSvg = `${scriptUrl}/${iconFile}`;
+    let iconSpriteSVG = `${scriptUrl}/${iconFile}`;
 
     if (embedSprite) {
         let spriteWrapper = document.querySelector('.svgAssets');
 
         if (!spriteWrapper) {
             spriteWrapper = document.createElement('div')
-            spriteWrapper.classList.add('.svgAssets')
-            let res = await fetch(iconSvg);
+            spriteWrapper.classList.add('svgAssets', 'sr-only');
+            let res = await fetch(iconSpriteSVG);
             if (res.ok) {
                 let markup = await res.text()
                 //console.log(markup);
@@ -58,14 +28,27 @@ export async function injectIcons(embedSprite = true, iconFile = "iconSprite_inp
         }
     }
 
+    return true;
+
+}
+
+export async function injectIcons(embedSprite = true, promise = false, iconFile = "iconSprite_inputs.svg", iconSpriteSVG = '') {
 
     let iconTargets = document.querySelectorAll('[data-icon]');
+
+
+    if (!iconSpriteSVG) {
+        let scriptUrl = getCurrentScriptUrl();
+        iconSpriteSVG = `${scriptUrl}/${iconFile}`;
+    }
+
+    await promise;
+    console.log('promise', promise);
 
     for (let i = 0, l = iconTargets.length; l && i < l; i++) {
 
         let el = iconTargets[i];
-
-        injectIcon(el, embedSprite, iconSvg);
+        injectIcon(el, embedSprite, iconSpriteSVG);
     }
 
 }
@@ -99,7 +82,7 @@ export function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_
      */
 
     //let iconPosition = el.dataset.iconPos ? el.dataset.iconPos : (isBoxInput ? 'right' : 'left');
-    let iconPosition = el.dataset.iconPos ? el.dataset.iconPos :  'left';
+    let iconPosition = el.dataset.iconPos ? el.dataset.iconPos : 'left';
     let pos = iconPosition === 'left' ? 'afterbegin' : 'beforeend';
     let posClass = `icn-pos-${iconPosition}`
 
@@ -132,7 +115,7 @@ export function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_
 
     }
 
-    if(!wrap) iconMarkup =`<span class="icn-wrp icn-wrp-${iconID} icn-wrp-${iconPosition}">${iconMarkup}</span>`;
+    if (!wrap) iconMarkup = `<span class="icn-wrp icn-wrp-${iconID} icn-wrp-${iconPosition}">${iconMarkup}</span>`;
 
 
     // add class to indicate injection

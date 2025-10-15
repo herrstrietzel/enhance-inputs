@@ -7,11 +7,7 @@ import { bindFileInputDropArea } from './enhanceInputStyles_file';
 
 
 
-export function enhanceTextareas(selector = '.enhanceInputs') {
-
-    let classWrap = 'input-wrap-textarea';
-    let classWrapHeader = 'input-wrap-textarea-header';
-    let classWrapToolbar = 'input-wrap-textarea-header-toolbar';
+export function enhanceTextareas(selector = '[data-enhance-inputs]') {
 
     let inputs = document.querySelectorAll(`${selector} textarea`);
 

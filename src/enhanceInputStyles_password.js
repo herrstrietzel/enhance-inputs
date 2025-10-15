@@ -1,4 +1,4 @@
-export function enhancePasswordFields(selector = '.enhanceInputs'){
+export function enhancePasswordFields(selector = '[data-enhance-inputs]'){
 
     let inputs = document.querySelectorAll(`${selector} input[type=password]`);
 

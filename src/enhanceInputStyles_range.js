@@ -1,7 +1,7 @@
 import { bindNumberEvents } from './enhanceInputStyles_num';
 
 
-export function enhanceRangeInputs(selector = '.enhanceInputs') {
+export function enhanceRangeInputs(selector = '[data-enhance-inputs]') {
 
     let inputs = document.querySelectorAll(`${selector} input[type=range].input-range-num, ${selector} input[data-type=range-number]`);
 

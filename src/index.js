@@ -12,7 +12,7 @@ import { updateSettingsFromQuery } from './getSettings_query.js';
 
 import { enhanceInputStyles } from './enhanceInputStyles.js';
 
-import { injectIcons } from "./injectIcons";
+import {injectSpriteSheet, injectIcons } from "./injectIcons";
 import { bindDarkmodeBtn } from './bindDarkmode';
 
 
@@ -38,9 +38,10 @@ export function enhanceInputsAutoInit() {
             }
         }
 
+
         // Merge defaults with custom options
-        const options = {
-            storageName: 'enhance_settings',
+        let options = {
+            storageName: `enhance_inputs_settings`,
             parent: 'body',
             selector: 'input, select, textarea',
             cacheToUrl: false,
@@ -67,7 +68,7 @@ export function enhanceInputsAutoInit() {
 
 export function enhanceInputs({
     selector = 'input, select, textarea',
-    parent = 'main',
+    parent = 'body',
     //save updates to URL query
     cacheToUrl = true,
     // save settings to local storage
@@ -76,23 +77,45 @@ export function enhanceInputs({
     embedSprite = true,
 } = {}) {
 
-    //console.log('enhanceInputs');
+
+    // load sprite sheet
+    let spritePromise = injectSpriteSheet(embedSprite);
+
+
+    /**
+     * retrieve cached settings
+     */
+    let settingsStorage = '';
+    let settingsCache = {};
+
+    if(cacheToStorage){
+        if(!storageName){
+            /** generate location specific local storage name */
+            let location = window.location;
+            let pathName = location.pathname.split('/').filter(Boolean).slice(0, 2).join('_');
+            storageName = `${location.hostname}_${pathName}`;
+            //console.log('storageName:', storageName);
+        }
+
+        try{
+            settingsStorage = localStorage.getItem(storageName);
+            settingsCache = settingsStorage ? JSON.parse(settingsStorage) : {};
+
+        } catch{
+            console.warn('No valid settings JSON');
+        }
+    }
 
 
     let settings = {}
-    storageName = cacheToStorage ? storageName : '';
-    let settingsStorage = storageName ? localStorage.getItem(storageName) : '';
-    let settingsCache = settingsStorage ? JSON.parse(settingsStorage) : {}
     let parentEl = document.querySelector(parent) ? document.querySelector(parent) : document.body;
     let inputs = parentEl.querySelectorAll(selector);
-
 
     /**
      * check defaults 
      * as specified in HTML
      */
     let defaults = settings.defaults ? settings.defaults : getSettingValueFromInputs(inputs);
-
 
     // save defaults to settings object for resetting
     settings.defaults = defaults;
@@ -118,7 +141,8 @@ export function enhanceInputs({
 
 
     // sync with cache - update inputs
-    if (cacheToStorage && Object.values(settingsCache).length) {
+    if (cacheToStorage && Object?.values(settingsCache).length) {
+        //console.log('settingsCache',  settingsCache);
         syncInputsWithCache(settingsCache, inputs)
     }
 
@@ -137,9 +161,18 @@ export function enhanceInputs({
      * enhance styles by wrapping
      * and adding extra buttons
      */
-    enhanceInputStyles(inputs, embedSprite)
+    enhanceInputStyles(inputs)
 
     bindDarkmodeBtn();
+
+
+    /**
+     * add icons
+     */
+    //await spritePromise;
+    //console.log('spritePromise', spritePromise);
+    injectIcons(embedSprite, spritePromise);
+
 
     return settings;
 

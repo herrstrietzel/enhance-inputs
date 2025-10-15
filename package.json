@@ -1,6 +1,6 @@
 {
   "name": "enhance-inputs",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Enhance native HTML inputs via JS",
   "repository": {
     "type": "git",

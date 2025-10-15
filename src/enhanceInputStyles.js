@@ -20,7 +20,7 @@ import { addToolTips } from './enhanceInputStyles_tooltips.js';
  * wrap input elements
  * to add new functionality
  */
-export async function enhanceInputStyles(inputs = [], embedSprite = true, iconFile = "iconSprite_inputs.svg") {
+export async function enhanceInputStyles(inputs = []) {
 
     //let iconInputs = ['select', 'textarea', 'date', 'time'];
     let inputsInline = ['radio', 'checkbox', 'range', 'submit'];
@@ -142,8 +142,6 @@ export async function enhanceInputStyles(inputs = [], embedSprite = true, iconFi
 
     // file inputs
     enhanceFileinputs();
-
-    injectIcons(embedSprite, iconFile);
 
     addToolTips();
 

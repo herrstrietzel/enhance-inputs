@@ -227,29 +227,32 @@ function resetSettings(settings = {}) {
 }
 
 function bindResetBtn(settings = {}, storageName = 'settings') {
-    let btnReset = document.getElementById('btnResetSettings');
-    if (btnReset) {
-        btnReset.addEventListener('click', e => {
+    let btnsReset = document.querySelectorAll('#btnReset, .btnReset');
 
+    btnsReset.forEach(btn=>{
+        btn.addEventListener('click', e => {
+    
             resetSettings(settings); 
-
+    
             // delete local storage
             localStorage.removeItem(storageName);
-
+    
             // update inputs
             setInputValueFromSettings(settings);
-
+    
             // update localStorage
             saveSettingsToLocalStorage(settings, storageName);
-
+    
             // delete query params
             updateQueryParams({});
-
+    
             // trigger custom event
             document.dispatchEvent(settingsUpdate);
-
+    
         });
-    }
+
+    });
+
 }
 
 /**
@@ -257,7 +260,7 @@ function bindResetBtn(settings = {}, storageName = 'settings') {
  * to number fields
  */
 
-function enhanceNumberFields(selector = '.enhanceInputs') {
+function enhanceNumberFields(selector = '[data-enhance-inputs]') {
 
     let numberFields = document.querySelectorAll(`${selector} input[type=number]`);
 
@@ -440,7 +443,7 @@ function bindNumberEvents(input, syncInput = null) {
 
 // Initialize the triple click listener globally
 
-function enhanceRangeInputs(selector = '.enhanceInputs') {
+function enhanceRangeInputs(selector = '[data-enhance-inputs]') {
 
     let inputs = document.querySelectorAll(`${selector} input[type=range].input-range-num, ${selector} input[data-type=range-number]`);
 
@@ -499,7 +502,7 @@ function enhanceRangeInput(input) {
 
 }
 
-function enhancePasswordFields(selector = '.enhanceInputs'){
+function enhancePasswordFields(selector = '[data-enhance-inputs]'){
 
     let inputs = document.querySelectorAll(`${selector} input[type=password]`);
 
@@ -539,7 +542,7 @@ function enhancePasswordField(input) {
 
 }
 
-function enhanceColorInputs(selector = '.enhanceInputs') {
+function enhanceColorInputs(selector = '[data-enhance-inputs]') {
 
     let inputs = document.querySelectorAll(`${selector} input[type=color]`);
 
@@ -677,7 +680,7 @@ function bindColorInput(input, wrap = null) {
 
 }
 
-function enhanceFileinputs(selector = '.enhanceInputs', labelFileBtn = "Upload File", labelFileBtnDrop="Drop File") {
+function enhanceFileinputs(selector = '[data-enhance-inputs]', labelFileBtn = "Upload File", labelFileBtnDrop="Drop File") {
 
     let inputs = document.querySelectorAll(`${selector} input[type=file]`);
 
@@ -823,7 +826,7 @@ function bindFileInputDropArea(dropArea = null, inputFile = null, dragOverClass 
     dropArea.classList.add('droparea-active');
 }
 
-function enhanceTextareas(selector = '.enhanceInputs') {
+function enhanceTextareas(selector = '[data-enhance-inputs]') {
 
     let inputs = document.querySelectorAll(`${selector} textarea`);
 
@@ -1029,13 +1032,6 @@ function bindTextAreaToolbar(header = null, classWrap = '', classWrapHeader = ''
 
 function getCurrentScriptUrl() {
     try {
-
-        /** 1. try performance API */
-        let urlPerf = performance.getEntries()
-            .slice(1)[0].name.split('/')
-            .slice(0, -1)
-            .join('/');
-
         /** 2. try error API */
         let stackLines = new Error().stack.split('\n');
         let relevantLine = stackLines[1] || stackLines[2];
@@ -1055,22 +1051,21 @@ function getCurrentScriptUrl() {
     }
 }
 
-async function injectIcons(embedSprite = true, iconFile = "iconSprite_inputs.svg") {
+async function injectSpriteSheet(embedSprite = true, iconFile = "iconSprite_inputs.svg") {
 
     /**
      * load icon asset sprite or use external svg
      */
     let scriptUrl = getCurrentScriptUrl();
-
-    let iconSvg = `${scriptUrl}/${iconFile}`;
+    let iconSpriteSVG = `${scriptUrl}/${iconFile}`;
 
     if (embedSprite) {
         let spriteWrapper = document.querySelector('.svgAssets');
 
         if (!spriteWrapper) {
             spriteWrapper = document.createElement('div');
-            spriteWrapper.classList.add('.svgAssets');
-            let res = await fetch(iconSvg);
+            spriteWrapper.classList.add('svgAssets', 'sr-only');
+            let res = await fetch(iconSpriteSVG);
             if (res.ok) {
                 let markup = await res.text();
 
@@ -1080,13 +1075,26 @@ async function injectIcons(embedSprite = true, iconFile = "iconSprite_inputs.svg
         }
     }
 
+    return true;
+
+}
+
+async function injectIcons(embedSprite = true, promise = false, iconFile = "iconSprite_inputs.svg", iconSpriteSVG = '') {
+
     let iconTargets = document.querySelectorAll('[data-icon]');
+
+    if (!iconSpriteSVG) {
+        let scriptUrl = getCurrentScriptUrl();
+        iconSpriteSVG = `${scriptUrl}/${iconFile}`;
+    }
+
+    await promise;
+    console.log('promise', promise);
 
     for (let i = 0, l = iconTargets.length; l && i < l; i++) {
 
         let el = iconTargets[i];
-
-        injectIcon(el, embedSprite, iconSvg);
+        injectIcon(el, embedSprite, iconSpriteSVG);
     }
 
 }
@@ -1114,7 +1122,7 @@ function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_inputs.
      * replacing input box outline 
      */
 
-    let iconPosition = el.dataset.iconPos ? el.dataset.iconPos :  'left';
+    let iconPosition = el.dataset.iconPos ? el.dataset.iconPos : 'left';
     let pos = iconPosition === 'left' ? 'afterbegin' : 'beforeend';
     let posClass = `icn-pos-${iconPosition}`;
 
@@ -1146,7 +1154,7 @@ function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_inputs.
 
     }
 
-    if(!wrap) iconMarkup =`<span class="icn-wrp icn-wrp-${iconID} icn-wrp-${iconPosition}">${iconMarkup}</span>`;
+    if (!wrap) iconMarkup = `<span class="icn-wrp icn-wrp-${iconID} icn-wrp-${iconPosition}">${iconMarkup}</span>`;
 
     // add class to indicate injection
     el.insertAdjacentHTML(pos, iconMarkup);
@@ -1154,7 +1162,7 @@ function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_inputs.
 
 }
 
-function addToolTips(selector='.enhanceInputs [title]'){
+function addToolTips(selector='[data-enhance-inputs] *[title]'){
 
     let titeleEls = document.querySelectorAll(`${selector}`);
 
@@ -1189,7 +1197,7 @@ function addToolTips(selector='.enhanceInputs [title]'){
  * wrap input elements
  * to add new functionality
  */
-async function enhanceInputStyles(inputs = [], embedSprite = true, iconFile = "iconSprite_inputs.svg") {
+async function enhanceInputStyles(inputs = []) {
 
     let inputsInline = ['radio', 'checkbox', 'range', 'submit'];
     let classNameWrap = 'input-wrap';
@@ -1303,8 +1311,6 @@ async function enhanceInputStyles(inputs = [], embedSprite = true, iconFile = "i
     // file inputs
     enhanceFileinputs();
 
-    injectIcons(embedSprite, iconFile);
-
     addToolTips();
 
 }
@@ -1346,8 +1352,8 @@ function enhanceInputsAutoInit() {
         }
 
         // Merge defaults with custom options
-        const options = {
-            storageName: 'enhance_settings',
+        let options = {
+            storageName: `enhance_inputs_settings`,
             parent: 'body',
             selector: 'input, select, textarea',
             cacheToUrl: false,
@@ -1372,7 +1378,7 @@ function enhanceInputsAutoInit() {
 
 function enhanceInputs({
     selector = 'input, select, textarea',
-    parent = 'main',
+    parent = 'body',
 
     cacheToUrl = true,
     // save settings to local storage
@@ -1381,10 +1387,34 @@ function enhanceInputs({
     embedSprite = true,
 } = {}) {
 
+    // load sprite sheet
+    let spritePromise = injectSpriteSheet(embedSprite);
+
+    /**
+     * retrieve cached settings
+     */
+    let settingsStorage = '';
+    let settingsCache = {};
+
+    if(cacheToStorage){
+        if(!storageName){
+            /** generate location specific local storage name */
+            let location = window.location;
+            let pathName = location.pathname.split('/').filter(Boolean).slice(0, 2).join('_');
+            storageName = `${location.hostname}_${pathName}`;
+
+        }
+
+        try{
+            settingsStorage = localStorage.getItem(storageName);
+            settingsCache = settingsStorage ? JSON.parse(settingsStorage) : {};
+
+        } catch{
+            console.warn('No valid settings JSON');
+        }
+    }
+
     let settings = {};
-    storageName = cacheToStorage ? storageName : '';
-    let settingsStorage = storageName ? localStorage.getItem(storageName) : '';
-    let settingsCache = settingsStorage ? JSON.parse(settingsStorage) : {};
     let parentEl = document.querySelector(parent) ? document.querySelector(parent) : document.body;
     let inputs = parentEl.querySelectorAll(selector);
 
@@ -1417,7 +1447,8 @@ function enhanceInputs({
     }
 
     // sync with cache - update inputs
-    if (cacheToStorage && Object.values(settingsCache).length) {
+    if (cacheToStorage && Object?.values(settingsCache).length) {
+
         syncInputsWithCache(settingsCache);
     }
 
@@ -1433,9 +1464,15 @@ function enhanceInputs({
      * enhance styles by wrapping
      * and adding extra buttons
      */
-    enhanceInputStyles(inputs, embedSprite);
+    enhanceInputStyles(inputs);
 
     bindDarkmodeBtn();
+
+    /**
+     * add icons
+     */
+
+    injectIcons(embedSprite, spritePromise);
 
     return settings;
 

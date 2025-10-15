@@ -1,4 +1,4 @@
-export function addToolTips(selector='.enhanceInputs [title]'){
+export function addToolTips(selector='[data-enhance-inputs] *[title]'){
 
     let titeleEls = document.querySelectorAll(`${selector}`)
     //console.log(titeleEls);

@@ -1,4 +1,4 @@
-export function enhanceColorInputs(selector = '.enhanceInputs') {
+export function enhanceColorInputs(selector = '[data-enhance-inputs]') {
 
     let inputs = document.querySelectorAll(`${selector} input[type=color]`);
 

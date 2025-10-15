@@ -1,4 +1,4 @@
-export function enhanceFileinputs(selector = '.enhanceInputs', labelFileBtn = "Upload File", labelFileBtnDrop="Drop File") {
+export function enhanceFileinputs(selector = '[data-enhance-inputs]', labelFileBtn = "Upload File", labelFileBtnDrop="Drop File") {
 
 
     let inputs = document.querySelectorAll(`${selector} input[type=file]`);
