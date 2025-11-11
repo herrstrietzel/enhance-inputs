@@ -1981,7 +1981,7 @@
         window.addEventListener('DOMchange', () => {
 
             injectIcons(embedSprite, true);
-            console.log('domChange');
+
         });
 
         // translate
