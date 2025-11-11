@@ -29,7 +29,7 @@ Or use a local path.
 For auto initialisation just add a data attribute to a container containing inputs that should be enhanced
 
 ```
-<body  data-enhance-inputs=''>
+<body  data-enhance-inputs='' aria-live="polite">
 
     <p>
         <label class="label">date</label>
@@ -37,6 +37,15 @@ For auto initialisation just add a data attribute to a container containing inpu
     </p>
 
 </body>
+```
+
+
+### Accessibilty
+Since we're manipulating the DOM we should add the `aria-live`` attribute to the wrapping container like so
+
+```
+<div  data-enhance-inputs='' aria-live="polite">
+
 ```
 
 ##### Add parameters via data attribute

@@ -31,12 +31,20 @@
     <link rel="stylesheet" href="dist/enhanceInputs.min.css">
     <script src="dist/enhanceInputs.js" defer></script>
 
+
     <script src="__testfiles/test1.js" defer></script>
 
-    <!-- 
+
+    <template data-csp-style>
+        <style>
+            body {
+                font-family: 'Segoe UI', sans-serif;
+                background: var(--color-background);
+            }
+        </style>
+    </template>
 
 
-    -->
 
 
 
@@ -48,19 +56,141 @@
 <body class=" --enhanceInputsInit scrollbar scroll-content scroll-content-notrack">
 
 
-    <main class="pdd-1 " data-enhance-inputs='{"storageName":"","parent":"body","selector":"input, select, textarea","cacheToUrl":false,"cacheToStorage":true,"icons":""}'>
+    <main class="pdd-1em "
+        data-enhance-inputs='{"storageName":"","parent":"body","selector":"input, select, textarea","cacheToUrl":false, "getQuery":true, "cacheToStorage":true,"icons":"all"}'>
+
+
+
+        <fieldset>
+
+            <legend>Tabs</legend>
+
+            <div class="tabs" data-tabs>
+                <div role="tabpanel">
+                    <h3>Ahlefeldt</h3>
+                    <p>
+                        <a href="https://en.wikipedia.org/wiki/Maria_Theresia_Ahlefeldt">Maria Theresia Ahlefeldt</a>
+                        (16 January 1755 – 20 December 1810) was a Danish, (originally German), composer.
+                        She is known as the first female composer in Denmark.
+                        Maria Theresia composed music for several ballets, operas, and plays of the royal theatre.
+                        She was given good critic as a composer and described as a “<span lang="da">virkelig
+                            Tonekunstnerinde</span>” ('a True Artist of Music').
+                    </p>
+                    <p>
+                        Maria Theresia Ahlefeldt
+                        (16 January 1755 – 20 December 1810) was a Danish, (originally German), composer.
+                        She is known as the first female composer in Denmark.
+                        Maria Theresia composed music for several ballets, operas, and plays of the royal theatre.
+                        She was given good critic as a composer and described as a “<span lang="da">virkelig
+                            Tonekunstnerinde</span>” ('a True Artist of Music').
+                    </p>
+
+
+                </div>
+                <div role="tabpanel">
+                    <h3>Andersen</h3>
+                    <p>
+                        <a href="https://en.wikipedia.org/wiki/Joachim_Andersen_(composer)">Carl Joachim Andersen</a>
+                        (29 April 1847 – 7 May 1909) was a Danish flutist, conductor and composer born in Copenhagen,
+                        son of
+                        the flutist Christian Joachim Andersen.
+                        Both as a virtuoso and as composer of flute music, he is considered one of the best of his time.
+                        He was considered to be a tough leader and teacher and demanded as such a lot from his
+                        orchestras
+                        but through that style he reached a high level.
+                    </p>
+                </div>
+            </div>
+        </fieldset>
+
+
+
+        <label>number <input type="number" name="num2" value="2" min="0"></label>
+
+
 
         <label class="label">textarea</label>
-        <textarea class="input" name="markup" data-tools="size copy upload download"
-            data-file="test.svg">
-            oio
+        <textarea class="input" name="markup" data-tools="size copy upload download" data-file="test.svg">
         </textarea>
+
+
+        <!-- 
+            <p>
+                <img src="https://flagcdn.com/h24/de.png" alt="de">
+                <img src="https://flagcdn.com/h24/gb.png" alt="en">
+    
+            </p>
+
+
+
+        -->
+
+
+        <div data-ui="reset"></div>
+        <div data-ui="darkmode"></div>
+        <div data-ui="print"></div>
+        <div data-ui="lang" data-ui-lang="DE EN" data-ui-mode="tab"></div>
+
+
+
+
+
+
+        <!-- 
+
+            <button class="btn-default --btn-neg wdt-100 txt-cnt" id="btnReset" type="button" data-icon="arrow-path"
+                data-icon-pos="left">Reset
+                settings</button>
+
+
+        <p>
+            <label ><input type="radio" data-img="dist/de.svg" name="langFlag" checked>DE</label>
+            <label ><input type="radio" data-img="dist/gb.svg" name="langFlag">EN</label>
+        </p>
+        -->
+
+
 
 
 
         <p>
-            <button class="btn-default --btn-neg wdt-100 txt-cnt" id="btnReset" type="button" data-icon="arrow-path" data-icon-pos="left">Reset
-                settings</button>
+            <label class="fnt-wgt-700" data-data-csp-style="font-weight:700">
+                select
+            </label>
+            <select name="" id="">
+                <option ">option1</option>
+                <option ">option2</option>
+            </select>
+
+        </p>
+
+
+        <p>
+            <label class="label">
+                <input type="radio" class="input" name="radio" value="radioVal1" checked>
+                radio 1</label>
+
+            <label class="label">
+                <input type="radio" class="input" name="radio" value="radioVal2">
+                radio 2</label>
+
+            <label class="label">
+                <input type="radio" class="input" name="radio" value="radioVal3">
+                radio 3</label>
+
+        </p>
+
+
+        <p>
+            <label> <input type="checkbox" name="star" data-icon="star star-filled"> star</label>
+            <label> <input type="checkbox" name="like" data-icon="hand-thumb-up hand-thumb-up-filled"> Like</label>
+
+            <label> <input type="checkbox" name="likeornot" data-icon="hand-thumb-up hand-thumb-up-filled"> Like</label>
+
+        </p>
+
+
+        <p>
             <input type="text" class="input" name="textVal-inline" placeholder="text" title="Enter your text">
         </p>
 
@@ -77,13 +207,13 @@
         <h3>Icons</h3>
         <button data-icon="printer">Test</button>
 
-<!-- 
+        <!-- 
 
     
 -->
 
-<h3>Spritemap</h3>
-<div id="spriteMap"></div>
+        <h3>Spritemap</h3>
+        <div id="spriteMap"></div>
 
 
 
@@ -91,26 +221,6 @@
     </main>
 
 
-
-    <!-- 
-    <script>
-        window.addEventListener('DOMContentLoaded', e => {
-
-
-            // get all inputs settings
-            let settings = enhanceInputsSettings;
-            console.log('settings', settings);
-
-
-            // listen to updates
-            document.addEventListener('settingsChange', () => {
-                console.log('settings update:', settings);
-            });
-
-
-        })
-    </script>
-    -->
 
 
 

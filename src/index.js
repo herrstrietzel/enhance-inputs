@@ -12,18 +12,30 @@ import { updateSettingsFromQuery } from './getSettings_query.js';
 
 import { enhanceInputStyles } from './enhanceInputStyles.js';
 
-import {injectSpriteSheet, injectIcons, injectIconSpriteMap } from "./injectIcons";
+import { injectSpriteSheet, injectIcons, injectIconSpriteMap } from "./injectIcons";
 import { bindDarkmodeBtn } from './bindDarkmode';
+import { parseCSP_Atts } from './csp';
+
+import { addUI_elements } from './addUI_els';
+import {translatePipeText} from './translate';
+import { enhanceTabs } from './enhanceTabs';
 
 
 // get quer params
 const queryParams = Object.fromEntries(new URLSearchParams(document.location.search));
-let enhanceInputsSettings = {};
+
+
+// enhance inputs ready
+export let enhanceInputsReady = new Event('enhanceReady');
 
 
 export function enhanceInputsAutoInit() {
     const inputWrap = document.querySelector('[data-enhance-inputs]');
     let enhanceInputsSettings = {};
+
+    //console.log('auto');
+    //window.dispatchEvent(new Event('DOMchange'));
+
 
     if (inputWrap) {
         // Parse options from data attribute
@@ -38,23 +50,27 @@ export function enhanceInputsAutoInit() {
             }
         }
 
-
         // Merge defaults with custom options
         let options = {
             storageName: `enhance_inputs_settings`,
             parent: 'body',
             selector: 'input, select, textarea',
             cacheToUrl: false,
+            getQuery: true,
             cacheToStorage: false,
             ...optionsData,
         };
 
+
         // Initialize
         enhanceInputsSettings = enhanceInputs(options);
+
 
         // Dispatch event to notify others that settings are ready
         const event = new CustomEvent('settingsChange');
         document.dispatchEvent(event);
+
+
     }
 
     return enhanceInputsSettings;
@@ -72,17 +88,26 @@ export function enhanceInputs({
     parent = '[data-enhance-inputs]',
     //save updates to URL query
     cacheToUrl = true,
+    getQuery = true,
     // save settings to local storage
     cacheToStorage = true,
     storageName = 'settings',
     embedSprite = true,
-    icons='inputs'
+    icons = 'inputs'
 } = {}) {
 
 
+
+    /**
+     * add default UI element
+     * e.g reset button, darkmode, print or language toggle
+     */
+    addUI_elements()
+
+
     // load only base icons or all
-    let iconFile = icons!=='all' ? "iconSprite_inputs.svg" : "iconSprite.svg";
-    
+    let iconFile = icons !== 'all' ? "iconSprite_inputs.svg" : "iconSprite.svg";
+
     // load sprite sheet
     let spritePromise = injectSpriteSheet(embedSprite, iconFile);
 
@@ -92,8 +117,8 @@ export function enhanceInputs({
     let settingsStorage = '';
     let settingsCache = {};
 
-    if(cacheToStorage){
-        if(!storageName){
+    if (cacheToStorage) {
+        if (!storageName) {
             /** generate location specific local storage name */
             let location = window.location;
             let pathName = location.pathname.split('/').filter(Boolean).slice(0, 2).join('_');
@@ -101,11 +126,11 @@ export function enhanceInputs({
             //console.log('storageName:', storageName);
         }
 
-        try{
+        try {
             settingsStorage = localStorage.getItem(storageName);
             settingsCache = settingsStorage ? JSON.parse(settingsStorage) : {};
 
-        } catch{
+        } catch {
             console.warn('No valid settings JSON');
         }
     }
@@ -117,8 +142,8 @@ export function enhanceInputs({
 
     // default button style 
     let buttons = parentEl.querySelectorAll('button');
-    buttons.forEach(btn=>{
-        if(!btn.getAttribute('class')){
+    buttons.forEach(btn => {
+        if (!btn.getAttribute('class')) {
             btn.classList.add('btn-default', 'wdt-100', 'txt-cnt')
         }
     })
@@ -136,7 +161,7 @@ export function enhanceInputs({
      * get settings from query
      * and update inputs
      */
-    if (cacheToUrl && Object.values(queryParams).length) {
+    if ( (cacheToUrl || getQuery) && Object.values(queryParams).length) {
 
         let settingsQuery = updateSettingsFromQuery(queryParams, settings)
 
@@ -165,8 +190,17 @@ export function enhanceInputs({
     bindSettingUpdates(inputs, settings, storageName, cacheToUrl)
 
 
+
     // bind reset btn
     bindResetBtn(settings, storageName)
+
+    // darkmode
+    bindDarkmodeBtn();
+
+
+    // enhance tabs
+    enhanceTabs();
+
 
 
     /**
@@ -175,32 +209,57 @@ export function enhanceInputs({
      */
     enhanceInputStyles(inputs)
 
-    bindDarkmodeBtn();
 
 
     /**
      * add icons
      */
-    //await spritePromise;
-    //console.log('spritePromise', spritePromise);
     injectIcons(embedSprite, spritePromise);
 
-
     // additional icons
-    (async ()=>{
+    (async () => {
         await spritePromise;
-        let spritePromise2 = injectSpriteSheet(embedSprite, 'iconSprite.svg' );
+        let spritePromise2 = injectSpriteSheet(embedSprite, 'iconSprite.svg');
         injectIcons(embedSprite, spritePromise2);
 
     })();
 
 
-    //injectSpriteSheet(embedSprite, )
+    // fix inline attributes to comply with CSP
+    parseCSP_Atts();
 
 
+
+    // listen to new icon changes
+    window.addEventListener('DOMchange', () => {
+        //window.dispatchEvent(new Event('enhanceReady'));
+        injectIcons(embedSprite, true);
+        //console.log('domChange');
+    });
+
+
+    // translate
+    translatePipeText();
+
+    // ensure listeners have time to register
+    if (document.readyState === 'complete') {
+        // Everything already loaded — just fire now
+        window.dispatchEvent(new Event('enhanceReady'));
+        window.dispatchEvent(new Event('DOMchange'));
+        parentEl.classList.add('enhance-inputs-ready');
+    } else {
+        // Wait until DOM ready
+        window.addEventListener('DOMContentLoaded', () => {
+            window.dispatchEvent(new Event('enhanceReady'));
+            window.dispatchEvent(new Event('DOMchange'));
+            parentEl.classList.add('enhance-inputs-ready');
+        });
+    }
     return settings;
 
 }
+
+
 
 
 

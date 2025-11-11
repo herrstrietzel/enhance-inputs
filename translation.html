@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>enhance inputs: translation</title>
+
+    <link rel="stylesheet" href="dist/enhanceInputs.min.css">
+
+
+    <script src="dist/enhanceInputs.js" defer></script>
+    <script src="__testfiles/translation.js" defer></script>
+
+
+        <template data-csp-style>
+            <style >
+                body {
+                    font-family: 'Segoe UI', sans-serif;
+                    background: var(--color-background);
+                }
+            </style>
+        </template>
+
+
+
+</head>
+
+<!-- auto init by class name enhanceInputsInit -->
+
+<body class=" --enhanceInputsInit scrollbar scroll-content scroll-content-notrack">
+
+
+    <main class="pdd-1em "
+        data-enhance-inputs='{"storageName":"","parent":"body","selector":"input, select, textarea","cacheToUrl":false, "getQuery":true, "cacheToStorage":true,"icons":"all"}'
+        
+        aria-live="polite">
+
+
+        <div class="input-wrap-group" data-ui="lang" data-ui-lang="DE EN" data-ui-mode="tab"></div>
+
+
+        <div class="input-wrap-group" data-ui="reset"></div>
+        <div data-ui="darkmode"></div>
+        <div data-ui="print"></div>
+
+
+        <p data-lang="de">
+            Deutscher Text
+        </p>
+
+
+        <p data-lang="en">
+            Englischer Text
+        </p>
+
+
+        <p>
+            <label class="fnt-wgt-700" data-data-csp-style="font-weight:700">
+                select
+            </label>
+            <select name="" id="">
+                <option ">option1</option>
+                <option ">option2</option>
+            </select>
+
+        </p>
+
+
+        <p>
+            <label class="label">
+                <input type="radio" class="input" name="radio" value="radioVal1" checked>
+                radio 1 || Empfänger 1</label>
+
+            <label class="label">
+                <input type="radio" class="input" name="radio" value="radioVal2">
+                radio 2</label>
+
+            <label class="label">
+                <input type="radio" class="input" name="radio" value="radioVal3">
+                radio 3</label>
+
+        </p>
+
+
+        <p>
+            <label> <input type="checkbox" name="star" data-icon="star star-filled"> star</label>
+            <label> <input type="checkbox" name="like" data-icon="hand-thumb-up hand-thumb-up-filled"> Like</label>
+
+            <label> <input type="checkbox" name="likeornot" data-icon="hand-thumb-up hand-thumb-up-filled"> Like</label>
+
+        </p>
+
+
+        <p>
+            <input type="text" class="input" name="textVal-inline" placeholder="text" title="Enter your text">
+        </p>
+
+
+        <p>
+            <select class="input" name="selelectmulti" multiple>
+                <option value="multi1">multi1</option>
+                <option value="multi2">multi2</option>
+                <option value="multi3">multi3</option>
+            </select>
+        </p>
+
+
+        <h3>Icons</h3>
+        <button data-icon="printer">Test</button>
+
+        <!-- 
+
+    
+-->
+
+        <h3>Spritemap</h3>
+        <div id="spriteMap"></div>
+
+
+
+
+    </main>
+
+
+ 
+
+    <!-- 
+    <script>
+        window.addEventListener('DOMContentLoaded', e => {
+
+
+            // get all inputs settings
+            let settings = enhanceInputsSettings;
+            console.log('settings', settings);
+
+
+            // listen to updates
+            document.addEventListener('settingsChange', () => {
+                console.log('settings update:', settings);
+            });
+
+
+        })
+    </script>
+    -->
+
+
+
+</body>
+
+</html>

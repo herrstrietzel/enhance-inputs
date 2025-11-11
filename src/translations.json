@@ -1,0 +1,22 @@
+{
+    "nickname": {
+        "de": "Spitzname",
+        "en": "Nickname"
+    },
+    "recipient": {
+        "de": "Empfänger",
+        "en": "Recipient"
+    },
+    "date": {
+        "de": "Datum",
+        "en": "Date"
+    },
+    "time": {
+        "de": "Zeit",
+        "en": "Time"
+    },
+    "location": {
+        "de": "Ort",
+        "en": "Location"
+    }
+}

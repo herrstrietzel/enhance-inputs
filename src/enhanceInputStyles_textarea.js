@@ -216,11 +216,11 @@ function bindTextAreaToolbar(header = null, classWrap = '', classWrapHeader = ''
                     //navigator.clipboard.writeText(text)
 
                     if (!inIframe && navigator.clipboard && window.isSecureContext) {
-                        console.log('clipboard');
+                        //console.log('clipboard');
                         navigator.clipboard.writeText(text)
                         //console.log('copied', text)
                       }else{
-                        console.log('in iframe');
+                        //console.log('in iframe');
                         textarea.focus();
                         textarea.select();
                         document.execCommand('copy');

@@ -25,6 +25,7 @@ else {
 //injectIcons();
 
 
+
 document.addEventListener('settingsChange', () => {
     console.log('!!!Data changed:', settings);
 

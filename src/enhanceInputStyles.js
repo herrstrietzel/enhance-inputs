@@ -34,6 +34,7 @@ export async function enhanceInputStyles(inputs = []) {
         let nodeName = input.nodeName.toLowerCase();
         let type = input.type ? input.type : nodeName;
         let label = input.closest('label');
+        if(label) label.classList.add('label');
         //let labelClass = label ? 'labeled' : '';
         input.classList.add(`input`, `${classNameInput}-${type}`);
 
@@ -103,22 +104,36 @@ export async function enhanceInputStyles(inputs = []) {
         if (inputIcons[type] || icon) {
             type = dataType ? dataType : type
             let iconNames = icon ? icon : inputIcons[type];
+            let dataImg = input.dataset.img
 
-            // remove data att
-            input.removeAttribute('data-icon')
-            wrap.classList.add('input-wrap-icon');
 
-            //let classPicker = isPicker ? 'input-icon-picker' : '';
-            let classPicker = isPicker ? 'icn-input-picker' : '';
+            // use img instead of icon
+            if(dataImg){
+                let alt = dataImg.split('/').slice(-1)[0].split('.')[0];
+                let imgEl = 
+                `<span class="icn-wrp img-wrp"><img class="img-inline" data-csp-src="${dataImg}" alt="${alt}"></span>`
+                input.insertAdjacentHTML('beforebegin', imgEl)
 
-            if (type === 'select-one' || type === 'date' || type === 'time') iconPos = 'right';
-            let injectPos = iconPos === 'left' ? 'beforebegin' : 'afterend';
+            }else {
 
-            let iconArr = iconNames.split(' ')
-            let wrapClass = iconArr.length > 1 ? 'icn-wrp-multi' : '';
-            let iconWrp = `<span class="icn-wrp icn-wrp ${wrapClass} ${classPicker} icn-pos-${iconPos} " data-icon="${iconNames}" ></span>`;
+                // remove data att
+                input.removeAttribute('data-icon')
+                wrap.classList.add('input-wrap-icon');
+    
+                //let classPicker = isPicker ? 'input-icon-picker' : '';
+                let classPicker = isPicker ? 'icn-input-picker' : '';
+    
+                if (type === 'select-one' || type === 'date' || type === 'time') iconPos = 'right';
+                let injectPos = iconPos === 'left' ? 'beforebegin' : 'afterend';
+    
+                let iconArr = iconNames.split(' ')
+                let wrapClass = iconArr.length > 1 ? 'icn-wrp-multi' : '';
+                let iconWrp = `<span class="icn-wrp icn-wrp ${wrapClass} ${classPicker} icn-pos-${iconPos} " data-icon="${iconNames}" ></span>`;
+    
+                input.insertAdjacentHTML(injectPos, iconWrp)
+            }
 
-            input.insertAdjacentHTML(injectPos, iconWrp)
+
 
         }
 

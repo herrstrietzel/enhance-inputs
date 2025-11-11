@@ -94,7 +94,11 @@
             return;
         }
 
-        if (type === 'checkbox') {
+        else if (type === 'textarea') {
+            settings[prop] = inp.value.trim();
+        }
+
+        else if (type === 'checkbox') {
             settings[prop] = inp.checked ? true : false;
         }
 
@@ -1013,11 +1017,11 @@
                     if (type === 'copy') {
 
                         if (!inIframe && navigator.clipboard && window.isSecureContext) {
-                            console.log('clipboard');
+
                             navigator.clipboard.writeText(text);
 
                           }else {
-                            console.log('in iframe');
+
                             textarea.focus();
                             textarea.select();
                             document.execCommand('copy');
@@ -1068,7 +1072,40 @@
         }
     }
 
-    async function injectSpriteSheet(embedSprite = true, iconFile = "iconSprite_inputs.svg") {
+    /**
+     * replace CSP blocked attributes
+     * like src or style to be compliant
+     */
+    function parseCSP_Atts() {
+        let cspEls = document.querySelectorAll('[data-csp-src], [data-csp-style]');
+
+        cspEls.forEach(el => {
+            let src = el.hasAttribute('data-csp-src');
+            let style = el.hasAttribute('data-csp-style');
+
+            if (src) {
+                el.src = el.dataset.cspSrc;
+                el.removeAttribute('data-csp-src');
+            }
+            if (style) {
+                if(el.nodeName.toLowerCase()==='template'){
+                    let cssText = el.content.querySelector('style').textContent;
+                    let cssSheet = new CSSStyleSheet();
+                    cssSheet.replaceSync(cssText);
+                    document.adoptedStyleSheets = [cssSheet];
+
+                }else {
+                    el.style.cssText = el.dataset.cspStyle;
+                    el.removeAttribute('data-csp-style');
+                }
+            }
+        });
+
+    }
+
+    async function injectSpriteSheet(embedSprite = true, iconFile = "iconSprite_inputs.svg", debug = false) {
+
+        debug = false;
 
         /**
          * load icon asset sprite or use external svg
@@ -1087,7 +1124,6 @@
                 sameSource = iconFile === spriteWrapper.dataset.src;
 
                 if (sameSource) {
-
                     return;
                 }
             }
@@ -1113,17 +1149,51 @@
                 if (hasWrapper) {
                     let svgPrev = spriteWrapper.querySelector('svg');
 
-                    let symbols = svgDom.querySelectorAll('symbol');
-                    symbols.forEach(symbol => {
-                        if (document.getElementById(symbol.id)) {
-                            symbol.remove();
-                        }
-                        // move to existing SVG
-                        svgPrev.append(symbol);
-                    });
                     svgDom = svgPrev;
                 }
 
+                /**
+                 * debug/dev function to remove icons
+                 */
+                if (debug) {
+
+                    let icons_exclude = [];
+
+                    let symbols = svgDom.querySelectorAll('symbol');
+                    for (let i = 0, l = symbols.length; l && i < l; i++) {
+                        let symbol = symbols[i];
+
+                        let id = symbol.id;
+                        let idPre = id.split('-');
+
+                        // prefix exclude
+                        if (idPre.length > 1) {
+                            idPre = idPre[0] + '-';
+
+                            if (icons_exclude.includes(idPre)) {
+                                symbol.remove();
+
+                                continue
+                            }
+                        }
+
+                        let hasSymbol = document.getElementById(id);
+                        let exclude = hasSymbol || icons_exclude.includes(id);
+                        if (exclude) {
+                            symbol.remove();
+                            console.log('remove', id);
+                            continue;
+                        }
+
+                        // append icon
+                        svgDom.append(symbol);
+                    }
+
+                }
+
+                spriteWrapper.append(svgDom);
+
+                // fix CSP styles – otherwise catched by CSP main helper
                 let styled = svgDom.querySelectorAll('[data-style]');
                 styled.forEach(el => {
                     let style = el.dataset.style;
@@ -1131,8 +1201,11 @@
                     el.style.cssText = style;
                 });
 
-                spriteWrapper.append(svgDom);
-
+                // return filtered SVG sprite
+                if (debug) {
+                    let svgComplete = new XMLSerializer().serializeToString(svgDom);
+                    console.log('svg sprite Complete', svgComplete);
+                }
             }
         }
 
@@ -1169,7 +1242,7 @@
     function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_inputs.svg') {
 
         // get ID and position
-        let iconIDs = el.dataset.icon.split(' ');
+        let iconIDs = el.dataset.icon ? el.dataset?.icon.split(' ') : [];
 
         // already processed or no icons – skip
         if (el.classList.contains('icn-inj') || !iconIDs.length) {
@@ -1225,12 +1298,16 @@
 
         // add class to indicate injection
         el.insertAdjacentHTML(pos, iconMarkup);
+        el.removeAttribute('data-icon');
+        el.removeAttribute('data-icon-pos');
         el.classList.add('icn-inj');
 
     }
 
     /**
      * append spritemap for visualization
+     * helps to find all available icons
+     * or to edit certain icons
      */
     function injectIconSpriteMap() {
 
@@ -1247,8 +1324,15 @@
             let col = document.createElement('div');
             col.classList.add('col');
 
-            let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.setAttribute('viewBox', symbol.getAttribute('viewBox'));
+            let ns = 'http://www.w3.org/2000/svg';
+            let svg = document.createElementNS(ns, 'svg');
+            let viewBoxAtt = symbol.getAttribute('viewBox');
+            let { width, height } = symbol.viewBox.baseVal;
+            svg.setAttribute('data-id', symbol.id);
+            svg.setAttribute('width', width);
+            svg.setAttribute('height', height);
+            svg.setAttribute('xmlns', ns);
+            svg.setAttribute('viewBox', viewBoxAtt);
             svg.classList.add('icn-svg');
 
             let children = [...symbol.children];
@@ -1314,6 +1398,7 @@
             let nodeName = input.nodeName.toLowerCase();
             let type = input.type ? input.type : nodeName;
             let label = input.closest('label');
+            if(label) label.classList.add('label');
 
             input.classList.add(`input`, `${classNameInput}-${type}`);
 
@@ -1379,21 +1464,33 @@
             if (inputIcons[type] || icon) {
                 type = dataType ? dataType : type;
                 let iconNames = icon ? icon : inputIcons[type];
+                let dataImg = input.dataset.img;
 
-                // remove data att
-                input.removeAttribute('data-icon');
-                wrap.classList.add('input-wrap-icon');
+                // use img instead of icon
+                if(dataImg){
+                    let alt = dataImg.split('/').slice(-1)[0].split('.')[0];
+                    let imgEl = 
+                    `<span class="icn-wrp img-wrp"><img class="img-inline" data-csp-src="${dataImg}" alt="${alt}"></span>`;
+                    input.insertAdjacentHTML('beforebegin', imgEl);
 
-                let classPicker = isPicker ? 'icn-input-picker' : '';
+                }else {
 
-                if (type === 'select-one' || type === 'date' || type === 'time') iconPos = 'right';
-                let injectPos = iconPos === 'left' ? 'beforebegin' : 'afterend';
+                    // remove data att
+                    input.removeAttribute('data-icon');
+                    wrap.classList.add('input-wrap-icon');
+        
 
-                let iconArr = iconNames.split(' ');
-                let wrapClass = iconArr.length > 1 ? 'icn-wrp-multi' : '';
-                let iconWrp = `<span class="icn-wrp icn-wrp ${wrapClass} ${classPicker} icn-pos-${iconPos} " data-icon="${iconNames}" ></span>`;
-
-                input.insertAdjacentHTML(injectPos, iconWrp);
+                    let classPicker = isPicker ? 'icn-input-picker' : '';
+        
+                    if (type === 'select-one' || type === 'date' || type === 'time') iconPos = 'right';
+                    let injectPos = iconPos === 'left' ? 'beforebegin' : 'afterend';
+        
+                    let iconArr = iconNames.split(' ');
+                    let wrapClass = iconArr.length > 1 ? 'icn-wrp-multi' : '';
+                    let iconWrp = `<span class="icn-wrp icn-wrp ${wrapClass} ${classPicker} icn-pos-${iconPos} " data-icon="${iconNames}" ></span>`;
+        
+                    input.insertAdjacentHTML(injectPos, iconWrp);
+                }
 
             }
 
@@ -1436,8 +1533,273 @@
 
     }
 
+    function addUI_elements(){
+
+        let uiEls = document.querySelectorAll('[data-ui]');
+
+        uiEls.forEach(el=>{
+
+            let {ui} = el.dataset;
+            let html = '';
+            let classes = ['input-wrap-ui', `input-wrap-ui-${ui}`];
+
+            if(ui==='reset'){
+                html = `<button class="btn-default --btn-neg wdt-100 txt-cnt" id="btnReset" type="button" data-icon="arrow-path"
+            data-icon-pos="left">Reset
+            settings</button>`;
+            }
+
+            else if(ui==='dark' || ui==='darkmode'){
+
+                html = `<label><input type="checkbox" data-icon="sun moon" id="inputDarkmode" name="darkmode">Darkmode</label>`;
+            }
+
+            else if(ui==='lang' || ui==='lng' || ui==='language'){
+                let langAtt = el.dataset.uiLang || el.dataset.uiLanguage || el.dataset.uiLng;
+                let langs = langAtt? langAtt.split(' ').filter(Boolean).map(lng=>lng.toLowerCase()) : ['de' ];
+                let className = el.dataset.mode ? el.dataset.mode : '';
+                if(className) classes.push(className);
+
+                el.classList.add('input-ui', `input-ui-${className}`);
+                langs.forEach((lng, i)=>{
+                    let checked = i===0 ? 'checked' : '';
+                    html += ` <label ><input type="radio" name="lang" value="${lng}" ${checked}>${lng.toUpperCase()}</label>`;
+                });
+            }
+
+            el.classList.add(...classes);
+            el.removeAttribute('data-ui');
+            el.insertAdjacentHTML("beforeend", html);
+
+            
+        });
+
+    }
+
+    /**
+    * translate
+    **/
+
+    function translatePipeText(parentEl=null, currentLang='') {
+
+        parentEl = parentEl ? parentEl : document.body;
+
+        if(!currentLang){
+             currentLang = new URL(document.location).searchParams.get('lng') ? new URL(document.location).searchParams.get('lng') : 'de';
+        }
+
+        let dataBlocks = parentEl.querySelectorAll('[data-lang]');
+        dataBlocks.forEach(el=>{
+            let lang = el.dataset.lang;
+            if(lang!==currentLang) el.remove();
+        });
+
+        let elsToTranslate = parentEl ? textNodesInEl(parentEl) : [];
+        if (elsToTranslate.length) {
+
+            for (var i = 0; i < elsToTranslate.length; i++) {
+                var node = elsToTranslate[i];
+                node.nodeName;
+                if (node.nodeType === 3) {
+
+                    let text = node.parentNode.innerText;
+
+                    if (text && text.includes(' || ')) {
+                        let txtArr = text.split(' || ').map(val => { return val.trim() });
+                        if (currentLang == 'de') {
+                            text = txtArr[0];
+                        }
+                        else if (currentLang == 'en') {
+                            text = '' + txtArr[1].replaceAll(' *', '');
+                        }
+                        node.textContent = text;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Get text nodes in element
+         * based on:
+         * https://stackoverflow.com/questions/10730309/find-all-text-nodes-in-html-page#10730777
+         */
+        function textNodesInEl(node) {
+            let textNodes = [];
+            for (node = node.firstChild; node; node = node.nextSibling) {
+                if (node.nodeType == 3) {
+                    textNodes.push(node);
+                }
+                else {
+                    textNodes = textNodes.concat(textNodesInEl(node));
+                }
+            }
+            // filter empty text nodes
+            textNodes = textNodes.filter(node => node.textContent.trim());
+            return textNodes;
+        }
+
+    }
+
+    function enhanceTabs() {
+
+        let tabGroups = document.querySelectorAll('[data-tabs]');
+
+        tabGroups.forEach((g, i) => {
+
+            g.classList.add('tab-group');
+            let tabPanels = g.querySelectorAll('[role="tabpanel"]');
+            let labels = [];
+
+            tabPanels.forEach((tabPanel, t) => {
+                let label = tabPanel.children[0];
+                let labelText = label.textContent;
+                labels.push(labelText);
+                label.remove();
+                let idTabPanel = `tabPanel-${i}-${t}`;
+                let idLabel = `tab-${i}-${t}`;
+                tabPanel.setAttribute('aria-labelledby', idLabel);
+                tabPanel.id = idTabPanel;
+                tabPanel.classList.add('tab-panel');
+            });
+
+            let tabList = `<div role="tablist" class="tablist" aria-labelledby="tablist-${i}" class="tablist">`;
+
+            labels.forEach((label, l) => {
+                let selected = l === 0 ? true : false;
+                let tabindex = selected ? '' : ' tabindex="-1" ';
+                tabList +=
+                    `<button class="btn-tab" id="tab-${i}-${l}" type="button" role="tab" 
+                aria-selected="${selected}" 
+                ${tabindex}
+                aria-controls="tabPanel-${i}-${l}">
+                    <span class="btn-tab-inner">${label}</span>
+            </button>`;
+            });
+
+            tabList += `</div>`;
+            g.insertAdjacentHTML("afterbegin", tabList);
+
+        });
+
+        let tablists = document.querySelectorAll('[role=tablist]');
+        for (var i = 0; i < tablists.length; i++) {
+            initTabsAria(tablists[i]);
+        }
+
+    }
+
+    /**
+     * Accessible Tabs (function-based)
+     * Based on W3C ARIA Authoring Practices example
+     * Extended to auto-activate tab if its panel gains focus (e.g., via find-in-page)
+     */
+    function initTabsAria(groupNode) {
+        let tabs = [...groupNode.querySelectorAll('[role=tab]')];
+        let tabpanels = tabs.map(tab => document.getElementById(tab.getAttribute('aria-controls')));
+
+        let firstTab = tabs[0];
+        let lastTab = tabs[tabs.length - 1];
+
+        function setSelectedTab(currentTab, setFocus = true) {
+            tabs.forEach((tab, i) => {
+                let isSelected = tab === currentTab;
+                tab.setAttribute('aria-selected', String(isSelected));
+                tab.tabIndex = isSelected ? 0 : -1;
+
+                tabpanels[i].classList.toggle('sr-only', !isSelected);
+
+                if (isSelected && setFocus) {
+                    tab.focus();
+                }
+            });
+        }
+
+        function setSelectedToPreviousTab(currentTab) {
+            let index = tabs.indexOf(currentTab);
+            let newTab = currentTab === firstTab ? lastTab : tabs[index - 1];
+            setSelectedTab(newTab);
+        }
+
+        function setSelectedToNextTab(currentTab) {
+            let index = tabs.indexOf(currentTab);
+            let newTab = currentTab === lastTab ? firstTab : tabs[index + 1];
+            setSelectedTab(newTab);
+        }
+
+        function onKeydown(event) {
+            let tgt = event.currentTarget;
+            let handled = false;
+
+            switch (event.key) {
+                case 'ArrowLeft':
+                    setSelectedToPreviousTab(tgt);
+                    handled = true;
+                    break;
+                case 'ArrowRight':
+                    setSelectedToNextTab(tgt);
+                    handled = true;
+                    break;
+                case 'Home':
+                    setSelectedTab(firstTab);
+                    handled = true;
+                    break;
+                case 'End':
+                    setSelectedTab(lastTab);
+                    handled = true;
+                    break;
+            }
+
+            if (handled) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        }
+
+        // --- Initialization ---
+        tabs.forEach((tab, i) => {
+            let panel = tabpanels[i];
+
+            tab.tabIndex = -1;
+            tab.setAttribute('aria-selected', 'false');
+
+            tab.addEventListener('keydown', onKeydown);
+            tab.addEventListener('click', e => setSelectedTab(e.currentTarget));
+
+            panel.addEventListener('focusin', () => {
+                console.log('focusin');
+                setSelectedTab(tab, false);
+            });
+        });
+
+        setSelectedTab(firstTab, false);
+
+        document.addEventListener('selectionchange', (e) => {
+            let sel = document.getSelection();
+
+            if (!sel || sel.rangeCount === 0) return;
+
+            let node = sel.anchorNode;
+            if (!node) return;
+
+            let panel = node.nodeType === Node.ELEMENT_NODE
+                ? node.closest('[role="tabpanel"]')
+                : node.parentElement?.closest('[role="tabpanel"]');
+
+            if (panel && panel.classList.contains('sr-only')) {
+                let i = tabpanels.indexOf(panel);
+                if (i >= 0) setSelectedTab(tabs[i], false);
+            }
+        });
+
+        // Optional return API
+
+    }
+
     // get quer params
     const queryParams = Object.fromEntries(new URLSearchParams(document.location.search));
+
+    // enhance inputs ready
+    let enhanceInputsReady = new Event('enhanceReady');
 
     function enhanceInputsAutoInit() {
         const inputWrap = document.querySelector('[data-enhance-inputs]');
@@ -1462,6 +1824,7 @@
                 parent: 'body',
                 selector: 'input, select, textarea',
                 cacheToUrl: false,
+                getQuery: true,
                 cacheToStorage: false,
                 ...optionsData,
             };
@@ -1472,6 +1835,7 @@
             // Dispatch event to notify others that settings are ready
             const event = new CustomEvent('settingsChange');
             document.dispatchEvent(event);
+
         }
 
         return enhanceInputsSettings;
@@ -1487,16 +1851,23 @@
         parent = '[data-enhance-inputs]',
 
         cacheToUrl = true,
+        getQuery = true,
         // save settings to local storage
         cacheToStorage = true,
         storageName = 'settings',
         embedSprite = true,
-        icons='inputs'
+        icons = 'inputs'
     } = {}) {
 
+        /**
+         * add default UI element
+         * e.g reset button, darkmode, print or language toggle
+         */
+        addUI_elements();
+
         // load only base icons or all
-        let iconFile = icons!=='all' ? "iconSprite_inputs.svg" : "iconSprite.svg";
-        
+        let iconFile = icons !== 'all' ? "iconSprite_inputs.svg" : "iconSprite.svg";
+
         // load sprite sheet
         let spritePromise = injectSpriteSheet(embedSprite, iconFile);
 
@@ -1506,8 +1877,8 @@
         let settingsStorage = '';
         let settingsCache = {};
 
-        if(cacheToStorage){
-            if(!storageName){
+        if (cacheToStorage) {
+            if (!storageName) {
                 /** generate location specific local storage name */
                 let location = window.location;
                 let pathName = location.pathname.split('/').filter(Boolean).slice(0, 2).join('_');
@@ -1515,11 +1886,11 @@
 
             }
 
-            try{
+            try {
                 settingsStorage = localStorage.getItem(storageName);
                 settingsCache = settingsStorage ? JSON.parse(settingsStorage) : {};
 
-            } catch{
+            } catch {
                 console.warn('No valid settings JSON');
             }
         }
@@ -1530,8 +1901,8 @@
 
         // default button style 
         let buttons = parentEl.querySelectorAll('button');
-        buttons.forEach(btn=>{
-            if(!btn.getAttribute('class')){
+        buttons.forEach(btn => {
+            if (!btn.getAttribute('class')) {
                 btn.classList.add('btn-default', 'wdt-100', 'txt-cnt');
             }
         });
@@ -1549,7 +1920,7 @@
          * get settings from query
          * and update inputs
          */
-        if (cacheToUrl && Object.values(queryParams).length) {
+        if ( (cacheToUrl || getQuery) && Object.values(queryParams).length) {
 
             let settingsQuery = updateSettingsFromQuery(queryParams, settings);
 
@@ -1578,28 +1949,58 @@
         // bind reset btn
         bindResetBtn(settings, storageName);
 
+        // darkmode
+        bindDarkmodeBtn();
+
+        // enhance tabs
+        enhanceTabs();
+
         /**
          * enhance styles by wrapping
          * and adding extra buttons
          */
         enhanceInputStyles(inputs);
 
-        bindDarkmodeBtn();
-
         /**
          * add icons
          */
-
         injectIcons(embedSprite, spritePromise);
 
         // additional icons
-        (async ()=>{
+        (async () => {
             await spritePromise;
-            let spritePromise2 = injectSpriteSheet(embedSprite, 'iconSprite.svg' );
+            let spritePromise2 = injectSpriteSheet(embedSprite, 'iconSprite.svg');
             injectIcons(embedSprite, spritePromise2);
 
         })();
 
+        // fix inline attributes to comply with CSP
+        parseCSP_Atts();
+
+        // listen to new icon changes
+        window.addEventListener('DOMchange', () => {
+
+            injectIcons(embedSprite, true);
+            console.log('domChange');
+        });
+
+        // translate
+        translatePipeText();
+
+        // ensure listeners have time to register
+        if (document.readyState === 'complete') {
+            // Everything already loaded — just fire now
+            window.dispatchEvent(new Event('enhanceReady'));
+            window.dispatchEvent(new Event('DOMchange'));
+            parentEl.classList.add('enhance-inputs-ready');
+        } else {
+            // Wait until DOM ready
+            window.addEventListener('DOMContentLoaded', () => {
+                window.dispatchEvent(new Event('enhanceReady'));
+                window.dispatchEvent(new Event('DOMchange'));
+                parentEl.classList.add('enhance-inputs-ready');
+            });
+        }
         return settings;
 
     }
@@ -1628,6 +2029,7 @@
     exports.cos = cos;
     exports.enhanceInputs = enhanceInputs;
     exports.enhanceInputsAutoInit = enhanceInputsAutoInit;
+    exports.enhanceInputsReady = enhanceInputsReady;
     exports.exp = exp;
     exports.floor = floor;
     exports.hypot = hypot;

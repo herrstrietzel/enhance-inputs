@@ -2,9 +2,14 @@
 
 
 import { getCurrentScriptUrl } from './getUrl';
+import { parseCSP_Atts } from './csp';
 
 
-export async function injectSpriteSheet(embedSprite = true, iconFile = "iconSprite_inputs.svg") {
+
+export async function injectSpriteSheet(embedSprite = true, iconFile = "iconSprite_inputs.svg", debug = false) {
+
+    //console.log(icons_exclude);
+    debug = false;
 
     /**
      * load icon asset sprite or use external svg
@@ -25,11 +30,9 @@ export async function injectSpriteSheet(embedSprite = true, iconFile = "iconSpri
             sameSource = iconFile === spriteWrapper.dataset.src
 
             if (sameSource) {
-                //console.log('skip');
                 return;
             }
         }
-
 
         // add wrapper
         if (!hasWrapper) {
@@ -48,35 +51,147 @@ export async function injectSpriteSheet(embedSprite = true, iconFile = "iconSpri
             markup = markup.replaceAll('style="', 'data-style="');
             let svgDom = new DOMParser().parseFromString(markup, 'text/html').querySelector('svg')
 
+
             // when other icons are added - check for duplicates
             if (hasWrapper) {
                 let svgPrev = spriteWrapper.querySelector('svg')
-                //console.log('deduplicate');
-                let symbols = svgDom.querySelectorAll('symbol');
-                symbols.forEach(symbol => {
-                    if (document.getElementById(symbol.id)) {
-                        symbol.remove()
-                    }
-                    // move to existing SVG
-                    svgPrev.append(symbol)
-                })
+                //console.log('deduplicate', iconSpriteSVG);
                 svgDom = svgPrev
             }
 
+            /**
+             * debug/dev function to remove icons
+             */
+            if (debug) {
+
+                //useless icons
+                let icons_exclude = [];
+
+                /*
+                let icons_exclude = [
+                    'at-symbol',
+                    'currency-',
+                    'cpu-chip',
+                    'check-badge',
+                    'cake',
+                    'cog',
+                    'cog-6-tooth',
+                    'cog-8-tooth',
+                    'globe-',
+                    'receipt-',
+                    'rocket-launch',
+                    'stop-circle',
+                    'gif',
+                    'gift-top',
+                    'face-frown',
+                    'calendar-days',
+                    'briefcase',
+                    'bookmark-square',
+                    'banknotes',
+                    'magnifying-glass-circle',
+                    'funnel',
+                    'building-storefront',
+                    'bell-snooze',
+                    'bars-4',
+                    'face-smile',
+                    'arrow-long-down',
+                    'arrow-long-up',
+                    'arrow-path-rounded-square',
+                    'sparkles',
+                    'clipboard-document-list',
+                    'home-modern',
+                    'hashtag',
+                    'minus',
+                    'minus-small',
+                    'plus-small',
+                    'plus',
+                    'building-office-2',
+                ];
+                */
 
 
+                /*
+                aliases
+                ellipsis-vertical => kebab
+                square-2-stack = > copy
+                */
+
+                /*
+                filled
+                pencil,
+                heart
+                facebook
+                */
+                /*
+                let improved = [
+                    'pencil',
+                    'filter',
+                    'shopping-cart',
+                    'square-3-stack-3d',
+                    'wrench',
+                    'shopping-cart',
+                    'circle-stack',
+                    'user-minus',
+                    'user-plus',
+                    'ticket',
+                    'wrench-screwdriver',
+                    '',
+                ];
+                */
+
+
+                let symbols = svgDom.querySelectorAll('symbol');
+                for (let i = 0, l = symbols.length; l && i < l; i++) {
+                    let symbol = symbols[i];
+
+                    let id = symbol.id;
+                    let idPre = id.split('-');
+
+                    // prefix exclude
+                    if (idPre.length > 1) {
+                        idPre = idPre[0] + '-';
+                        //console.log('idPre', idPre);
+                        if (icons_exclude.includes(idPre)) {
+                            symbol.remove();
+                            //console.log('idPre remove', id);
+                            continue
+                        }
+                    }
+
+                    let hasSymbol = document.getElementById(id)
+                    let exclude = hasSymbol || icons_exclude.includes(id);
+                    if (exclude) {
+                        symbol.remove();
+                        console.log('remove', id);
+                        continue;
+                    }
+
+                    // append icon
+                    svgDom.append(symbol)
+                }
+
+
+            }
+
+
+            //console.log(svgDom);
+            spriteWrapper.append(svgDom);
+
+            // fix CSP styles – otherwise catched by CSP main helper
             let styled = svgDom.querySelectorAll('[data-style]');
             styled.forEach(el => {
                 let style = el.dataset.style;
                 el.removeAttribute('data-style')
                 el.style.cssText = style;
             })
-            //console.log(svgDom);
-            spriteWrapper.append(svgDom);
 
-            //let svgComplete = new XMLSerializer().serializeToString(svgDom)
-            //console.log('svgComplete', svgComplete);
-            //spriteWrapper.insertAdjacentHTML('beforeend', markup);
+
+
+            // return filtered SVG sprite
+            if (debug) {
+                let svgComplete = new XMLSerializer().serializeToString(svgDom)
+                console.log('svg sprite Complete', svgComplete);
+            }
         }
     }
 
@@ -86,6 +201,8 @@ export async function injectSpriteSheet(embedSprite = true, iconFile = "iconSpri
      * if "#spriteMap" element is present
      */
     injectIconSpriteMap();
+    //parseCSP_Atts();
+
 
     return true;
 
@@ -119,7 +236,7 @@ export async function injectIcons(embedSprite = true, promise = false, iconFile 
 export function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_inputs.svg') {
 
     // get ID and position
-    let iconIDs = el.dataset.icon.split(' ');
+    let iconIDs = el.dataset.icon ? el.dataset?.icon.split(' ') : [];
 
 
     // already processed or no icons – skip
@@ -147,7 +264,6 @@ export function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_
     let iconPosition = el.dataset.iconPos ? el.dataset.iconPos : 'left';
     let pos = iconPosition === 'left' ? 'afterbegin' : 'beforeend';
     let posClass = `icn-pos-${iconPosition}`
-
 
     // check if already wrapped
     let wrap = el.closest('.icn-wrp');
@@ -182,8 +298,9 @@ export function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_
 
     // add class to indicate injection
     el.insertAdjacentHTML(pos, iconMarkup)
+    el.removeAttribute('data-icon')
+    el.removeAttribute('data-icon-pos')
     el.classList.add('icn-inj')
-
 
 }
 
@@ -191,6 +308,8 @@ export function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_
 
 /**
  * append spritemap for visualization
+ * helps to find all available icons
+ * or to edit certain icons
  */
 export function injectIconSpriteMap() {
 
@@ -204,13 +323,22 @@ export function injectIconSpriteMap() {
     //spriteMapEl = document.createElement('div')
     spriteMapEl.classList.add('spritemap', 'grd', 'grd-3', 'grd-md-8')
 
+
+
     symbols.forEach(symbol => {
 
         let col = document.createElement('div')
         col.classList.add('col')
 
-        let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('viewBox', symbol.getAttribute('viewBox'));
+        let ns = 'http://www.w3.org/2000/svg';
+        let svg = document.createElementNS(ns, 'svg');
+        let viewBoxAtt = symbol.getAttribute('viewBox');
+        let { width, height } = symbol.viewBox.baseVal;
+        svg.setAttribute('data-id', symbol.id);
+        svg.setAttribute('width', width);
+        svg.setAttribute('height', height);
+        svg.setAttribute('xmlns', ns);
+        svg.setAttribute('viewBox', viewBoxAtt);
         svg.classList.add('icn-svg');
 
         let children = [...symbol.children];

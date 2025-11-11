@@ -22,7 +22,7 @@ export function getSettingValueFromInput(inp, settings = {}) {
     let isSelect = type === 'select-one' || type === 'select-multiple'
     let value = type==='number' && !inp.value ? 0 : inp.value;
     //let value = inp.value;
-    //console.log(type, inp.value );
+
 
     if(!prop){
         return;
@@ -35,8 +35,11 @@ export function getSettingValueFromInput(inp, settings = {}) {
         return;
     }
 
+    else if (type === 'textarea') {
+        settings[prop] = inp.value.trim();
+    }
 
-    if (type === 'checkbox') {
+    else if (type === 'checkbox') {
         settings[prop] = inp.checked ? true : false;
     }
 
