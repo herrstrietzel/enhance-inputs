@@ -1,59 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>enhance inputs</title>
+
+    <!-- 
+        <style>
+            body {
+                font-family: 'Fira Sans', sans-serif;
+                background-color: var(--color-background);
+            }
+        </style>
+
+    -->
+
+    <!-- 
+        <link rel="stylesheet" href="demo/css/style.css">
+        
+        <link rel="stylesheet" href="dist/enhanceInputs.css">
+            <link rel="stylesheet" href="dist/enhanceInputs-deuglify.css">
+    <link rel="stylesheet" href="dist/enhanceInputs-icons.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/enhance-inputs@0.1.5/dist/enhanceInputs.css">
+    <script src="https://cdn.jsdelivr.net/npm/enhance-inputs@0.1.5/dist/enhanceInputs.min.js" defer></script>
+    -->
+
+
+    <!-- load prism -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/prism.min.js" defer></script>
+
+
+    <link rel="stylesheet" href="dist/enhanceInputs.min.css">
+    <script src="dist/enhanceInputs.js" defer></script>
+
+
+    <script src="demo/icons.js" defer></script>
+
+
+    <template data-csp-style>
+    </template>
+
+
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--color-background);
+        }
+    </style>
+
+
 </head>
-<body>
 
-    <div id="heroIconsWrp">
+<!-- auto init by class name enhanceInputsInit -->
 
-    </div>
-
-    <p>
-        <input type="date">
-    </p>
-
-    <p>
-        <label>select</label>
-        <select class="input" name="select1" id="">
-            <option value="option1">option1</option>
-            <option value="option2">option2</option>
-            <option value="option3">option3</option>
-        </select>
-    </p>
+<body class=" --scrollbar scroll-content --scroll-track" data-enhance-inputs='{"storageName":"iconsSettings","parent":"body","selector":"input, select, textarea","cacheToUrl":false, "getQuery":true, "cacheToStorage":true,"icons":""}'>
 
 
-<script>
+        <div class="styles pst-sticky bg z-ind-100 pdd-1em fnt-siz-0-75">
+            <h3>Icon styles</h3>
+            <p>
+                <label><input type="radio" name="iconStyle" value="" checked>normal</label>
+                <label><input type="radio" name="iconStyle" value="circle">circle</label>
+                <label><input type="radio" name="iconStyle" value="square">square</label>
+                <label><input type="radio" name="iconStyle" value="square-rounded">square rounded</label>
+            </p>
 
-let cdnURL = 'https://cdn.jsdelivr.net/npm/heroicons@2.2.0/24/outline/';
-let heroIcons = 
-`adjustments-horizontal 
-adjustments-vertical 
-arrow-down-circle 
-arrow-down-left
+            <h3>Icon color</h3>
+            <p>
+                <label><input type="radio" name="iconColor" value="" checked>normal</label>
+                <label><input type="radio" name="iconColor" value="negative">negative</label>
+            </p>
+
+            <h3>Icon weights</h3>
+            <p>
+                <label><input type="radio" name="iconWeight" value="thin">thin</label>
+                <label><input type="radio" name="iconWeight" value="light">light</label>
+                <label><input type="radio" name="iconWeight" value="normal" checked>normal</label>
+                <label><input type="radio" name="iconWeight" value="medium">medium</label>
+                <label><input type="radio" name="iconWeight" value="bold">bold</label>
+                <!-- 
+                    <label><input type="radio" name="iconWeight" value="black">black</label>
+                -->
+            </p>
+
+            <h3>Icon corner rounding</h3>
+            <p>
+                <label><input type="radio" name="iconCorner" value="normal" checked>normal</label>
+                <label><input type="radio" name="iconCorner" value="round">round</label>
+                <label><input type="radio" name="iconCorner" value="sharp">sharp</label>
+            </p>
+        </div>
+
+
+    <main class="pdd-1em --enhance-inputs-init --details-enhanced"
+        >
 
 
 
-`;
 
 
-// init
-(async()=>{
-
-}
-)();
+        <h3>Spritemap</h3>
+        <div id="spriteMap" class="fnt-siz-2em"></div>
 
 
-async function getHeroIconsSprite(url=''){
 
 
-}
+    </main>
 
 
-</script>
 
-    
+
+
 </body>
+
 </html>

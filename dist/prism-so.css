@@ -1,0 +1,116 @@
+/**
+ * so theme for JavaScript, CSS and HTML
+ * inspired by Stackoverflow theme
+ * @author herrstrietzel
+ */
+
+:root {
+    --font-code: monospace;
+    --col-bg: #000;
+    --col-light: #f8f8f2;
+    --col-comment: #8292a2;
+}
+
+code[class*="language-"],
+pre[class*="language-"] {
+    color: var(--col-light);
+    font-family: var(--font-code, 'monospace');
+    white-space: pre;
+    line-height: 1.5;
+    tab-size: 4;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+    padding: 1em;
+    overflow: auto;
+}
+
+:not(pre)>code[class*="language-"],
+pre[class*="language-"] {
+    background: var(--col-bg);
+}
+
+/* Inline code */
+:not(pre)>code[class*="language-"] {
+    padding: .1em;
+    border-radius: .3em;
+    white-space: normal;
+}
+
+.token {
+    &.comment,
+    &.prolog,
+    &.doctype,
+    &.cdata {
+        color: var(--col-comment);
+    }
+}
+
+.token.punctuation {
+    color: var(--col-light);
+}
+
+
+.token{
+    &.property,
+    &.tag,
+    &.constant,
+    &.symbol,
+    &.deleted {
+        color: #f92672;
+    }
+}
+
+
+.token.boolean,
+.token.number {
+    color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+    color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+    color: var(--col-light);
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+    color: #e6db74;
+}
+
+.token.keyword {
+    color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+    color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+    font-weight: bold;
+}
+
+.token.italic {
+    font-style: italic;
+}
+
+.token.entity {
+    cursor: help;
+}

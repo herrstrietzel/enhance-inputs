@@ -1,36 +1,36 @@
-export function enhanceFileinputs(selector = '[data-enhance-inputs]', labelFileBtn = "Upload File", labelFileBtnDrop="Drop File") {
+export function enhanceFileinputs(selector = '[data-enhance-inputs]', labelFileBtn = "Upload File", labelFileBtnDrop = "Drop File") {
 
 
     let inputs = document.querySelectorAll(`${selector} input[type=file]`);
 
 
-    for (let i = 0, l = inputs.length; l&& i < l; i++) {
+    for (let i = 0, l = inputs.length; l && i < l; i++) {
         let input = inputs[i];
         let wrap = input.closest(".input-wrap-file");
 
         // skip for textarea toolbars
-        let hasHeader =  input.closest('.input-wrap-textarea-header')
-        if(hasHeader) continue
+        let hasHeader = input.closest('.input-wrap-textarea-header')
+        if (hasHeader) continue
 
 
-        if(!wrap){
+        if (!wrap) {
             wrap = document.createElement("div");
-            wrap.classList.add('input-wrap', 'input-wrap-file');  
+            wrap.classList.add('input-wrap', 'input-wrap-file');
             input.parentNode.insertBefore(wrap, input);
             wrap.append(input);
-      
+
         }
 
         let icons = wrap.querySelector('.icn-svg')
-        //if(icons.classList.contains('input-active')) continue;
-
-
         let btnCustom = wrap.querySelector('.btn-file-custom');
         if (btnCustom || icons) continue;
 
 
         // hide default btn
         input.classList.add("sr-only");
+
+        // take label text from data attribute
+        labelFileBtn = input.dataset.label ? input.dataset.label : labelFileBtn;
 
         // add new UI elements
         let fileUiHTML = `<div class="btn-default btn-file btn-file-custom " type="button" aria-hidden="true" >
@@ -62,10 +62,16 @@ export function bindFileInput(wrap = null) {
     // prevent duplicate event listeners
     if (btnFile.classList.contains('input-active')) return;
 
-    btnFile.addEventListener("click", (e) => {
-        let inputFile = wrap.querySelector("input[type=file]");
-        inputFile.click();
-    });
+    let isWrappedInLabel = input.closest('label');
+
+    // don't delegate click if wrapped in label
+    if(!isWrappedInLabel){
+        btnFile.addEventListener("click", (e) => {
+            let inputFile = wrap.querySelector("input[type=file]");
+            inputFile.click();
+            //console.log('file click');
+        });
+    }
 
     // custom event - add file info
     input.addEventListener("input", (e) => {
@@ -94,7 +100,7 @@ export function bindFileInputDropArea(dropArea = null, inputFile = null, dragOve
     // if input is in drop area or in parent element
     inputFile = inputFile ? inputFile : dropArea.querySelector("input[type=file]");
 
-    let accepted = inputFile.accept ? inputFile.accept.split(',').filter(Boolean).map(type=>type.trim() ) : ['.txt', '.svg'];
+    let accepted = inputFile.accept ? inputFile.accept.split(',').filter(Boolean).map(type => type.trim()) : ['.txt', '.svg'];
 
     //console.log('accepted', accepted, inputFile.accept);
 
@@ -119,23 +125,23 @@ export function bindFileInputDropArea(dropArea = null, inputFile = null, dragOve
     dropArea.addEventListener("drop", (e) => {
 
         let fileInfo = dropArea.querySelector('.input-file-info');
-        if(fileInfo) fileInfo.textContent='';
+        if (fileInfo) fileInfo.textContent = '';
 
         let files = e.dataTransfer.files;
         //console.log(accepted, files);
 
-        let filesFiltered=new DataTransfer();
+        let filesFiltered = new DataTransfer();
 
 
-        for(let i=0,l=files.length; i<l;i++){
-            let file=files[i];
-            let type = file.type ? '.'+file.type.split('/').slice(-1) : null;
+        for (let i = 0, l = files.length; i < l; i++) {
+            let file = files[i];
+            let type = file.type ? '.' + file.type.split('/').slice(-1) : null;
             // get type from extension
-            let ext = '.'+file.name.split('.').slice(-1);
+            let ext = '.' + file.name.split('.').slice(-1);
 
-            if(accepted.includes(type) || accepted.includes(ext)){
+            if (accepted.includes(type) || accepted.includes(ext)) {
                 filesFiltered.items.add(file)
-            }else{
+            } else {
                 console.warn('File type not allowed', type, ext, accepted);
             }
             //console.log(type, file.type , ext, 'check');
@@ -150,8 +156,8 @@ export function bindFileInputDropArea(dropArea = null, inputFile = null, dragOve
             inputFile.dispatchEvent(changeEvent);
             //inputFile.dispatchEvent('input');
 
-        }else{
-            if(fileInfo) fileInfo.textContent='Invalid filetype';
+        } else {
+            if (fileInfo) fileInfo.textContent = 'Invalid filetype';
         }
     });
 

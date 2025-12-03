@@ -8,6 +8,8 @@ import { parseCSP_Atts } from './csp';
 
 export async function injectSpriteSheet(embedSprite = true, iconFile = "iconSprite_inputs.svg", debug = false) {
 
+    //console.log('!!! injectSpriteSheet');
+
     //console.log(icons_exclude);
     debug = false;
 
@@ -67,78 +69,6 @@ export async function injectSpriteSheet(embedSprite = true, iconFile = "iconSpri
                 //useless icons
                 let icons_exclude = [];
 
-                /*
-                let icons_exclude = [
-                    'at-symbol',
-                    'currency-',
-                    'cpu-chip',
-                    'check-badge',
-                    'cake',
-                    'cog',
-                    'cog-6-tooth',
-                    'cog-8-tooth',
-                    'globe-',
-                    'receipt-',
-                    'rocket-launch',
-                    'stop-circle',
-                    'gif',
-                    'gift-top',
-                    'face-frown',
-                    'calendar-days',
-                    'briefcase',
-                    'bookmark-square',
-                    'banknotes',
-                    'magnifying-glass-circle',
-                    'funnel',
-                    'building-storefront',
-                    'bell-snooze',
-                    'bars-4',
-                    'face-smile',
-                    'arrow-long-down',
-                    'arrow-long-up',
-                    'arrow-path-rounded-square',
-                    'sparkles',
-                    'clipboard-document-list',
-                    'home-modern',
-                    'hashtag',
-                    'minus',
-                    'minus-small',
-                    'plus-small',
-                    'plus',
-                    'building-office-2',
-                ];
-                */
-
-
-                /*
-                aliases
-                ellipsis-vertical => kebab
-                square-2-stack = > copy
-                */
-
-                /*
-                filled
-                pencil,
-                heart
-                facebook
-                */
-                /*
-                let improved = [
-                    'pencil',
-                    'filter',
-                    'shopping-cart',
-                    'square-3-stack-3d',
-                    'wrench',
-                    'shopping-cart',
-                    'circle-stack',
-                    'user-minus',
-                    'user-plus',
-                    'ticket',
-                    'wrench-screwdriver',
-                    '',
-                ];
-                */
-
 
                 let symbols = svgDom.querySelectorAll('symbol');
                 for (let i = 0, l = symbols.length; l && i < l; i++) {
@@ -166,16 +96,22 @@ export async function injectSpriteSheet(embedSprite = true, iconFile = "iconSpri
                         continue;
                     }
 
+
+                    // set default viewBox
+                    let viewBox = symbol.getAttribute('viewBox')
+                    if(!viewBox) symbol.setAttribute('viewBox', '0 0 24 24');
+
                     // append icon
                     svgDom.append(symbol)
                 }
-
 
             }
 
 
             //console.log(svgDom);
             spriteWrapper.append(svgDom);
+
+            //console.log(svgDom);
 
             // fix CSP styles – otherwise catched by CSP main helper
             let styled = svgDom.querySelectorAll('[data-style]');
@@ -195,14 +131,20 @@ export async function injectSpriteSheet(embedSprite = true, iconFile = "iconSpri
         }
     }
 
+
+
+    // listen to DOM changes for new icon changes
+    document.addEventListener('DOMChange', () => {
+        injectIcons(embedSprite, true);
+    });
+
+
     /**
      * append spritemap 
      * only for visualization
      * if "#spriteMap" element is present
      */
     injectIconSpriteMap();
-    //parseCSP_Atts();
-
 
     return true;
 
@@ -234,6 +176,7 @@ export async function injectIcons(embedSprite = true, promise = false, iconFile 
 
 
 export function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_inputs.svg') {
+
 
     // get ID and position
     let iconIDs = el.dataset.icon ? el.dataset?.icon.split(' ') : [];
@@ -279,7 +222,7 @@ export function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_
 
         for (let i = 0, l = iconIDs.length; i < l; i++) {
             let ref = useRefs[i];
-            let vB = symbol ? symbol.getAttribute('viewBox') : (viewBoxLookup[iconID] ? viewBoxLookup[iconID] : '0 0 24 24');
+            let vB = symbol ? (symbol.getAttribute('viewBox') || '0 0 24 24' ) : (viewBoxLookup[iconID] ? viewBoxLookup[iconID] : '0 0 24 24');
             iconMarkup += `<svg class="icn-svg icn-${iconID} ${posClass}  icn-svg-${i}" viewBox="${vB}"><use  href="${ref}"/></svg>`;
 
         }
@@ -287,13 +230,16 @@ export function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_
     // single icon
     else {
 
-        let vB = symbol ? symbol.getAttribute('viewBox') : '0 0 24 24';
+        let vB = symbol ? (symbol.getAttribute('viewBox') || '0 0 24 24') : '0 0 24 24';
+        //console.log('!!!VB', vB);
         let ref = useRefs[0];
         iconMarkup = `<svg class="icn-svg icn-${iconID} ${posClass}" viewBox="${vB}"><use  href="${ref}"/></svg>`;
 
     }
 
     if (!wrap) iconMarkup = `<span class="icn-wrp icn-wrp-${iconID} icn-wrp-${iconPosition}">${iconMarkup}</span>`;
+
+
 
 
     // add class to indicate injection
@@ -313,6 +259,7 @@ export function injectIcon(el = null, embedSprite = true, iconSvg = 'iconSprite_
  */
 export function injectIconSpriteMap() {
 
+
     //inject spritemap - only for testing
     let spriteMapEl = document.getElementById('spriteMap');
     if (!spriteMapEl) return;
@@ -321,7 +268,8 @@ export function injectIconSpriteMap() {
     let symbols = spriteWrap.querySelectorAll('symbol');
 
     //spriteMapEl = document.createElement('div')
-    spriteMapEl.classList.add('spritemap', 'grd', 'grd-3', 'grd-md-8')
+    spriteMapEl.classList.add('spritemap', 'grd', 'grd-3', 'grd-md-5', 'grd-ld-8')
+
 
 
 
@@ -332,14 +280,15 @@ export function injectIconSpriteMap() {
 
         let ns = 'http://www.w3.org/2000/svg';
         let svg = document.createElementNS(ns, 'svg');
-        let viewBoxAtt = symbol.getAttribute('viewBox');
-        let { width, height } = symbol.viewBox.baseVal;
+        let viewBoxAtt = symbol.getAttribute('viewBox') || '0 0 24 24';
+        let viewBox = viewBoxAtt.split(' ').map(Number);
+        let [ ,, width, height ] = viewBox;
         svg.setAttribute('data-id', symbol.id);
         svg.setAttribute('width', width);
         svg.setAttribute('height', height);
         svg.setAttribute('xmlns', ns);
         svg.setAttribute('viewBox', viewBoxAtt);
-        svg.classList.add('icn-svg');
+        svg.classList.add('icn-svg', `icn-${symbol.id}`);
 
         let children = [...symbol.children];
 
@@ -350,7 +299,6 @@ export function injectIconSpriteMap() {
         col.append(svg)
         col.insertAdjacentHTML('beforeend', `<p class="icon-label">${symbol.id}</p>`)
         spriteMapEl.append(col)
-
     })
 
     // document.body.append(spriteMap)

@@ -1,0 +1,134 @@
+:root {
+
+    --transition-delay-modal: 0s;
+    --transition-duration-modal: 0.2s;
+
+}
+
+.dialog {
+    width: 90%;
+
+    background-color: var(--color-bg, white);
+    color: var(--color-text, #000);
+    position: fixed;
+    width: 75%;
+    border-radius: 0.3em;
+    padding: 1em 1em 1em 1em;
+    border: none;
+    filter: drop-shadow(0.5em 0.5em 0.5em rgba(0, 0, 0, 0.4));
+    visibility: hidden;
+    border: 1px solid var(--color-bg-orig, #000);
+    left: 0;
+    top: 0;
+
+    margin-top: 5vh;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+
+
+    &:focus {
+        outline: none;
+    }
+
+    iframe {
+        border: none;
+    }
+}
+
+
+
+.dialog-content {
+    flex: 1;
+    width: 100%;
+    padding-right: 1em;
+
+    & * {
+        max-width: 100%;
+    }
+}
+
+.dialog-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5em
+}
+
+
+.dialog-header-title {
+    font-weight: 700;
+    margin: 0;
+    user-select: none;
+    pointer-events: none;
+}
+
+
+
+.min-hgt-75vh {
+    min-height: 75vh;
+}
+
+
+.dialog-wrap-iframe .dialog {
+    min-height: 75vh;
+}
+
+
+/* hide default backdrop */
+dialog::backdrop {
+    opacity: 0;
+}
+
+/* add transitions */
+dialog,
+.dialog-wrap::before {
+    display: block;
+    transition: var(--transition-duration-modal) var(--transition-delay-modal) opacity;
+    opacity: 0;
+}
+
+
+/* create backdrop replacement to enable transition */
+.dialog-wrap {
+    &:before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-color: var(--color-text-orig, #000);
+        pointer-events: none;
+    }
+}
+
+.dialog-wrap:has(dialog[open]),
+.dialog-active {
+
+    z-index: 999;
+
+    &:before {
+        opacity: 0.75;
+    }
+
+    dialog {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+
+
+
+/** btns **/
+.dialog-btn-close {
+    color: var(--color-focus, #000);
+    position: static;
+    font-size: 48px;
+    line-height: 0;
+    width: auto;
+    display: block;
+    appearance: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    user-select: none;
+    margin-left: auto
+}

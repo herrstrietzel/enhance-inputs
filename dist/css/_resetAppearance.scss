@@ -21,9 +21,16 @@
         color: var(--color-focus);
     }
 
-    h1,h2,h3,h4,
-    p{
+    h1,
+    h2,
+    h3,
+    h4,
+    p {
         margin: 0 0 1rem 0;
+    }
+
+    :is(p, pre, ul, table, iframe)+ :is(h1, h2, h3) {
+        margin-top: 2rem;
     }
 
     textarea {
@@ -85,8 +92,8 @@
         border: none;
         background-color: transparent;
 
-        &:focus-within{
-            outline:none;
+        &:focus-within {
+            outline: none;
         }
 
 
@@ -218,6 +225,17 @@
     .input-wrap-number {
         @extend .flx-1-0-aut;
         //flex: 1 0 auto;
+    }
+
+
+
+    ul{
+        @extend .li-bll;
+
+    }
+
+    ol{
+        @extend .li-num
     }
 
 }

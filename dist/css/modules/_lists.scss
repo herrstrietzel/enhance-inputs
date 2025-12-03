@@ -12,7 +12,7 @@
         display: list-item;
     }
     ::marker {
-        color: var(--color-marker);
+        color: var(--color-focus, #000);
         font-size: inherit
     } 
 }
@@ -28,6 +28,7 @@
 
 .li-bll {
     padding-left: 1em;
+    
     li {
         list-style-position: outside;
         list-style-image: initial;

@@ -16,7 +16,7 @@ export function parseCSP_Atts() {
         }
         if (style) {
             if(el.nodeName.toLowerCase()==='template'){
-                let cssText = el.content.querySelector('style').textContent;
+                let cssText = el.content.querySelector('style')?.textContent;
                 let cssSheet = new CSSStyleSheet()
                 cssSheet.replaceSync(cssText)
                 document.adoptedStyleSheets = [cssSheet];
@@ -27,7 +27,6 @@ export function parseCSP_Atts() {
             }
         }
     })
-
 
 }
 

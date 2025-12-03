@@ -91,6 +91,8 @@
   grid-column: auto / span 4;
 }
 
+
+/* grid cols */
 .grd-2 {
   grid-template-columns: repeat(2, 1fr);
 }
@@ -158,6 +160,10 @@
     grid-column: auto / span 4;
   }
 
+  .grd-md-1 {
+    grid-template-columns: 1fr;
+  }
+
   .grd-md-2 {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -217,6 +223,8 @@
     grid-column: 1 / -1;
   }
 
+
+
   .spn-ld-2 {
     grid-column: auto / span 2;
   }
@@ -228,6 +236,11 @@
   .spn-ld-4 {
     grid-column: auto / span 4;
   }
+
+  .grd-ld-1 {
+    grid-template-columns: 1fr;
+  }
+
 
   .grd-ld-2 {
     grid-template-columns: repeat(2, 1fr);

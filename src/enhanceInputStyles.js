@@ -8,7 +8,7 @@ import { enhanceTextareas } from './enhanceInputStyles_textarea.js';
 import { enhanceNumberFields } from './enhanceInputStyles_num.js';
 import { enhanceFileinputs } from './enhanceInputStyles_file.js';
 import { injectIcons } from './injectIcons.js';
-import { addToolTips } from './enhanceInputStyles_tooltips.js';
+import { addToolTips, addInfos } from './enhanceInputStyles_tooltips.js';
 
 //import { enhanceTextLikeFields } from './enhanceInputStyles_textlike.js';
 //import { enhanceDateAndTimeFields } from './enhanceInputStyles_time.js';
@@ -66,10 +66,16 @@ export async function enhanceInputStyles(inputs = []) {
         }
 
         if (!label) {
-            input.parentNode.insertBefore(wrap, input);
-            wrap.append(input)
+
+            // filter out code textareas
+            let isCode = nodeName === 'textarea' && input.closest('[class*=language-]');
+            if(!isCode){
+                input.parentNode.insertBefore(wrap, input);
+                wrap.append(input)
+            }
         }
 
+        
 
         /**
          * add icons
@@ -105,7 +111,6 @@ export async function enhanceInputStyles(inputs = []) {
             type = dataType ? dataType : type
             let iconNames = icon ? icon : inputIcons[type];
             let dataImg = input.dataset.img
-
 
             // use img instead of icon
             if(dataImg){
@@ -158,7 +163,9 @@ export async function enhanceInputStyles(inputs = []) {
     // file inputs
     enhanceFileinputs();
 
+    // add tooltips or info boxes
     addToolTips();
+    addInfos();
 
 }
 

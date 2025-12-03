@@ -5,14 +5,14 @@ import { getSettingValueFromInputs, getSettingValueFromInput } from './getSettin
 
 import { syncInputsWithCache, setInputValueFromSettings, saveSettingsToLocalStorage } from './localStorage.js';
 
-import {updateQueryParams, settingsToQueryString} from './getSettings_query.js';
+import { updateQueryParams, settingsToQueryString } from './getSettings_query.js';
 
 // custom event for settings update
 export const settingsUpdate = new Event('settingsChange');
 
 
 // add event listeners
-export function bindSettingUpdates(inputs, settings = {}, storageName = 'settings', toQuery=false) {
+export function bindSettingUpdates(inputs, settings = {}, storageName = 'settings', toQuery = false) {
 
     inputs.forEach((inp) => {
 
@@ -20,18 +20,22 @@ export function bindSettingUpdates(inputs, settings = {}, storageName = 'setting
         if (!inp.classList.contains('input-active')) {
             inp.addEventListener("input", (e) => {
 
+                // sync 
+                updateSyncedInput(inp, settings);
+
                 //console.log('inp', inp);
                 getSettingValueFromInput(inp, settings)
 
                 // update localStorage
                 saveSettingsToLocalStorage(settings, storageName)
 
-                if(toQuery){
+                if (toQuery) {
                     //let queryStr = settingsToQueryString(settings)
                     //console.log('queryStr', queryStr);
                     updateQueryParams(settings)
-                
+
                 }
+
 
                 // trigger custom event
                 //document.dispatchEvent(new Event('settingsChange'))
@@ -45,11 +49,59 @@ export function bindSettingUpdates(inputs, settings = {}, storageName = 'setting
 }
 
 
+export function updateAllSettings(inputs, settings = {}, storageName = 'settings', toQuery = false) {
+
+    inputs.forEach((inp) => {
+
+        // sync 
+        updateSyncedInput(inp, settings);
+
+        //console.log('inp', inp);
+        getSettingValueFromInput(inp, settings)
+
+        /*
+        // update localStorage
+        saveSettingsToLocalStorage(settings, storageName)
+
+        if (toQuery) {
+            //let queryStr = settingsToQueryString(settings)
+            //console.log('queryStr', queryStr);
+            updateQueryParams(settings)
+
+        }
+        */
+
+
+        // trigger custom event
+        //document.dispatchEvent(new Event('settingsChange'))
+        document.dispatchEvent(settingsUpdate)
+
+    });
+
+
+
+}
+
+export function updateSyncedInput(input = null, settings = {}) {
+    let inputSyncedName = input.dataset.sync;
+
+    if (inputSyncedName) {
+        let inputSynced = document.querySelector(`[name=${inputSyncedName}]`)
+        if (inputSynced) {
+            let val = input.value
+            inputSynced.value = val;
+            settings[inputSyncedName] = val;
+        }
+    }
+
+}
+
+
 /**
  * reset btn
  */
 export function resetSettings(settings = {}) {
-    if(settings.defaults) Object.assign(settings, settings.defaults);  
+    if (settings.defaults) Object.assign(settings, settings.defaults);
 }
 
 
@@ -57,26 +109,26 @@ export function bindResetBtn(settings = {}, storageName = 'settings') {
     let btnsReset = document.querySelectorAll('#btnReset, .btnReset');
 
 
-    btnsReset.forEach(btn=>{
+    btnsReset.forEach(btn => {
         btn.addEventListener('click', e => {
-    
-            resetSettings(settings) 
-    
+
+            resetSettings(settings)
+
             // delete local storage
             localStorage.removeItem(storageName)
-    
+
             // update inputs
             setInputValueFromSettings(settings)
-    
+
             // update localStorage
             saveSettingsToLocalStorage(settings, storageName)
-    
+
             // delete query params
             updateQueryParams({})
-    
+
             // trigger custom event
             document.dispatchEvent(settingsUpdate)
-    
+
         })
 
     })

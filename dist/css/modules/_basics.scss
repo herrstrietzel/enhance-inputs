@@ -8,7 +8,8 @@ basic positioning margins etc.
 */
 
 html,
-body {
+body,
+.scroll-content {
     scroll-behavior: smooth;
 }
 
@@ -70,6 +71,12 @@ iframe {
 }
 
 
+
+
+.bg{
+    background-color:var(--color-background, #fff);
+}
+
 /**
 * visible for screen readers
 **/
@@ -81,6 +88,7 @@ iframe {
     position: absolute;
     white-space: nowrap;
     margin: -1px;
+    left:0;
 }
 
 
@@ -143,13 +151,6 @@ iframe {
     display: block;
 }
 
-.dsp-tbl {
-    display: table;
-}
-
-.dsp-tbl-cll {
-    display: table-cell;
-}
 
 .dsp-flx {
     display: flex;
@@ -220,6 +221,10 @@ a {
     text-underline-offset: 0.2em;
 }
 
+.lnk-non,
+.a-non{
+    text-decoration: none;
+}
 
 
 span[style*=text-decoration] {
@@ -323,7 +328,7 @@ span[style*=text-decoration] {
     float: none;
 }
 
-.z-ind--1 {
+.z-ind-1 {
     z-index: -1;
 }
 
@@ -470,4 +475,22 @@ span[style*=text-decoration] {
     background-size: contain;
     background-position: center;
     //@extend .bck-img-no-rpt;
+}
+
+/* code */
+pre{
+white-space:pre-wrap;
+padding:1rem;
+}
+
+pre,
+code{
+background-color: var(--color-code, #ddd);
+border-radius:0.3rem;
+word-break: break-word;
+}
+
+
+code{
+padding:0.1em 0.2em;
 }

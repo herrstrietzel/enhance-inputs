@@ -48,11 +48,13 @@ export function enhanceNumberField(input) {
 
 
 
+    //let parentTitle = wrap.closest('.input-wrap *[title]');
+    //console.log('parentTitle', parentTitle);
 
     // convert type number to text
     input.type = "text";
     //input.pattern = "[0-9+-/*eE.]+";
-    input.title = "Use Mousewheel or arrow keys to change values";
+    input.title = !input.title ? "Use Mousewheel or arrow keys to change values" : input.title;
     input.classList.add('input-number', 'no-focus')
 
 
@@ -94,9 +96,12 @@ export function bindNumberEvents(input, syncInput = null) {
 
     let wrap = input.closest(".input-wrap-number");
 
-    let min = input.min ? +input.min : Infinity;
+    let min = input.min ? +input.min : -Infinity;
     let max = input.max ? +input.max : Infinity;
-    let step = input.step ? +input.step : 0.1;
+    let step = input.step ? +input.step : 1;
+
+
+
 
     input.addEventListener("change", () => safeCalculation(input));
 
@@ -108,12 +113,16 @@ export function bindNumberEvents(input, syncInput = null) {
         input.value = newVal>= min ?  newVal : min;
         //console.log('minus', newVal);
         upDateSynced(syncInput, input)
+        input.dispatchEvent(new Event('input'));
+
     })
 
     btnPlus.addEventListener('click', e => {
         let newVal = +(+input.value + step).toFixed(12)
         input.value = newVal<=max ? newVal : max;
         upDateSynced(syncInput, input)
+        input.dispatchEvent(new Event('input'));
+
     })
 
     if (syncInput) {

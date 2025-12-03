@@ -28,6 +28,10 @@
     -->
 
 
+    <!-- load prism -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/prism.min.js" defer></script>
+
+
     <link rel="stylesheet" href="dist/enhanceInputs.min.css">
     <script src="dist/enhanceInputs.js" defer></script>
 
@@ -36,29 +40,137 @@
 
 
     <template data-csp-style>
-        <style>
-            body {
-                font-family: 'Segoe UI', sans-serif;
-                background: var(--color-background);
-            }
-        </style>
     </template>
 
 
 
-
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--color-background);
+        }
+    </style>
 
 
 </head>
 
 <!-- auto init by class name enhanceInputsInit -->
 
-<body class=" --enhanceInputsInit scrollbar scroll-content scroll-content-notrack">
+<body class=" --scrollbar scroll-content --scroll-track">
 
 
-    <main class="pdd-1em "
-        data-enhance-inputs='{"storageName":"","parent":"body","selector":"input, select, textarea","cacheToUrl":false, "getQuery":true, "cacheToStorage":true,"icons":"all"}'>
+    <main class="pdd-1em --enhance-inputs-init --details-enhanced"
+        data-enhance-inputs='{"storageName":"","parent":"body","selector":"input, select, textarea","cacheToUrl":false, "getQuery":true, "cacheToStorage":true,"icons":""}'>
 
+        <fieldset>
+            <legend>Icons</legend>
+            
+            <h3>Modifiers</h3>
+            <p>Add class for rounded border</p>
+            <div class="fnt-siz-2em">
+            <p><button type="button" data-icon="user" class="btn-default ">Icon normal</button></p>
+            <p><button type="button" data-icon="user" class="btn-default icn-sharp">Icon sharp</button></p>
+            <p><button type="button" data-icon="arrow-right" class="btn-default icn-sharp">Icon sharp</button></p>
+            <p><button type="button" data-icon="magnifying-glass" class="btn-default icn-round icn-sharp">Icon round</button></p>
+            <p><button type="button" data-icon="magnifying-glass" class="btn-default icn-round icn-neg icn-sharp">Icon round negative</button></p>
+
+
+            <p><button type="button" data-icon="user" class="btn-default icn-light">Icon light</button></p>
+            <p><button type="button" data-icon="user" class="btn-default icn-bold">Icon bold</button></p>
+            <p><button type="button" data-icon="user" class="btn-default icn-black">Icon black</button></p>
+            </div>
+
+        </fieldset>
+
+
+        <fieldset>
+            <legend>Details</legend>
+
+            <details open>
+                <summary id="sum1"> Summary 1 </summary>
+                <p>A path is defined by including a ‘path’ element on which the d property specifies the path data. The path
+                    data contains the moveto, lineto, curveto (both cubic and quadratic Béziers), arc and closepath
+                    instructions.</p>
+            </details>
+            <details >
+                <summary class="--summary-plus" 
+                data-summary='{"round":true, "right":false, "icon":"plus"}'> 
+                Summary 2 - <br>Multiline summary text</summary>
+                <p>A path is defined by including a ‘path’ element on which the d property specifies the path data. The path
+                    data contains the moveto, lineto, curveto (both cubic and quadratic Béziers), arc and closepath
+                    instructions.</p>
+            </details>
+    
+            <details >
+                <summary> Summary 3</summary>
+                <p>A path is defined by including a ‘path’ element on which the d property specifies the path data. The path
+                    data contains the moveto, lineto, curveto (both cubic and quadratic Béziers), arc and closepath
+                    instructions.</p>
+            </details>
+
+            <!-- 
+
+                
+            -->
+            <details >
+                <summary class="details-enhanced --summary-icon-chevron"> Summary 3</summary>
+                <p>A path is defined by including a ‘path’ element on which the d property specifies the path data. The path
+                    data contains the moveto, lineto, curveto (both cubic and quadratic Béziers), arc and closepath
+                    instructions.</p>
+            </details>
+
+
+
+        </fieldset>
+
+
+        <fieldset>
+            <legend>Code Examples</legend>
+
+
+            <div class="grd grd-1 grd-md-3 --hgt-10-lh">
+
+                <!-- pre wrapped -->
+                <div class="pre-wrap  --hgh-100">
+                    <textarea
+                        class="scroll-content scroll scroll-thumb-thin scroll-track language-html code-prism ">
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900" rel="stylesheet">
+
+    </textarea>
+                </div>
+
+                <!-- pre CSS directly embedded -->
+
+                <pre class="lang-css  --hgh-100 --code-dark">
+                    <code>
+                    @font-face {
+                    font-family: "Alegreya2";
+                    font-style: normal;
+                    font-weight: 400;
+                    src: url("https://fonts.gstatic.com/s/alegreya/v35/4UaBrEBBsBhlBjvfkRLjzanB44N1.woff2") format("woff2");
+                    }
+
+                    </code>
+                    </pre>
+
+
+                    <!-- pre JS-->
+                     <pre class="language-js  --hgh-100">
+                        <code>
+                            function calculateAge() {
+  let input = document.getElementById('inputValue');
+  let output = document.getElementById('outputValue');
+  output.value = input.value * 0.4893;
+  // text length
+  let len = output.value.toString().length -0.25
+  output.style.width = Math.max(2, len) + "ch";
+}
+                        </code>
+                     </pre>
+
+            </div>
+
+        </fieldset>
 
 
         <fieldset>
@@ -183,9 +295,11 @@
 
         <p>
             <label> <input type="checkbox" name="star" data-icon="star star-filled"> star</label>
-            <label> <input type="checkbox" name="like" data-icon="hand-thumb-up hand-thumb-up-filled"> Like</label>
+            <label> <input type="checkbox" name="like" data-icon="hand-thumb-up hand-thumb-up-filled">
+                Like</label>
 
-            <label> <input type="checkbox" name="likeornot" data-icon="hand-thumb-up hand-thumb-up-filled"> Like</label>
+            <label> <input type="checkbox" name="likeornot" data-icon="hand-thumb-up hand-thumb-up-filled">
+                Like</label>
 
         </p>
 

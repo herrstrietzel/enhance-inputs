@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+
+    <style>
+
+        .preview{
+            svg {
+                overflow: visible
+            }
+    
+            path {
+                marker-start: url(#markerStart);
+                marker-mid: url(#markerRound);
+                stroke-width: 0.5% !important;
+            }
+        }
+    </style>
+
+    <!-- 
+    <script src="https://cdn.jsdelivr.net/gh/kilobtye/potrace@master/potrace.js" defer></script>
+-->
+
+    <!--UI-->
+    <link rel="stylesheet" href="../dist/enhanceInputs.min.css">
+    <script src="../dist/enhanceInputs.js" defer></script>
+
+    <!-- JSzip -->
+    <script src="https://cdn.jsdelivr.net/npm/uzip@0.20201231.0/UZIP.min.js"></script>
+
+
+    <!--path parser-->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/svg-parse-path-normalized@latest/js/pathDataParseNormalized.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/svg-parse-path-normalized@latest/js/pathDataConvert.min.js"></script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/svg-parse-path-normalized@latest/js/pathDataConvert_prototypes.js"></script>
+
+
+    <!-- 
+        <script src="js/toBmp.js" defer></script>
+    -->
+
+    <script src="js/potracePathData5.js" defer></script>
+
+
+    <script src="js/strokeToPath2.js" defer></script>
+    <script src="js/app.js" defer></script>
+
+</head>
+
+<body class="enhance-inputs-init"
+    data-enhance-inputs='{"storageName":"iconGenerate","parent":"body","selector":"input, select, textarea","cacheToUrl":false, "getQuery":true, "cacheToStorage":true,"icons":""}'>
+
+
+
+    <div class="grd grd-md-3 grd-ld-5 gap-1em">
+        <!--toolbar-->
+        <aside class="aside aside-1 scrollbar scroll-content pdd-1em">
+            <h1>Create icon sprite</h1>
+
+            <p data-ui="reset"></p>
+
+
+
+            <p>
+                <label>Load SVG files:
+                    <input class="btn-neg" id="inputFile" name="svgFiles" type="file" multiple
+                        data-label="Upload SVG files" accept=".svg">
+                </label>
+            </p>
+        </aside>
+
+
+        <main class="main spn-md-2 spn-ld-3 scrollbar scroll-content">
+
+            <div class="preview">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-arrow-down-circle">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="8 12 12 16 16 12"></polyline>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                </svg>
+
+            </div>
+
+        </main>
+
+
+    </div>
+
+
+
+
+
+
+    <!-- 
+    <svg id="svg" class="svgPreview" viewBox="0 0 10 10">
+        <path d="M1 1Q1 5 9 9M9 1Q9 5 1 9" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" />
+      </svg>
+
+-->
+
+
+
+    <!-- markers to show commands -->
+    <svg id="svgMarkers" style="width:0; height:0; position:absolute; z-index:-1;float:left;">
+        <defs>
+            <marker id="markerStart" overflow="visible" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="strokeWidth"
+                markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+                <circle cx="5" cy="5" r="5" fill="green"></circle>
+
+                <marker id="markerRound" overflow="visible" viewBox="0 0 10 10" refX="5" refY="5"
+                    markerUnits="strokeWidth" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+                    <circle cx="5" cy="5" r="2.5" fill="red"></circle>
+                </marker>
+        </defs>
+    </svg>
+
+
+
+    <script>
+
+
+    </script>
+
+
+</body>
+
+</html>

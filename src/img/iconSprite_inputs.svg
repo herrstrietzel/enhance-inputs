@@ -2,187 +2,351 @@
     aria-hidden="true">
 
 
-    <!-- social media -->
-    <symbol viewBox="0 0 24 24" id="github"><path d="m9 22v-3.9a3.4 3.4 0 01.9-2.5c-3.1-.4-6.4-1.6-6.4-7a5.4 5.4 0 011.5-3.8 5.1 5.1 0 01.1-3.8s1.2-.3 3.9 1.5a13.4 13.4 0 017 0c2.7-1.8 3.9-1.5 3.9-1.5a5.1 5.1 0 01.1 3.8 5.4 5.4 0 011.5 3.7c0 5.5-3.3 6.7-6.4 7a3.4 3.4 0 01.9 2.6v3.9m-14-6c2 .5 2 4.5 7 3"/></symbol>
-
-
-    <symbol viewBox="0 0 24 24" id="instagram"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5h-10a5 5 0 01-5-5v-10a5 5 0 015-5zm9 9.37a4 4 0 11-3.37-3.37 4 4 0 013.37 3.37zm1.5-4.87h0.01"/></symbol>
-
-
-    <symbol viewBox="0 0 24 24" id="facebook"><path d="M18 2h-3a5 5 0 00-5 5v3h-3v4h3v8h4v-8h3l1-4h-4v-3a1 1 0 011-1h3z" /></symbol>
-
-    <svg viewBox="0 0 24 24" id="youtube"><path d="M22.5 6.4a2.8 2.8 0 00-1.9-2c-1.7-.4-8.6-.4-8.6-.4s-6.9 0-8.6 .5a2.8 2.8 0 00-1.9 2 29 29 0 00-.5 5.3 29 29 0 000.5 5.3 2.8 2.8 0 001.9 1.9c1.7 .5 8.6 .5 8.6 .5s6.9 0 8.6-.5a2.8 2.8 0 001.9-2 29 29 0 000.5-5.2 29 29 0 00-.5-5.4zm-12.7 8.6 5.7-3.2-5.7-3.3 0 6.5z"/></svg>
-
-
-    <symbol viewBox="0 0 24 24" id="stackoverflow"><path d="M20.88 13.49v6.93h-18.48v-6.93h2.3v4.61h13.85v-4.61h2.33zm-15 1.15h11.54v2.3h-11.54v-2.3zm0.26-2.52 .51-2.26 11.28 2.5-.51 2.26-11.28-2.5zm1.32-4.61 .96-2.09 10.47 4.88-.96 2.08-10.47-4.87zm12.84 .94-1.41 1.82-9.15-7.01 1.01-1.34h1.06l8.49 6.53z" stroke="none" fill="currentColor" /></symbol>
-
-
-    <symbol  viewBox="0 0 24 24" id="printer"><path d="M6 9v-7h12v7m-12 9h-2a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-12-4h12v8h-12z"/></symbol>
-
-
-    <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 24" id="wheelchair"><path d="M9.6 3a0.6 .6 0 11-1.1 0 .6 .6 0 111.1 0m0.4 13.8c0 2.1-1.7 3.9-3.9 3.9-2.1 0-3.8-1.8-3.8-3.9 0-2.2 1.7-3.9 3.8-3.9m2.9-9.9 0 0m0-.6c0.3 0 .6 .3 .6 .6s-.3 .6-.6 .6-.5-.3-.5-.6 .2-.6 .5-.6zm5.7 6.4c-.6 .6-1.4 1-2.3 1-1 0-1.8-.4-2.4-1s-1-1.4-1-2.3m7.1 15.1v-7.5h-7.1v-7.7" /></symbol>
-
-
-    <!-- checkbox -->
-    <symbol viewBox="0 0 24 24" id="checkbox-checked">
-        <path d="M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2h-14a2 2 0 01-2-2v-14a2 2 0 012-2z"
-            style="fill:var(--color-icon-bg, white); stroke:none" />
-        <path d="m21 12v7a2 2 0 01-2 2h-14a2 2 0 01-2-2v-14a2 2 0 012-2h10m-6 8 3 3 10-10" />
+    <!-- arrows -->
+    <symbol id="arrow-left">
+        <path d="M19 12h-14m7-7-7 7 7 7" />
+    </symbol>
+    <symbol id="arrow-right">
+        <path d="M5 12h14m-7-7 7 7-7 7" />
     </symbol>
 
-    <symbol viewBox="0 0 24 24" id="checkbox">
-        <path d="M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2h-14a2 2 0 01-2-2v-14a2 2 0 012-2z"
-            style="fill:var(--color-icon-bg, white)" />
+    <symbol id="arrow-down">
+        <path d="M12 5v14m7-7-7 7-7-7" />
+    </symbol>
+
+    <symbol id="arrow-up">
+        <path d="M12 19v-14m-7 7 7-7 7 7" />
+    </symbol>
+
+    <symbol id="arrow-down-left">
+        <path d="M17 17h-10v-10m10 0-10 10" />
+    </symbol>
+
+    <symbol id="arrow-down-right">
+        <path d="m7 7 10 10m0-10v10h-10" />
+    </symbol>
+
+    <symbol id="arrow-up-left">
+        <path d="m17 17-10-10m0 10v-10h10" />
+    </symbol>
+
+    <symbol id="arrow-up-right">
+        <path d="m7 17 10-10m-10 0h10v10" />
+    </symbol>
+
+    <!-- select -->
+    <symbol id="chevron-down">
+        <path d="m6 10 6 6 6-6" />
+    </symbol>
+
+    <symbol id="chevron-up">
+        <path d="m18 14.5-6-6-6 6" />
+    </symbol>
+
+    <symbol id="chevron-left">
+        <path d="m15 18-6-6 6-6" />
+    </symbol>
+
+
+    <symbol id="chevron-right">
+        <path d="m9 18 6-6-6-6" />
+    </symbol>
+
+
+    <symbol id="chevrons-down">
+        <path d="m7 13 5 5 5-5m-10-7 5 5 5-5" />
+    </symbol>
+
+    <symbol id="chevrons-up">
+        <path d="m17 11-5-5-5 5m10 7-5-5-5 5" />
+    </symbol>
+
+    <symbol id="chevrons-left">
+        <path d="m11 17-5-5 5-5m7 10-5-5 5-5" />
+    </symbol>
+
+
+    <symbol id="chevrons-right">
+        <path d="m13 17 5-5-5-5m-7 10 5-5-5-5" />
+    </symbol>
+
+
+    <!-- upload -->
+    <symbol id="arrow-up-tray">
+        <path d="M12 15v-12.5m-4.5 4.5 4.5-4.5 4.5 4.5m-13.5 7v5h18v-5" />
+    </symbol>
+
+    <!-- download -->
+    <symbol id="arrow-down-tray">
+        <path
+            d="M12 2v12m-4.5-4 4.5 4.5 4.5-4.5m4.5 4v5h-18v-5" />
+    </symbol>
+
+    <!-- reload -->
+    <symbol id="arrow-path">
+        <path
+            d="M16 9.3h5l0 0m-18 10.3v-4.9m0 0h5m-5 0 3.2 3.1a8.3 8.3 0 0013.8-3.7m-16-4.2a8.3 8.3 0 0113.8-3.7l3.2 3.1m0-4.9v4.9" />
+    </symbol>
+
+    <!-- inputs -->
+    <symbol id="checkbox-checked">
+        <path d="M21 12v9h-18v-18h12m-6 8 3 3 10-10" style="fill:var(--color-icon-bg, white)" />
+    </symbol>
+
+    <symbol id="checkbox">
+        <path d="M3 3h18v18h-18z" style="fill:var(--color-icon-bg, white)" />
     </symbol>
 
     <!-- checkbox switch -->
     <symbol viewBox="0 0 36 24" id="checkbox-switch">
-        <path 
+        <path
             d="M12 2h12a10 10 0 0110 10l0 0a10 10 0 01-10 10h-12a10 10 0 01-10-10l0 0a10 10 0 0110-10zm6 10a6 6 0 10-12 0 6 6 0 1012 0" />
     </symbol>
 
     <symbol viewBox="0 0 36 24" id="checkbox-switch-checked">
-        <path style="fill:currentColor;stroke:none"
+        <path style="fill:currentColor;"
             d="M12 2h12a10 10 0 0110 10l0 0a10 10 0 01-10 10h-12a10 10 0 01-10-10l0 0a10 10 0 0110-10z m20 10a8 8 0 10-16 0 8 8 0 1016 0" />
     </symbol>
 
-
     <!-- radio -->
-    <symbol viewBox="0 0 24 24" id="radio">
+    <symbol id="radio">
         <circle cx="12" cy="12" r="10" style="fill:var(--color-icon-bg, white)"></circle>
     </symbol>
 
-    <symbol viewBox="0 0 24 24" id="radio-checked">
+    <symbol id="radio-checked">
         <circle cx="12" cy="12" r="10" style="fill:var(--color-icon-bg, white)" />
         <circle cx="12" cy="12" r="5" fill="currentColor" stroke="none" />
     </symbol>
 
-    <!-- user -->
-    <symbol viewBox="0 0 24 24" id="user">
-        <path
-            d="M 15.8 6 a 3.8 3.8 0 1 1 -7.5 0 a 3.8 3.8 0 0 1 7.5 0 z m -11.3 14.1 a 7.5 7.5 0 0 1 15 0" />
-    </symbol>
 
-
+    <!-- links -->
     <!-- mail -->
-    <symbol viewBox="0 0 24 24" id="envelope">
-        <path
-            d="M21.8 6.8v10.5a2.3 2.3 0 01-2.3 2.2h-15a2.3 2.3 0 01-2.2-2.2v-10.5m19.5 0a2.3 2.3 0 00-2.3-2.3h-15a2.3 2.3 0 00-2.2 2.3m19.5 0v0.2a2.3 2.3 0 01-1.1 1.9l-7.5 4.6a2.3 2.3 0 01-2.4 0l-7.5-4.6a2.3 2.3 0 01-1-1.9v-.2" />
+    <symbol id="envelope">
+        <path d="M2 4h20v16h-20zm20 2-10 7-10-7" />
     </symbol>
+
+    <symbol id="send">
+        <path d="m.5 10 20-7-7 20-4-9zm20-7-11 11" />
+    </symbol>
+
+
+    <!-- menu icons -->
+    <symbol id="ellipsis-horizontal">
+        <path id="pE"
+            d="M6 12a1 1 0 11-2 0 1 1 0 112 0m7 0a1 1 0 11-2 0 1 1 0 112 0m7 0a1 1 0 11-2 0 1 1 0 112 0" />
+    </symbol>
+
+    <symbol id="ellipsis-vertical">
+        <use href="#pE" transform="rotate(90 12 12)" />
+    </symbol>
+
+
+    <!-- document -->
+    <symbol id="file">
+        <path d="m4.5 2h9l7 7v13h-16v-20zm9 0v7h7" />
+    </symbol>
+
+
+    <symbol id="printer">
+        <path d="M6 9v-6h12v6m-12 9h-4v-7a2 2 0 012-2h16a2 2 0 012 2v7h-4m-12-4h12v8h-12z" />
+    </symbol>
+
+
+    <symbol id="wheelchair">
+        <path
+            d="M12 3a0.6 .6 0 11-1.1 0 .6 .6 0 111.1 0m0.4 13.8c0 2.1-1.7 3.9-3.9 3.9-2.1 0-3.8-1.8-3.8-3.9 0-2.2 1.7-3.9 3.8-3.9m2.9-9.9 0 0m0-.6c0.3 0 .6 .3 .6 .6s-.3 .6-.6 .6-.5-.3-.5-.6 .2-.6 .5-.6zm5.7 6.4c-.6 .6-1.4 1-2.3 1-1 0-1.8-.4-2.4-1s-1-1.4-1-2.3m7.1 15.1v-7.5h-7.1v-7.7" />
+    </symbol>
+
+
+    <!-- user -->
+    <symbol id="user">
+        <path
+            d="M12 2.5a1 1 0 110 7.5 1 1 0 110-7.5m-7.5 17.5a7.5 7.5 0 1115 0m-15 0a7.5 7.5 0 1115 0" />
+    </symbol>
+
 
     <!-- passwords -->
-    <symbol viewBox="0 0 24 24" id="eye">
+    <symbol id="eye">
         <path
-            d="M2 12.3a1 1 0 010-.6c1.4-4.2 5.4-7.2 10-7.2s8.6 3 10 7.2c0 .2 0 .4 0 .6-1.4 4.2-5.4 7.2-10 7.2s-8.6-3-10-7.2z M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            d="M1 12c0 0 4-8 11-8 7 0 11 8 11 8 0 0-4 8-11 8-7 0-11-8-11-8zm14 0a1 1 0 01-6 0 1 1 0 016 0" />
     </symbol>
-    <symbol viewBox="0 0 24 24" id="eye-slash">
+    <symbol id="eye-slash">
         <path
-            d="M4 8.2a10.5 10.5 0 00-2.1 3.8c1.3 4.3 5.3 7.5 10.1 7.5 1 0 2-.1 2.9-.4m-8.7-12.9a10.5 10.5 0 015.8-1.7c4.8 0 8.8 3.2 10.1 7.5a10.5 10.5 0 01-4.3 5.8m-11.6-11.6-3.2-3.2m3.2 3.2 3.7 3.7m7.9 7.9 3.2 3.2m-3.2-3.2-3.7-3.7m0 0a3 3 0 10-4.2-4.2m4.2 4.2-4.2-4.2" />
+            d="M17.9 17.9a10.1 10.1 0 01-5.9 2.1c-7 0-11-8-11-8a18.4 18.4 0 015.1-5.9m3.8-1.9a9.1 9.1 0 012.1-.2c7 0 11 8 11 8a18.5 18.5 0 01-2.2 3.2m-6.7-1.1a3 3 0 11-4.2-4.2m-8.9-8.9 22 22" />
     </symbol>
-
 
     <!-- search -->
-    <symbol viewBox="0 0 24 24" id="magnifying-glass">
-        <path d="m21 21-5.2-5.2m0 0a7.5 7.5 0 10-10.6-10.6 7.5 7.5 0 0010.6 10.6z" />
+    <symbol id="magnifying-glass">
+        <path d="M19 11a1 1 0 01-16 0 1 1 0 0116 0m2 10-4.4-4.4" />
     </symbol>
 
-    <!-- upload -->
-    <symbol viewBox="0 0 24 24" id="arrow-up-tray">
-        <path
-            d="M3 17v4h18v-4m-9 0v-13m-4.5 4.5 4.5-4.5 4.5 4.5" />
-    </symbol>
-
-    <!-- download -->
-    <symbol viewBox="0 0 24 24" id="arrow-down-tray">
-        <path
-            d="m16.5 12-4.5 4.5-4.5-4.5m4.5 4v-12m-9 12.5v4.5h18v-4.5" />
-    </symbol>
 
     <!-- copy -->
-    <symbol viewBox="0 0 24 24" id="square-2-stack">
+    <symbol id="square-2-stack">
         <path
-            d="M16.5 8.3v-2.3a2.3 2.3 0 00-2.2-2.2h-8.3a2.3 2.3 0 00-2.2 2.2v8.3a2.3 2.3 0 002.2 2.2h2.3m8.2-8.2h1.5a2.3 2.3 0 012.3 2.2v7.5a2.3 2.3 0 01-2.3 2.3h-7.5a2.3 2.3 0 01-2.2-2.3v-1.5m8.2-8.2h-6a2.3 2.3 0 00-2.2 2.2v6" />
+            d="M20 9q2 0 2 2v9q0 2-2 2h-9q-2 0-2-2v-9q0-2 2-2zm-15 6h-1q-2 0-2-2v-9q0-2 2-2h9q2 0 2 2v1" />
     </symbol>
-
-
-    <!-- arrows -->
-    <symbol viewBox="0 0 24 24" id="arrow-left">
-        <path d="m10.5 19.5-7.5-7.5m0 0 7.5-7.5m-7.5 7.5h18" />
+    <symbol id="copy">
+        <path
+            d="M4 9q-2 0-2 2v9q0 2 2 2h9q2 0 2-2v-9q0-2-2-2zm15 6h1q2 0 2-2v-9q0-2-2-2h-9q-2 0-2 2v1" />
     </symbol>
-    <symbol viewBox="0 0 24 24" id="arrow-right">
-        <path d="m13.5 4.5 7.5 7.5m0 0-7.5 7.5m7.5-7.5h-18" />
-    </symbol>
-
-
-    <symbol viewBox="0 0 24 24" id="arrow-down">
-        <path d="m19.5 13.5-7.5 7.5m0 0-7.5-7.5m7.5 7.5v-18" />
-    </symbol>
-
 
     <!-- calendar -->
-    <symbol viewBox="0 0 24 24" id="calendar">
+    <symbol id="calendar">
         <path
             d="M 3 5 h 18 v 15 h -18 z M 7 5 v -3 m 10 3 v -3 m -14 6.5 h 18" />
     </symbol>
 
-    <symbol viewBox="0 0 24 24" id="clock">
-        <path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </symbol>
-
-
-    <!-- select -->
-    <symbol viewBox="0 0 24 24" id="chevron-down">
-        <path d="m19.5 8.3-7.5 7.5-7.5-7.5" />
+    <symbol id="clock">
+        <path d="M12 6v6h4.5m4.5 0a1 1 0 11-18 0 1 1 0 0118 0z" />
     </symbol>
 
     <!--dark
     mode -->
-    <symbol viewBox="0 0 24 24" id="moon">
-        <path
-            d="M21.8 15a9.7 9.7 0 01-3.8 .8c-5.4 0-9.7-4.4-9.7-9.8 0-1.3 .2-2.6 .7-3.8a9.8 9.8 0 00-6 9.1c0 5.3 4.4 9.7 9.8 9.7a9.8 9.8 0 009-6z" />
+    <symbol id="moon">
+        <path d="M21 12.8a9 9 0 11-9.8-9.8 7 7 0 009.8 9.8z" />
     </symbol>
 
-    <symbol viewBox="0 0 24 24" id="sun">
+    <symbol id="sun">
         <path
-            d="M12 3v2.3m6.4 .3-1.6 1.6m4.2 4.8h-2.2m-.4 6.4-1.6-1.6m-4.8 2v2.2m-4.8-4.2-1.6 1.6m-.3-6.4h-2.3m4.2-4.8-1.6-1.6m10.2 6.4a3.8 3.8 0 11-7.5 0 3.8 3.8 0 017.5 0z" />
+            d="M17 12a1 1 0 11-10 0 1 1 0 1110 0m-5-11v2m0 18v2m-7.8-18.8 1.4 1.4m12.8 12.8 1.4 1.4m-18.8-7.8h2m18 0h2m-18.8 7.8 1.4-1.4m12.8-12.8 1.4-1.4" />
     </symbol>
 
 
     <!-- loading spinner -->
-    <symbol viewBox="0 0 24 24" id="spinner">
+    <symbol id="spinner">
         <path stroke-linejoin="round" fill="none" d="M 12 2.4 a 9.6 9.6 90 1 1 -9.6 9.6">
             <animateTransform attributeName="transform" type="rotate" dur="0.75s"
                 values="0 12 12;360 12 12" repeatCount="indefinite" />
         </path>
     </symbol>
 
-    <!-- reload -->
-    <symbol viewBox="0 0 24 24" id="arrow-path">
-        <path
-            d="M16 9.3h5l0 0m-18 10.3v-4.9m0 0h5m-5 0 3.2 3.1a8.3 8.3 0 0013.8-3.7m-16-4.2a8.3 8.3 0 0113.8-3.7l3.2 3.1m0-4.9v4.9" />
-    </symbol>
-
 
     <!-- phone -->
-    <symbol viewBox="0 0 24 24" id="phone">
+    <symbol id="phone">
         <path
-            d="M 10 19.5 l 5.6 -3.2 l 4.4 4.3 c -3.8 2.2 -10.2 0.8 -13.2 -4.5 s -1.1 -11.5 2.7 -13.7 l 1.7 5.9 l -5.8 3.3" />
+            d="M 9.5 19 l 5.6 -3.2 l 4.4 4.3 c -3.8 2.2 -10.2 0.8 -13.2 -4.5 s -1.1 -11.5 2.7 -13.7 l 1.7 5.9 l -5.8 3.3" />
     </symbol>
 
 
     <!-- map pin -->
-    <symbol viewBox="0 0 24 24" id="map-pin">
+    <symbol id="map-pin">
         <path
-            d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm4.5 0c0 7.1-7.5 11.3-7.5 11.3s-7.5-4.2-7.5-11.3a7.5 7.5 0 1115 0z" />
+            d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0zm-6 0a1 1 0 01-6 0 1 1 0 016 0" />
     </symbol>
 
 
-    <symbol viewBox="0 0 24 24" id="trash">
-        <path d="M3 6h2 16m-2 0v14a2 2 0 01-2 2h-10a2 2 0 01-2-2v-14m3 0v-2a2 2 0 012-2h4a2 2 0 012 2v2m-6 5v6m4-6v6" />
+    <symbol id="trash">
+        <path
+            d="M3 6h2 16m-2 0v14a2 2 0 01-2 2h-10a2 2 0 01-2-2v-14m3 0v-2a2 2 0 012-2h4a2 2 0 012 2v2m-6 5v6m4-6v6" />
     </symbol>
 
-    <symbol viewBox="0 0 24 24" id="filter"><path d="M22 3h-20l8 9.46v6.54l4 2v-8.54l8-9.46z"/></symbol>
+    <symbol id="x-mark">
+        <path d="m6 18 12-12m-12 0 12 12" />
+    </symbol>
 
+    <symbol id="filter">
+        <path d="M22 3h-20l8 9.46v6.54l4 2v-8.54l8-9.46z" />
+    </symbol>
+
+
+    <symbol id="question-mark-circle">
+        <path id="pathQuestion"
+            d="M 12 2a1 1 0 110 20 1 1 0 110 -20m-3 6a3 3 0 1 1 2.8 4v1.5m0 3.5a .1 .1 0 0 1  0 .5.1 .1 0 0 1 0-.5" />
+    </symbol>
+
+    <symbol id="question">
+        <use href="#pathQuestion" />
+    </symbol>
+
+
+    <symbol id="exclamation-circle">
+        <path id="pathExclamation" d="M12 9v3.8m9-.8a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.8h0v0h0v0z" />
+    </symbol>
+
+    <symbol id="exclamation">
+        <use href="#pathExclamation" />
+    </symbol>
+
+
+    <symbol id="exclamation-triangle">
+        <path
+            d="M12 9v3.8m-9.3 3.3c-.9 1.5 .2 3.4 1.9 3.4h14.8c1.7 0 2.8-1.9 1.9-3.4l-7.4-12.7c-.8-1.5-3-1.5-3.8 0l-7.4 12.7zm9.3-.3h0v0h0v0z" />
+    </symbol>
+
+
+    <symbol id="star">
+        <path
+            d="m12 2 3.1 6.3 6.9 1-5 4.8 1.2 6.9-6.2-3.2-6.2 3.2 1.2-6.9-5-4.8 6.9-1z" />
+    </symbol>
+    <symbol id="star-filled">
+        <use href="#star" style="fill: var(--color-icon, currentColor);" />
+    </symbol>
+
+
+    <symbol id="hand-thumb-up">
+        <path id="tU"
+            d="M7 10h-3q-2 0-2 2v7q0 2 2 2h3m0 0h10q3 0 3.5-3l1-7q.5-3-2.5-3h-5v-4q0-3-3-3l-4 9z" />
+    </symbol>
+
+    <symbol id="hand-thumb-down">
+        <use href="#tU" transform="scale(-1)" transform-origin="12 12" />
+    </symbol>
+
+
+    <symbol id="hand-thumb-up-filled">
+        <use href="#tU" style="fill: currentcolor;" />
+    </symbol>
+
+    <symbol id="hand-thumb-down-filled">
+        <use href="#tU" style="fill: currentcolor;" transform="scale(-1)" transform-origin="12 12" />
+    </symbol>
+
+
+    <symbol id="heart">
+        <path
+            d="M21 8.3c0-2.5-2.1-4.5-4.7-4.5-1.9 0-3.6 1.1-4.3 2.7-.7-1.6-2.4-2.7-4.3-2.7-2.6 0-4.7 2-4.7 4.5 0 7.2 9 12 9 12s9-4.8 9-12z" />
+    </symbol>
+
+
+    <symbol id="plus">
+        <path d="M12 4.5v15m7.5-7.5h-15" />
+    </symbol>
+
+    <symbol id="minus">
+        <path d="M5 12h14" />
+    </symbol>
+
+
+    <!-- social media -->
+    <symbol id="github">
+        <path
+            d="M9 19.5c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 00-1-2.6q6.5-1.5 6.5-7a5.4 5.4 0 00-1.5-3.5 5.1 5.1 0 00-.1-4q-2.4 0-3.9 1.5a13.4 13.4 0 00-7 0q-1.5-1.5-3.9-1.5a5.1 5.1 0 00-.1 4 5.4 5.4 0 00-1.5 3.5q0 5.5 6.5 7a3.4 3.4 0 00-1 2.6v3.9"
+            style="stroke-linecap:square" />
+    </symbol>
+
+
+    <symbol id="instagram">
+        <path
+            d="M16 2q6 0 6 6v8q0 6-6 6h-8q-6 0-6-6v-8q0-6 6-6zm-4 6a1 1 0 010 8 1 1 0 010-8zm5.5-1.5 0 0" />
+    </symbol>
+
+
+    <symbol id="facebook">
+        <path d="M12 22v-14q0-4 4-4h2m-11 8h10" />
+    </symbol>
+
+    <symbol id="youtube">
+        <path
+            d="M12 4c-10.5 0-11 1-11 7.8s0.5 7.8 11 7.8 11-1 11-7.8-.5-7.8-11-7.8zm-2.2 11 5.7-3.2-5.7-3.3z" />
+    </symbol>
+
+
+    <symbol id="stackoverflow">
+        <path
+            d="M20.88 13.49v6.93h-18.48v-6.93h2.3v4.61h13.85v-4.61h2.33zm-15 1.15h11.54v2.3h-11.54v-2.3zm0.26-2.52 .51-2.26 11.28 2.5-.51 2.26-11.28-2.5zm1.32-4.61 .96-2.09 10.47 4.88-.96 2.08-10.47-4.87zm12.84 .94-1.41 1.82-9.15-7.01 1.01-1.34h1.06l8.49 6.53z"
+            stroke="none" fill="currentColor" />
+    </symbol>
 
 
 </svg>

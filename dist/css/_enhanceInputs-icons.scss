@@ -109,3 +109,82 @@
     opacity: 1
   }
 }
+
+/** add circle */
+.icn-circle {
+  svg {
+    //border: calc(var(--icn-stroke-width) * 1.1) solid var(--color-icon);
+    border: calc(var(--icn-stroke-width) * 1.4) solid var(--color-icon);
+    border-radius: 50%;
+    padding: 0.1em;
+  }
+
+  svg,
+  use {
+    stroke-width: calc(var(--icn-stroke-width) * var(--icn-scale));
+    //vector-effect: non-scaling-stroke;
+  }
+
+}
+
+/* omit circle for round or non square icons */
+svg {
+
+  &.icn-svg{
+    &.icn-checkbox-switch,
+    &.icn-checkbox-switch-checked,
+    &.icn-radio,
+    &.icn-radio-checked,
+    &.icn-checkbox,
+    &.icn-checkbox-checked {
+      border: none !important;
+      background-color: transparent;
+      stroke:var(--color-icon);
+      padding: 0;
+
+    }
+  }
+
+}
+
+.icn-negative {
+  svg {
+    background-color: var(--color-icon);
+  }
+
+  svg,
+  use {
+    stroke: var(--color-background, #fff)
+  }
+}
+
+/* disable line rounding */
+.icn-sharp {
+  svg,
+  use {
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+  }
+}
+
+.icn-thin {
+  --icn-stroke-width: 1px
+}
+
+.icn-light {
+  --icn-stroke-width: 1.5px
+}
+
+.icn-medium {
+  --icn-stroke-width: 2.3px
+}
+
+.icn-bold {
+  --icn-stroke-width: 2.75px
+}
+
+/*
+.icn-black {
+  --icn-stroke-width: 3px
+}
+  */

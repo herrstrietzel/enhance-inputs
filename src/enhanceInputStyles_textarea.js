@@ -25,12 +25,15 @@ export function enhanceTextareas(selector = '[data-enhance-inputs]') {
 export function enhanceTextarea(el = null, classWrap = 'input-wrap-textarea', classWrapHeader = 'input-wrap-textarea-header', classWrapToolbar = 'input-wrap-textarea-header-toolbar') {
 
     let wrap = el.closest(`.${classWrap}`);
+    let isCode = el.closest('[class*=language-]');
+
+    // ignore code textareas
+    if(isCode) return;
 
     if (!wrap) {
         wrap = document.createElement('div')
         wrap.classList.add(classWrap, 'input-wrap', 'input-wrap-boxed', 'input-wrap-textarea');
         el.parentNode.insertBefore(wrap, el)
-        //el.classList.add('input-textarea', 'no-focus','scrollbar', 'scroll-content')
     }
 
     let header = wrap.querySelector(`${classWrapHeader}`)
@@ -47,7 +50,7 @@ export function enhanceTextarea(el = null, classWrap = 'input-wrap-textarea', cl
     // search for label
     let hasLabelWrap = wrap.nodeName.toLowerCase() === 'label';
     let prevSibling = !hasLabelWrap ? wrap.previousElementSibling : null;
-    let hasLabelPrev = !hasLabelWrap ? prevSibling.nodeName.toLowerCase() === 'label' : false;
+    let hasLabelPrev = !hasLabelWrap ? (prevSibling?.nodeName.toLowerCase() === 'label' || false) : false;
 
     let label = hasLabelWrap ? wrap : (hasLabelPrev ? prevSibling : null);
 
@@ -58,9 +61,14 @@ export function enhanceTextarea(el = null, classWrap = 'input-wrap-textarea', cl
     let accept = el.getAttribute('accept') || '.txt,.svg';
 
     // create header
-    header = document.createElement('header')
-    header.classList.add(classWrapHeader);
-    wrap.append(header);
+    let hasTools = el.dataset.tools;
+    //console.log(hasTools);
+
+    if(hasTools || hasLabelWrap){
+        header = document.createElement('header')
+        header.classList.add(classWrapHeader);
+        wrap.append(header);
+    }
 
 
     // add label to toolbar
@@ -75,28 +83,31 @@ export function enhanceTextarea(el = null, classWrap = 'input-wrap-textarea', cl
     let dataTools = el.dataset.tools;
     let tools = dataTools ? dataTools.split(' ') : [];
 
-    if(!tools.length) return;
+    if (!tools.length) return;
 
     let html = `<div class="${classWrapToolbar}">`;
 
     //console.log(tools);
     // map to icon names
     let icons = {
-        copy: 'square-2-stack',
+        //copy: 'square-2-stack',
+        copy: 'copy',
         download: 'arrow-down-tray',
         upload: 'arrow-up-tray',
+        delete: 'x-mark',
     }
+
 
 
     tools.forEach(tool => {
 
-        //console.log(tool, icons.tool);
+        //console.log(tool, icons[tool]);
 
         if (tool !== 'size') {
-            html += `<button type="button" data-icon="${icons[tool]}" class="btn btn-non btn-toolbar btn-${tool}" title="${tool}" data-btn="${tool}"></button>`
+            html += `<button type="button" data-icon="${icons[tool]}" class="btn btn-non btn-toolbar btn-${tool}" data-tooltip="${tool}" data-btn="${tool}"></button>`
         }
         else if (tool == 'size') {
-            html += `<span class="textarea-toolbar-span textarea-toolbar-span-size usr-slc-non" title="${tool}"></span>`
+            html += `<span class="textarea-toolbar-span textarea-toolbar-span-size usr-slc-non"></span>`
         }
 
         // add hidden inputs
@@ -105,7 +116,7 @@ export function enhanceTextarea(el = null, classWrap = 'input-wrap-textarea', cl
         }
 
         if (tool === 'upload') {
-            html += `<input type="file" class="sr-only input-file" accept="${accept}" >`
+            html += `<input type="file" class="sr-only input-file" accept="${accept}" tabindex="-1" >`
         }
     })
 
@@ -113,7 +124,6 @@ export function enhanceTextarea(el = null, classWrap = 'input-wrap-textarea', cl
 
     // add toolbar funcionality
     bindTextAreaToolbar(header, classWrap, classWrapHeader, classWrapToolbar);
-
 
 }
 
@@ -168,13 +178,13 @@ function bindTextAreaToolbar(header = null, classWrap = '', classWrapHeader = ''
     btns.forEach(btn => {
         let type = btn.dataset.btn
         let parent = btn.closest(`.${classWrap}`)
+        let fileInput = parent.querySelector('input[type=file]');
+        let textarea = parent.querySelector('textarea');
+
         //let textarea = parent.querySelector('textarea');
 
+
         if (type === 'upload') {
-
-
-            let fileInput = parent.querySelector('input[type=file]');
-            let textarea = parent.querySelector('textarea');
 
             bindFileInputDropArea(textarea, fileInput);
 
@@ -219,12 +229,12 @@ function bindTextAreaToolbar(header = null, classWrap = '', classWrapHeader = ''
                         //console.log('clipboard');
                         navigator.clipboard.writeText(text)
                         //console.log('copied', text)
-                      }else{
+                    } else {
                         //console.log('in iframe');
                         textarea.focus();
                         textarea.select();
                         document.execCommand('copy');
-                      }
+                    }
 
                 }
 
@@ -241,6 +251,13 @@ function bindTextAreaToolbar(header = null, classWrap = '', classWrapHeader = ''
                     let fileInput = parent.querySelector('input[type=file]');
                     fileInput.click();
                 }
+
+                else if (type === 'delete') {
+                    textarea.value = ''
+
+                }
+
+
 
             })
 
@@ -265,101 +282,3 @@ function bindTextAreaToolbar(header = null, classWrap = '', classWrapHeader = ''
 
 
 
-function addtextareaTools(classWrap = '', classWrapHeader = '', classWrapToolbar = '') {
-    let textareas = document.querySelectorAll('[data-tools]')
-    //let textareas = document.querySelectorAll('textarea')
-
-
-    for (let i = 0, l = textareas.length; l && i < l; i++) {
-        let el = textareas[i];
-
-        let wrap = el.closest(`.${classWrap}`);
-
-        if (!wrap) {
-            wrap = document.createElement('div')
-            wrap.classList.add(classWrap, 'input-wrap', 'input-wrap-boxed', 'input-wrap-textarea');
-            el.parentNode.insertBefore(wrap, el)
-            //el.classList.add('input-textarea', 'no-focus','scrollbar', 'scroll-content')
-        }
-
-        let header = wrap.querySelector(`${classWrapHeader}`)
-        if (header) {
-            continue;
-        }
-
-        // disable spell check
-        el.spellcheck = false;
-        el.classList.add('input-textarea', 'no-focus', 'scrollbar', 'scroll-content', 'scroll-content-notrack', 'scroll-content-thin', 'scroll-content-hover')
-
-        // search for label
-        let hasLabelWrap = wrap.nodeName.toLowerCase() === 'label';
-        let prevSibling = !hasLabelWrap ? wrap.previousElementSibling : null;
-        let hasLabelPrev = !hasLabelWrap ? prevSibling.nodeName.toLowerCase() === 'label' : false;
-
-        let label = hasLabelWrap ? wrap : (hasLabelPrev ? prevSibling : null);
-
-        if (label) {
-            label.classList.add('label-textarea')
-        }
-
-        let accept = el.getAttribute('accept') || '.txt,.svg';
-
-        // create header
-        header = document.createElement('header')
-        header.classList.add(classWrapHeader);
-        wrap.append(header);
-
-        // add label to toolbar
-        if (hasLabelWrap) {
-            let labelSpan = wrap.querySelector('.label-span');
-            if (labelSpan) header.append(labelSpan)
-        }
-
-        else if (prevSibling) {
-            header.append(label)
-        }
-
-
-        // file name for downloads
-        let filename = el.dataset.file || 'output.txt';
-        let tools = el.dataset.tools.split(' ')
-        let html = `<div class="${classWrapToolbar}">`;
-
-        //console.log(tools);
-        // map to icon names
-        let icons = {
-            copy: 'square-2-stack',
-            download: 'arrow-down-tray',
-            upload: 'arrow-up-tray',
-        }
-
-
-
-        tools.forEach(tool => {
-
-            //console.log(tool, icons.tool);
-
-            if (tool !== 'size') {
-                html += `<button type="button" data-icon="${icons[tool]}" class="btn btn-non btn-toolbar btn-${tool}" title="${tool}" data-btn="${tool}"></button>`
-            }
-            else if (tool == 'size') {
-                html += `<div  class="textarea-size usr-slc-non" title="${tool}"></div>`
-            }
-
-            // add hidden inputs
-            if (tool === 'download') {
-                html += `<a href="" class="sr-only link-download" download="${filename}"></div>`
-            }
-
-            if (tool === 'upload') {
-                html += `<input type="file" class="sr-only input-file" accept="${accept}" >`
-            }
-        })
-
-        header.insertAdjacentHTML('beforeend', html)
-
-
-        // add toolbar funcionality
-        bindTextAreaToolbar(header, classWrap, classWrapHeader, classWrapToolbar);
-    }
-}

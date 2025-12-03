@@ -65,7 +65,7 @@ export function getSettingValueFromInput(inp, settings = {}) {
         //let isNum = parseFloat(value).toString() === value;
         let isNum = !isNaN(value) && value!=='';
 
-        if(type!=='password'){
+        if(type!=='password' && type!=='file' ){
             settings[prop] = isNum ? +value : (inp.value);
         }
     }

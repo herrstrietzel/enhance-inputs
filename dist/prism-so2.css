@@ -1,0 +1,170 @@
+body{
+  background:#000;
+}
+
+
+@font-face {
+  font-family: "Liberation Mono";
+  src: url("https://db.onlinewebfonts.com/t/51b7a96dcc46285ab098bcf7f1038a07.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/51b7a96dcc46285ab098bcf7f1038a07.woff")
+      format("woff"),
+    url("https://db.onlinewebfonts.com/t/51b7a96dcc46285ab098bcf7f1038a07.ttf")
+      format("truetype");
+}
+
+.grd{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1em;
+}
+
+/* overflow.hc.light with CSS variables */
+:root {
+  --code-font: "Roboto Mono","Sometype Mono", monospace;
+  --code-border-radius: 0.5rem;
+
+  /* Colors */
+  --code-text: #0c0c0e;
+  --code-bg: #fff;
+  --code-gray: hsl(210, 8%, 60%);
+  --code-blue: hsl(200, 100%, 30%);
+  --code-green: hsl(80, 90%, 25%);
+  --code-orange: hsl(27, 100%, 40%);
+  --code-purple: hsl(306, 70%, 30%);
+  
+  
+    /* scrollbars */
+    --scroll-thumb: var(--code-text);
+;
+    --scroll-width: 10px;
+    --color-scroll-track: var(--code-text, #000);
+    --color-scroll-bg: var(--code-bg, red);
+
+  --color-focus: #000;
+    --color-scroll-thumb: var(--color-focus);
+    --color-scroll-thumb-body: var(--color-focus);
+    --color-scroll-thumb-hover: var(--color-focus);
+
+}
+
+  
+
+pre.code-dark{
+  --code-bg: hsl(50, 5%, 10%);
+  --code-text: hsl(50, 5%, 95%);
+  --code-gray: hsl(210, 8%, 60%);
+  --code-blue: hsl(206, 40%, 70%);
+  --code-green: hsl(80, 30%, 60%);
+  --code-orange: hsl(30, 60%, 60%);
+  --code-purple: hsl(306, 20%, 65%);
+  
+  --scroll-thumb: var(--code-text);
+  
+}
+
+
+/* scrollbars */
+
+pre::-webkit-scrollbar{
+    width: var(--scroll-width);
+    border-radius: 0.5em;
+    /*background-image: linear-gradient(90deg, var(--color-scroll-bg) 0%, var(--color-scroll-bg) 41%, var(--color-scroll-track) 41%, var(--color-scroll-track) 59%, var(--color-scroll-bg) 59%, var(--color-scroll-bg) 100%);
+  */
+}
+  
+pre::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 0.5em;
+}
+  
+pre::-webkit-scrollbar-track {
+    border-radius: 0.5em;
+}
+
+
+/* Base code styles */
+code[class*="language-"],
+pre[class*="language-"] {
+  //font-family: 'Roboto Mono','Spline Sans Mono','Sometype Mono','Lucida Console',Consolas, ui-monospace, monospace;
+  //font-family: 'JetBrains Mono','Spline Sans Mono','Sometype Mono','Lucida Console',Consolas, ui-monospace, monospace;
+  font-family: var(--code-font);
+  //font-size: 1rem;
+  color: var(--code-text);
+  white-space: pre;
+  line-height: 1.5;
+  font-weight: 400;
+  tab-size: 4;
+  letter-spacing:0.01em;
+  background: var(--code-bg);
+  margin-block: 0;
+
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: 1em;
+  //margin: 0.5em 0;
+  overflow: auto;
+ border-radius:var(--code-border-radius);
+  max-height:20lh;
+}
+
+
+.token {
+  .bold {
+    font-weight: 700;
+  }
+  .italic {
+    font-style: italic;
+  }
+}
+
+
+.token.cdata,
+.token.comment,
+.token.doctype,
+.token.prolog {
+  color: var(--code-gray);
+}
+
+.language-json .token.property,
+.token.atrule,
+.token.attr-name,
+.token.class,
+.token.directive,
+.token.important,
+.token.keyword,
+.token.selector,
+.token.title {
+  color: var(--code-blue);
+}
+
+.token.attr-value,
+.token.char,
+.token.content,
+.token.entity,
+.token.regex,
+.token.string,
+.token.variable,
+.language-yaml,
+.language-scss .token.variable,
+.language-css .token.variable {
+  color: var(--code-green);
+}
+
+.token.function,
+.token.blockquote.punctuation,
+.token.boolean,
+.token.constant,
+.token.id,
+.token.keyword.null,
+.token.number,
+.token.tag {
+  color: var(--code-orange);
+}
+
+
+.language-css .token.property {
+  color: var(--code-purple);
+}

@@ -11,7 +11,7 @@ export function addUI_elements(){
 
 
         if(ui==='reset'){
-            html = `<button class="btn-default --btn-neg wdt-100 txt-cnt" id="btnReset" type="button" data-icon="arrow-path"
+            html = `<button class="btn-default btn-neg wdt-100 txt-cnt" id="btnReset" type="button" data-icon="arrow-path"
             data-icon-pos="left">Reset
             settings</button>`;
         }

@@ -1,0 +1,130 @@
+
+td, th{
+    vertical-align: top;
+    text-align:left;
+}
+
+th {
+    font-weight: bold;
+}
+
+
+.tbl-gap {
+
+    th,
+    td {
+        padding-top: 0.15em;
+        padding-bottom: 0.2em;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    td,
+    th {
+        position: relative;
+
+        &:after {
+            content: '';
+            position: absolute;
+            display: block;
+            right: var(--gap-table, 1rem);
+            bottom: 0;
+            left: 0;
+            z-index: 1;
+            border-bottom: 1px solid var(--color-text, #000);
+        }
+
+        &:last-child:after {
+            right: 0em;
+        }
+    }
+}
+
+
+.tbl-sld {
+
+    th,
+    td {
+        border-bottom: 1px solid var(--color-text, #000)
+       /* @extend .brd-sld;
+        @extend .brd-1px;
+        @extend .brd-btt;
+        */
+    }
+}
+
+.tbl-scr {
+    width: 100%;
+    position: relative;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    display: block;
+    padding-bottom: 1em;
+
+    thead,
+    tbody,
+    tr {
+        display: block;
+    }
+
+    thead {
+        position: sticky;
+        float: left;
+        left: 0;
+        z-index: 100;
+        background: #eee;
+    }
+
+    thead tr,
+    th {
+        display: block;
+    }
+
+
+    tbody {
+        height: 100%;
+        width: auto;
+        padding: 0;
+        left: 10em;
+        position: absolute;
+        white-space: nowrap;
+    }
+
+    tr {
+        width: 10em;
+        position: relative;
+        display: inline-block !important;
+    }
+
+    td {
+        display: block;
+        overflow: hidden;
+    }
+
+    td:hover {
+        display: block;
+        white-space: pre-wrap;
+        width: 100%;
+        left: 0%;
+        max-width: 200%;
+        background: #eee;
+        z-index: 100;
+        position: relative;
+    }
+}
+
+
+.tbl-evn-odd {
+
+    td,
+    th {
+        border: none;
+    }
+
+    tr:nth-of-type(odd) td {
+        background: #eee
+    }
+
+}
