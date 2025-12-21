@@ -9,6 +9,11 @@ body,
   scroll-behavior: smooth;
 }
 
+htm, body {
+  margin: 0;
+  padding: 0;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -465,7 +470,7 @@ code {
   width: 5%;
 }
 
-body.scroll-content {
+.scroll-content {
   height: 100%;
   max-height: 100vh;
   overflow-y: auto;

@@ -39,7 +39,12 @@ export function bindSettingUpdates(inputs, settings = {}, storageName = 'setting
 
                 // trigger custom event
                 //document.dispatchEvent(new Event('settingsChange'))
+                
+                // exclude elements to prevent trigger update event
+                let isIgnoredInput = inp.dataset.ignore==='true';
+                if(!isIgnoredInput){
                 document.dispatchEvent(settingsUpdate)
+                }
 
             })
             inp.classList.add('input-active')

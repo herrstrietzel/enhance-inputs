@@ -223,7 +223,12 @@
 
                     // trigger custom event
 
+                    
+                    // exclude elements to prevent trigger update event
+                    let isIgnoredInput = inp.dataset.ignore==='true';
+                    if(!isIgnoredInput){
                     document.dispatchEvent(settingsUpdate);
+                    }
 
                 });
                 inp.classList.add('input-active');
