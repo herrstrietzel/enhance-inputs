@@ -1,4 +1,70 @@
 @charset "UTF-8";
+:root {
+  /* grid */
+  --gap: 0.5em;
+  --row-gap: 0.5em;
+  /* colors */
+  --color-text: hsl(55, 10%, 15%);
+  --color-background: #fff;
+  --color-background-input: var(--color-background, #fff);
+  --color-text-neg: var(--color-background);
+  --color-focus: hsl(170, 70%, 25%);
+  --color-focus-text: var(--color-focus);
+  --color-background-hover: var(--color-focus);
+  --color-text-hover: var(--color-text-neg);
+  --color-border: #999;
+  --color-border-button: var(--color-border);
+  --color-background-button: var(--color-focus);
+  --color-icon: var(--color-focus);
+  --color-icon-bg: var(--color-background-input);
+  /* inputs */
+  --padding-input: 0.3em;
+  --border-width-input: 2px;
+  --border-radius: 0.3em;
+  --filter-focus: drop-shadow(0 0 0.2rem var(--color-focus));
+  /* range */
+  --color-range-track: var(--color-text);
+  --color-range-thumb: var(--color-focus);
+  --height-range-track: 2px;
+  /* scrollbars */
+  --scroll-thumb: #000;
+  --scroll-width: 8px;
+  --color-scroll-track: var(--color-text);
+  --color-scroll-bg: var(--color-background);
+  --color-scroll-thumb: var(--color-focus);
+  --color-scroll-thumb-body: var(--color-focus);
+  --color-scroll-thumb-hover: var(--color-focus);
+  /* icons */
+  --icn-color: var(--color-focus);
+  --icn-margin: 0.3em;
+  --icon-width: 1em;
+  --icn-stroke-width: 2px;
+  --icn-scale: 1.333;
+  --icn-basline-shift: -0.075em;
+}
+
+.darkmode {
+  /* colors */
+  --color-text: hsl(60, 20%, 95%);
+  --color-background: hsl(55, 50%, 5%);
+  --color-background-input: var(--color-background);
+  --color-text-neg: var(--color-text);
+  --color-focus: hsl(170, 25%, 35%);
+  --color-focus-text: var(--color-text);
+  --color-background-hover: var(--color-focus);
+  --color-text-hover: var(--color-text-neg);
+  --color-border: hsl(170, 25%, 30%);
+  --color-border-button: var(--color-border);
+  --color-background-button: var(--color-focus);
+  --color-icon: var(--color-focus);
+  --color-icon: hsl(170, 25%, 45%);
+  --color-icon-bg: var(--color-background);
+  --filter-focus: drop-shadow(0 0 0.5rem var(--color-icon));
+  /* range */
+  --color-range-track: var(--color-focus);
+  --color-range-thumb: var(--color-icon);
+}
+
 /* 
 basic positioning margins etc.
 27.09.2025
@@ -471,38 +537,19 @@ code {
 }
 
 .scroll-content {
+  --scroll-thumb: #000;
+  --scroll-width: 8px;
+  --color-scroll-track: var(--color-text);
+  --color-scroll-bg: var(--color-background);
+  --color-scroll-thumb: var(--color-focus);
+  --color-scroll-thumb-body: var(--color-focus);
+  --color-scroll-thumb-hover: var(--color-focus);
   height: 100%;
   max-height: 100vh;
   overflow-y: auto;
 }
-
-@-moz-document url-prefix() {
-  html {
-    scrollbar-width: thin;
-  }
-  .scroll-content {
-    scrollbar-color: var(--color-scroll-thumb) var(--color-scroll-bg);
-    scrollbar-width: thin;
-  }
-}
-.scroll-track-col {
-  --color-scroll-thumb: var(--color-focus);
-}
-
-.scroll-thumb-thin {
-  --scroll-width: 6px;
-  --color-scroll-thumb: var(--color-focus);
-}
-
-.scroll-track::-webkit-scrollbar {
-  width: var(--scroll-width);
-  height: var(--scroll-width);
-  border-radius: 0.5em;
-  background-image: linear-gradient(90deg, var(--color-scroll-bg) 0%, var(--color-scroll-bg) 41%, var(--color-scroll-track) 41%, var(--color-scroll-track) 59%, var(--color-scroll-bg) 59%, var(--color-scroll-bg) 100%);
-}
-
 .scroll-content::selection {
-  background-color: var(--color-text);
+  background-color: var(--color-text, #000);
   color: var(--code-bg);
 }
 .scroll-content::-webkit-scrollbar {
@@ -517,10 +564,65 @@ code {
 .scroll-content::-webkit-scrollbar-track {
   border-radius: 0.5em;
   background-color: transparent;
-  background-color: var(--color-background);
 }
 .scroll-content::-webkit-scrollbar-corner {
   background-color: transparent;
+}
+
+@media (min-width: 1024px) {
+  .scroll-content-ld {
+    height: 100%;
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+  .scroll-content-ld::selection {
+    background-color: var(--color-text, #000);
+    color: var(--code-bg);
+  }
+  .scroll-content-ld::-webkit-scrollbar {
+    width: var(--scroll-width);
+    height: var(--scroll-width);
+    border-radius: 0.5em;
+  }
+  .scroll-content-ld::-webkit-scrollbar-thumb {
+    background: var(--color-scroll-thumb);
+    border-radius: 0.5em;
+  }
+  .scroll-content-ld::-webkit-scrollbar-track {
+    border-radius: 0.5em;
+    background-color: transparent;
+  }
+  .scroll-content-ld::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+}
+/*
+@-moz-document url-prefix() {
+    html {
+        scrollbar-width: thin;
+    }
+
+    .scroll-content {
+        scrollbar-color: var(--color-scroll-thumb) var(--color-scroll-bg);
+        scrollbar-width: thin;
+    }
+}
+*/
+.scroll-track-col {
+  --color-scroll-thumb: var(--color-focus);
+}
+
+.scroll-thumb-thin {
+  --scroll-width: 6px;
+  --color-scroll-thumb: var(--color-focus);
+}
+
+.scroll-track::-webkit-scrollbar {
+  width: var(--scroll-width);
+  height: var(--scroll-width);
+  /*
+  */
+  background-image: linear-gradient(90deg, var(--color-scroll-bg) 0%, var(--color-scroll-bg) 41%, var(--color-scroll-track, #000) 41%, var(--color-scroll-track) 59%, var(--color-scroll-bg) 59%, var(--color-scroll-bg) 100%);
 }
 
 /** scrollbars */
@@ -2122,72 +2224,6 @@ summary.summary:before {
 /** show on init */
 html:has(.enhance-inputs-ready) [data-enhance-inputs] {
   opacity: 1;
-}
-
-:root {
-  /* grid */
-  --gap: 0.5em;
-  --row-gap: 0.5em;
-  /* colors */
-  --color-text: hsl(55, 10%, 15%);
-  --color-background: #fff;
-  --color-background-input: var(--color-background, #fff);
-  --color-text-neg: var(--color-background);
-  --color-focus: hsl(170, 70%, 25%);
-  --color-focus-text: var(--color-focus);
-  --color-background-hover: var(--color-focus);
-  --color-text-hover: var(--color-text-neg);
-  --color-border: #999;
-  --color-border-button: var(--color-border);
-  --color-background-button: var(--color-focus);
-  --color-icon: var(--color-focus);
-  --color-icon-bg: var(--color-background-input);
-  /* inputs */
-  --padding-input: 0.3em;
-  --border-width-input: 2px;
-  --border-radius: 0.3em;
-  --filter-focus: drop-shadow(0 0 0.2rem var(--color-focus));
-  /* range */
-  --color-range-track: var(--color-text);
-  --color-range-thumb: var(--color-focus);
-  --height-range-track: 2px;
-  /* scrollbars */
-  --scroll-thumb: #000;
-  --scroll-width: 8px;
-  --color-scroll-track: var(--color-text);
-  --color-scroll-bg: var(--color-background);
-  --color-scroll-thumb: var(--color-focus);
-  --color-scroll-thumb-body: var(--color-focus);
-  --color-scroll-thumb-hover: var(--color-focus);
-  /* icons */
-  --icn-color: var(--color-focus);
-  --icn-margin: 0.3em;
-  --icon-width: 1em;
-  --icn-stroke-width: 2px;
-  --icn-scale: 1.333;
-  --icn-basline-shift: -0.075em;
-}
-
-.darkmode {
-  /* colors */
-  --color-text: hsl(60, 20%, 95%);
-  --color-background: hsl(55, 50%, 5%);
-  --color-background-input: var(--color-background);
-  --color-text-neg: var(--color-text);
-  --color-focus: hsl(170, 25%, 35%);
-  --color-focus-text: var(--color-text);
-  --color-background-hover: var(--color-focus);
-  --color-text-hover: var(--color-text-neg);
-  --color-border: hsl(170, 25%, 30%);
-  --color-border-button: var(--color-border);
-  --color-background-button: var(--color-focus);
-  --color-icon: var(--color-focus);
-  --color-icon: hsl(170, 25%, 45%);
-  --color-icon-bg: var(--color-background);
-  --filter-focus: drop-shadow(0 0 0.5rem var(--color-icon));
-  /* range */
-  --color-range-track: var(--color-focus);
-  --color-range-thumb: var(--color-icon);
 }
 
 /**

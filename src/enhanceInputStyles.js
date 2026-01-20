@@ -56,9 +56,14 @@ export async function enhanceInputStyles(inputs = []) {
             let labelSpan = document.createElement('span')
             labelSpan.classList.add('label-span', `label-span-${type}`);
             let textNode = [...label.childNodes].find(node => node.nodeType === 3 && node.textContent.trim());
+
+
             //console.log(textNode, label.childNodes);
-            input.parentNode.insertBefore(labelSpan, textNode);
-            labelSpan.append(textNode)
+            if(textNode){
+                input.parentNode.insertBefore(labelSpan, textNode);
+                labelSpan.append(textNode)
+
+            }
 
             if (label.dataset.icon) {
                 label.classList.add('input-wrap-icon');

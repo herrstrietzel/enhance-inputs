@@ -12,11 +12,22 @@ export function loadSamples(parent = null) {
             let prop = select.dataset.options;
             let items = inputSampleData[prop];
 
+            if(items){
+
+                for(let key in items ){
+                    let option = new Option(key, items[key])
+                    select.append(option)
+    
+                }
+            }
+
+            /*
             items.forEach(item => {
                 let key = Object.keys(item)[0]
                 let option = new Option(key, item[key])
                 select.append(option)
             })
+                */
 
         })
     }

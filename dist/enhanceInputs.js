@@ -2694,8 +2694,11 @@
                 labelSpan.classList.add('label-span', `label-span-${type}`);
                 let textNode = [...label.childNodes].find(node => node.nodeType === 3 && node.textContent.trim());
 
-                input.parentNode.insertBefore(labelSpan, textNode);
-                labelSpan.append(textNode);
+                if(textNode){
+                    input.parentNode.insertBefore(labelSpan, textNode);
+                    labelSpan.append(textNode);
+
+                }
 
                 if (label.dataset.icon) {
                     label.classList.add('input-wrap-icon');
@@ -2857,11 +2860,14 @@
                 let prop = select.dataset.options;
                 let items = inputSampleData[prop];
 
-                items.forEach(item => {
-                    let key = Object.keys(item)[0];
-                    let option = new Option(key, item[key]);
-                    select.append(option);
-                });
+                if(items){
+
+                    for(let key in items ){
+                        let option = new Option(key, items[key]);
+                        select.append(option);
+        
+                    }
+                }
 
             });
         }
