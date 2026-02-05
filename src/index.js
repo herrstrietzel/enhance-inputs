@@ -5,6 +5,7 @@ export {
 
 
 import { bindSettingUpdates, bindResetBtn, updateAllSettings } from './bindUpdates.js';
+import {saveSettingsToLocalStorage} from './localStorage';
 
 import { injectSpriteSheet, injectIcons, injectIconSpriteMap } from "./injectIcons";
 import { bindDarkmodeBtn } from './bindDarkmode';
@@ -111,16 +112,17 @@ export function enhanceInputsAutoInit() {
 
 
 
-
 export {enhanceInputs as enhanceInputs};
 export {enhanceDetails as enhanceDetails}; 
+export {saveSettingsToLocalStorage as saveSettingsToLocalStorage}
 
 // Browser global
 if (typeof window !== 'undefined') {
     window.enhanceInputs = enhanceInputs;
     window.injectIcons = injectIcons;
     window.injectIconSpriteMap = injectIconSpriteMap;
-    window.updateAllSettings = updateAllSettings;
+    //window.updateAllSettings = updateAllSettings;
+    window.saveSettingsToLocalStorage = saveSettingsToLocalStorage;
 
 
     // addons

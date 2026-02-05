@@ -237,23 +237,6 @@
 
     }
 
-    function updateAllSettings(inputs, settings = {}, storageName = 'settings', toQuery = false) {
-
-        inputs.forEach((inp) => {
-
-            // sync 
-            updateSyncedInput(inp, settings);
-
-            getSettingValueFromInput(inp, settings);
-
-            // trigger custom event
-
-            document.dispatchEvent(settingsUpdate);
-
-        });
-
-    }
-
     function updateSyncedInput(input = null, settings = {}) {
         let inputSyncedName = input.dataset.sync;
 
@@ -2977,6 +2960,11 @@
 
         settings = getSettingValueFromInputs(inputs, settings);
 
+        // include strorage name
+        if(cacheToStorage) {
+            settings.storageName = storageName;
+        }
+
         // bind input events
         bindSettingUpdates(inputs, settings, storageName, cacheToUrl);
 
@@ -3099,7 +3087,8 @@
         window.enhanceInputs = enhanceInputs;
         window.injectIcons = injectIcons;
         window.injectIconSpriteMap = injectIconSpriteMap;
-        window.updateAllSettings = updateAllSettings;
+
+        window.saveSettingsToLocalStorage = saveSettingsToLocalStorage;
 
         // addons
         window.getZipUrl = getZipUrl;
@@ -3134,6 +3123,7 @@
     exports.pow = pow;
     exports.random = random;
     exports.round = round;
+    exports.saveSettingsToLocalStorage = saveSettingsToLocalStorage;
     exports.sin = sin;
     exports.sqrt = sqrt;
     exports.tan = tan;

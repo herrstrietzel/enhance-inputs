@@ -124,6 +124,11 @@ export function enhanceInputs({
 
     settings = getSettingValueFromInputs(inputs, settings)
 
+    // include strorage name
+    if(cacheToStorage) {
+        settings.storageName = storageName
+    }
+
 
     // bind input events
     bindSettingUpdates(inputs, settings, storageName, cacheToUrl)

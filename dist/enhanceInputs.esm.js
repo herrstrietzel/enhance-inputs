@@ -234,23 +234,6 @@ function bindSettingUpdates(inputs, settings = {}, storageName = 'settings', toQ
 
 }
 
-function updateAllSettings(inputs, settings = {}, storageName = 'settings', toQuery = false) {
-
-    inputs.forEach((inp) => {
-
-        // sync 
-        updateSyncedInput(inp, settings);
-
-        getSettingValueFromInput(inp, settings);
-
-        // trigger custom event
-
-        document.dispatchEvent(settingsUpdate);
-
-    });
-
-}
-
 function updateSyncedInput(input = null, settings = {}) {
     let inputSyncedName = input.dataset.sync;
 
@@ -2974,6 +2957,11 @@ function enhanceInputs({
 
     settings = getSettingValueFromInputs(inputs, settings);
 
+    // include strorage name
+    if(cacheToStorage) {
+        settings.storageName = storageName;
+    }
+
     // bind input events
     bindSettingUpdates(inputs, settings, storageName, cacheToUrl);
 
@@ -3096,7 +3084,8 @@ if (typeof window !== 'undefined') {
     window.enhanceInputs = enhanceInputs;
     window.injectIcons = injectIcons;
     window.injectIconSpriteMap = injectIconSpriteMap;
-    window.updateAllSettings = updateAllSettings;
+
+    window.saveSettingsToLocalStorage = saveSettingsToLocalStorage;
 
     // addons
     window.getZipUrl = getZipUrl;
@@ -3110,4 +3099,4 @@ if (typeof window !== 'undefined') {
 
 }
 
-export { PI, abs, acos, asin, atan, atan2, ceil, cos, enhanceDetails, enhanceInputs, enhanceInputsAutoInit, enhanceInputsReady, exp, floor, hypot, log, max, min, pow, random, round, sin, sqrt, tan };
+export { PI, abs, acos, asin, atan, atan2, ceil, cos, enhanceDetails, enhanceInputs, enhanceInputsAutoInit, enhanceInputsReady, exp, floor, hypot, log, max, min, pow, random, round, saveSettingsToLocalStorage, sin, sqrt, tan };
