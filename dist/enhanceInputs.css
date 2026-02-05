@@ -116,6 +116,11 @@ iframe {
   justify-content: center;
 }
 
+.txt-rgh {
+  text-align: right;
+  justify-content: flex-end;
+}
+
 .fnt-wgh-700,
 .fnt-wgt-700 {
   font-weight: 700;
@@ -1831,6 +1836,11 @@ pre {
     --code-purple: hsl(306, 20%, 65%);
   }
 }
+.code {
+  font-family: var(--fontCode, monospace) !important;
+  word-break: break-word;
+}
+
 .pre-wrap {
   padding: var(--code-padding);
   background: var(--code-bg);

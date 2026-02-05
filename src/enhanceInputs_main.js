@@ -102,7 +102,10 @@ export function enhanceInputs({
      */
     if ((cacheToUrl || getQuery) && Object.values(queryParams).length) {
 
+        //console.log('queryParams', queryParams);
         let settingsQuery = updateSettingsFromQuery(queryParams, settings)
+
+        //console.log('settingsQuery', settingsQuery);
 
         settingsCache = {
             ...settingsCache,
@@ -113,6 +116,10 @@ export function enhanceInputs({
         if (!cacheToStorage) {
             syncInputsWithCache(settingsCache, inputs)
         }
+
+        //console.log('settingsFinal', settings);
+        settings.getQuery = true
+
     }
 
 
@@ -128,6 +135,7 @@ export function enhanceInputs({
     if(cacheToStorage) {
         settings.storageName = storageName
     }
+
 
 
     // bind input events

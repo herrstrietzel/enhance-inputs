@@ -54,7 +54,14 @@ function getSettingValueFromInput(inp, settings = {}) {
         if (isSelectMulti) {
             settings[prop] = optionsSelected.map(option => option.value);
         } else {
-            settings[prop] = optionsSelected[0].value;
+            let optionVal = optionsSelected[0].value;
+            let optionLabelVal = optionsSelected[0].label;
+
+            // prefer label text if shorter
+            if(optionVal.length>optionLabelVal.length*2) optionVal = optionLabelVal;
+
+    
+            settings[prop] = optionVal;
         }
     }
 
@@ -110,9 +117,25 @@ function setInputValueFromSettings(settings = {}) {
 
             else if (isSelect) {
                 let options = Array.from(inp.options);
-                options.forEach(option => {
-                    option.selected = value.includes(option.value) ? true : false;
-                });
+
+                for (let i=0; i<options.length; i++){
+                    let option = options[i];
+                    let labelVal = option.label.trim();
+
+                    // prefer label text
+                    if(option.label && value == labelVal){
+                        option.selected = true;
+                        break;
+                    }
+                    else {
+
+                        let isSelected = value === option.value;
+                        if(isSelected){
+                            break;
+                        }
+
+                    }
+                }
             }
 
             else if (type === 'radio') {
@@ -137,14 +160,17 @@ function updateSettingsFromQuery(query = {}, settings = {}) {
 
     for (let prop in query) {
         let value = query[prop];
-        value = value==='true' ? true : (value==='false'? false: value);
-        settingsNew[prop] = value;
+        value = value === 'true' ? true : (value === 'false' ? false : value);
+
+        if (settings.defaults.hasOwnProperty(prop)) {
+            settingsNew[prop] = value;
+        }
     }
 
     return settingsNew
 }
 
-function updateQueryParams(settings={}, replace = true) {
+function updateQueryParams(settings = {}, replace = true) {
     let query = settingsToQueryString(settings);
     let newUrl = window.location.pathname + query;
 
@@ -167,11 +193,11 @@ function settingsToQueryString(settings = {}, exclude = ["defaults"], maxLength 
 
         let addParam = (k, v) => {
             let param = encodeURIComponent(k) + "=" + encodeURIComponent(String(v).trim());
-            let projectedLength = currentLength + (queryParts.length > 0 ? 1 : 0) + param.length; // +1 for '&'
+            let newLength = param.length + 1;
 
-            if (projectedLength <= maxLength) {
+            if (currentLength + newLength < maxLength ) {
                 queryParts.push(param);
-                currentLength = projectedLength;
+                currentLength += newLength;
             } else {
                 console.warn(`Skipping "${k}" — adding it would exceed maxLength (${maxLength}).`);
             }
@@ -189,7 +215,9 @@ function settingsToQueryString(settings = {}, exclude = ["defaults"], maxLength 
         }
     }
 
-    return queryParts.length > 0 ? "?" + queryParts.join("&") : "";
+    let url = queryParts.length > 0 ? "?" + queryParts.join("&") : "";
+
+    return url;
 }
 
 // custom event for settings update
@@ -2840,12 +2868,13 @@ function loadSamples(parent = null) {
             let prop = select.dataset.options;
             let items = inputSampleData[prop];
 
-            if(items){
+            let optionDefault = new Option('Choose Sample', '');
+            select.append(optionDefault);
 
+            if(items){
                 for(let key in items ){
                     let option = new Option(key, items[key]);
                     select.append(option);
-    
                 }
             }
 
@@ -2947,6 +2976,9 @@ function enhanceInputs({
         if (!cacheToStorage) {
             syncInputsWithCache(settingsCache);
         }
+
+        settings.getQuery = true;
+
     }
 
     // sync with cache - update inputs
@@ -3086,7 +3118,8 @@ if (typeof window !== 'undefined') {
     window.injectIconSpriteMap = injectIconSpriteMap;
 
     window.saveSettingsToLocalStorage = saveSettingsToLocalStorage;
-
+    window.settingsToQueryString = settingsToQueryString;
+    
     // addons
     window.getZipUrl = getZipUrl;
     window.enhanceDetails = enhanceDetails;
@@ -3099,4 +3132,4 @@ if (typeof window !== 'undefined') {
 
 }
 
-export { PI, abs, acos, asin, atan, atan2, ceil, cos, enhanceDetails, enhanceInputs, enhanceInputsAutoInit, enhanceInputsReady, exp, floor, hypot, log, max, min, pow, random, round, saveSettingsToLocalStorage, sin, sqrt, tan };
+export { PI, abs, acos, asin, atan, atan2, ceil, cos, enhanceDetails, enhanceInputs, enhanceInputsAutoInit, enhanceInputsReady, exp, floor, hypot, log, max, min, pow, random, round, saveSettingsToLocalStorage, settingsToQueryString, sin, sqrt, tan };

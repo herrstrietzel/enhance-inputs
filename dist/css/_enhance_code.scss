@@ -95,7 +95,10 @@ pre {
   }
 }
 
-
+.code{
+  font-family:var(--fontCode, monospace)!important;
+  word-break: break-word;
+}
 
 .pre-wrap {
   //display:grid;

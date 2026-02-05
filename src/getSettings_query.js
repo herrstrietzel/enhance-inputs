@@ -3,20 +3,23 @@ import { normalizeStr } from './string_helpers';
 
 export function updateSettingsFromQuery(query = {}, settings = {}) {
     let settingsNew = settings;
+    //console.log('query', query);
 
     for (let prop in query) {
         let value = query[prop];
-        value = value==='true' ? true : (value==='false'? false: value);
-        settingsNew[prop] = value
+        value = value === 'true' ? true : (value === 'false' ? false : value);
+
+        if (settings.defaults.hasOwnProperty(prop)) {
+            settingsNew[prop] = value
+        }
     }
 
     //console.log('settingsNew', settingsNew);
-
     return settingsNew
 }
 
 
-export function updateQueryParams(settings={}, replace = true) {
+export function updateQueryParams(settings = {}, replace = true) {
     let query = settingsToQueryString(settings);
     let newUrl = window.location.pathname + query;
 
@@ -31,6 +34,9 @@ export function settingsToQueryString(settings = {}, exclude = ["defaults"], max
     let queryParts = [];
     let currentLength = 1; // account for leading "?"
 
+
+
+
     for (let key in settings) {
         if (!Object.prototype.hasOwnProperty.call(settings, key) || exclude.includes(key)) continue;
 
@@ -40,10 +46,11 @@ export function settingsToQueryString(settings = {}, exclude = ["defaults"], max
         let addParam = (k, v) => {
             let param = encodeURIComponent(k) + "=" + encodeURIComponent(String(v).trim());
             let projectedLength = currentLength + (queryParts.length > 0 ? 1 : 0) + param.length; // +1 for '&'
+            let newLength = param.length + 1
 
-            if (projectedLength <= maxLength) {
+            if (currentLength + newLength < maxLength ) {
                 queryParts.push(param);
-                currentLength = projectedLength;
+                currentLength += newLength;
             } else {
                 console.warn(`Skipping "${k}" — adding it would exceed maxLength (${maxLength}).`);
             }
@@ -61,7 +68,10 @@ export function settingsToQueryString(settings = {}, exclude = ["defaults"], max
         }
     }
 
-    return queryParts.length > 0 ? "?" + queryParts.join("&") : "";
+    let url = queryParts.length > 0 ? "?" + queryParts.join("&") : ""
+
+    //console.log('url', url);
+    return url;
 }
 
 

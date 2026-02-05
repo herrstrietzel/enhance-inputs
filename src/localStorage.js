@@ -37,9 +37,27 @@ export function setInputValueFromSettings(settings = {}) {
 
             else if (isSelect) {
                 let options = Array.from(inp.options);
-                options.forEach(option => {
-                    option.selected = value.includes(option.value) ? true : false;
-                })
+                //console.log('input val:', value, options);
+
+                for (let i=0; i<options.length; i++){
+                    let option = options[i]
+                    let labelVal = option.label.trim()
+                    //console.log('label', labelVal);
+
+                    // prefer label text
+                    if(option.label && value == labelVal){
+                        option.selected = true;
+                        break;
+                    }
+                    else{
+                        //option.selected = value.includes(option.value) ? true : false;
+                        let isSelected = value === option.value;
+                        if(isSelected){
+                            break;
+                        }
+                        //option.checked = value.includes(option.value) ? true : false;
+                    }
+                }
             }
 
             else if (type === 'radio') {

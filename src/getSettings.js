@@ -51,7 +51,16 @@ export function getSettingValueFromInput(inp, settings = {}) {
         if (isSelectMulti) {
             settings[prop] = optionsSelected.map(option => option.value)
         } else {
-            settings[prop] = optionsSelected[0].value
+            let optionVal = optionsSelected[0].value
+            let optionLabelVal = optionsSelected[0].label;
+            //console.log('optionVal', optionVal, 'optionLabelVal', optionLabelVal);
+            //let selectVal = optionVal
+
+            // prefer label text if shorter
+            if(optionVal.length>optionLabelVal.length*2) optionVal = optionLabelVal
+            //console.log('settings[prop]', prop, optionVal);
+    
+            settings[prop] = optionVal
         }
     }
 
