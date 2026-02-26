@@ -87,7 +87,10 @@
     }
 
     // add to localStorage
-    function saveSettingsToLocalStorage(settings = {}, storageName = 'settings') {
+    function saveSettingsToLocalStorage$1(settings = {}, storageName = '') {
+
+        storageName = !storageName ? settings.storageName : storageName;
+
         if (storageName) {
             let settingsJSON = JSON.stringify(settings);
             localStorage.setItem(storageName, settingsJSON);
@@ -158,6 +161,11 @@
 
     }
 
+    // get quer params
+    function getQueryParams(){
+        return Object.fromEntries(new URLSearchParams(document.location.search));
+    }
+
     function updateSettingsFromQuery(query = {}, settings = {}) {
         let settingsNew = settings;
 
@@ -168,6 +176,12 @@
             if (settings.defaults.hasOwnProperty(prop)) {
                 settingsNew[prop] = value;
             }
+        }
+
+        // update localStorage
+        let storageName = settings.storageName;
+        if(storageName) {
+            saveSettingsToLocalStorage(settings, storageName);
         }
 
         return settingsNew
@@ -198,11 +212,9 @@
                 let param = encodeURIComponent(k) + "=" + encodeURIComponent(String(v).trim());
                 let newLength = param.length + 1;
 
-                if (currentLength + newLength < maxLength ) {
+                if (currentLength + newLength < maxLength) {
                     queryParts.push(param);
                     currentLength += newLength;
-                } else {
-                    console.warn(`Skipping "${k}" — adding it would exceed maxLength (${maxLength}).`);
                 }
             };
 
@@ -241,7 +253,7 @@
                     getSettingValueFromInput(inp, settings);
 
                     // update localStorage
-                    saveSettingsToLocalStorage(settings, storageName);
+                    saveSettingsToLocalStorage$1(settings, storageName);
 
                     if (toQuery) {
 
@@ -301,7 +313,7 @@
                 setInputValueFromSettings(settings);
 
                 // update localStorage
-                saveSettingsToLocalStorage(settings, storageName);
+                saveSettingsToLocalStorage$1(settings, storageName);
 
                 // delete query params
                 updateQueryParams({});
@@ -2874,11 +2886,50 @@
                 let optionDefault = new Option('Choose Sample', '');
                 select.append(optionDefault);
 
-                if(items){
-                    for(let key in items ){
-                        let option = new Option(key, items[key]);
-                        select.append(option);
+                if (items) {
+
+                    // group to optgroups if present by underscore prefix
+                    let optGroups = { misc: [] };
+
+                    for (let key in items) {
+                        let value = items[key].trim();
+                        let labelArr = key.split('__').filter(Boolean);
+                        let label = labelArr.length > 1 ? labelArr.slice(1).join(' ') : key;
+
+                        let option = new Option(label, value);
+
+                        let group = labelArr.length > 1 ? labelArr[0] : '';
+                        if (group) {
+                            if (!optGroups[group]) {
+                                optGroups[group] = [];
+                            }
+                            optGroups[group].push(option);
+                        } else {
+                            optGroups['misc'].push(option);
+                        }
                     }
+
+                    // sort alphabetically
+                    let props = Object.keys(optGroups).sort();
+
+                    if(props.length){
+                        let optGroupsSort= {};
+                        for(let prop of props){
+                            optGroupsSort[prop] = optGroups[prop].sort((a, b) => a.label.localeCompare(b.label));
+                        }
+                        optGroups = optGroupsSort;
+                    }
+
+                    for (let group in optGroups) {
+                        let options = optGroups[group];
+                        let optGroup = document.createElement('optgroup');
+                        optGroup.label = group;
+                        options.forEach(option => {
+                            optGroup.append(option);
+                        });
+                        select.append(optGroup);
+                    }
+
                 }
 
             });
@@ -2894,7 +2945,7 @@
         getQuery = true,
         // save settings to local storage
         cacheToStorage = true,
-        storageName = 'settings',
+        storageName = '',
         embedSprite = true,
         icons = 'inputs'
     } = {}) {
@@ -2922,6 +2973,7 @@
          */
         let settingsStorage = '';
         let settingsCache = {};
+        let settings = {};
 
         if (cacheToStorage) {
             if (!storageName) {
@@ -2939,9 +2991,9 @@
             } catch {
                 console.warn('No valid settings JSON');
             }
+            settings.storageName=storageName;
         }
 
-        let settings = {};
         let parentEl = document.querySelector(parent) ? document.querySelector(parent) : document.body;
         let inputs = parentEl.querySelectorAll(selector);
 
@@ -2991,11 +3043,6 @@
         }
 
         settings = getSettingValueFromInputs(inputs, settings);
-
-        // include strorage name
-        if(cacheToStorage) {
-            settings.storageName = storageName;
-        }
 
         // bind input events
         bindSettingUpdates(inputs, settings, storageName, cacheToUrl);
@@ -3120,8 +3167,9 @@
         window.injectIcons = injectIcons;
         window.injectIconSpriteMap = injectIconSpriteMap;
 
-        window.saveSettingsToLocalStorage = saveSettingsToLocalStorage;
+        window.saveSettingsToLocalStorage = saveSettingsToLocalStorage$1;
         window.settingsToQueryString = settingsToQueryString;
+        window.getQueryParams = getQueryParams;
         
         // addons
         window.getZipUrl = getZipUrl;
@@ -3149,6 +3197,7 @@
     exports.enhanceInputsReady = enhanceInputsReady;
     exports.exp = exp;
     exports.floor = floor;
+    exports.getQueryParams = getQueryParams;
     exports.hypot = hypot;
     exports.log = log;
     exports.max = max;
@@ -3156,7 +3205,7 @@
     exports.pow = pow;
     exports.random = random;
     exports.round = round;
-    exports.saveSettingsToLocalStorage = saveSettingsToLocalStorage;
+    exports.saveSettingsToLocalStorage = saveSettingsToLocalStorage$1;
     exports.settingsToQueryString = settingsToQueryString;
     exports.sin = sin;
     exports.sqrt = sqrt;

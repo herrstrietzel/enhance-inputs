@@ -2306,6 +2306,10 @@ button.icn-inj,
   width: 100%;
 }
 
+.input-wrap-number {
+  width: 100%;
+}
+
 button.icn-inj:before,
 .input-wrap-icon:before {
   content: " ";
