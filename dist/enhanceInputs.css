@@ -2428,6 +2428,7 @@ button.icn-inj:before,
   line-height: 1em;
   border-radius: 0.3rem;
   align-items: center;
+  transition: 0.2s;
 }
 
 .btn-round {
@@ -2458,18 +2459,27 @@ button.icn-inj:before,
   color: var(--color-text-neg);
 }
 
-.btn-default:hover, .input-submit:hover {
+.btn-default:focus, .input-submit:focus,
+.btn-default:hover,
+.input-submit:hover {
   --color-icon: var(--color-text-hover);
   background-color: var(--color-background-hover);
   color: var(--color-text-hover);
   border-color: var(--color-background-hover);
+  transform: scale(1.1);
+}
+
+.drp-shd {
+  box-shadow: 1px 1px 3px var(--color-text);
 }
 
 .btn-neg:hover, .input-submit:hover {
   --color-background-hover: var(--color-background);
   --color-text-hover: var(--color-text);
-  --color-icon: var(--color-focus);
+  --color-icon: var(--color-background);
   border-color: var(--color-focus);
+  background-color: var(--color-focus);
+  color: var(--color-background);
 }
 
 /* textare toolbat btns */
@@ -2926,10 +2936,14 @@ a.input-submit:before {
   padding: 0.15em;
   transition: 0.3s;
   overflow: hidden;
+  filter: drop-shadow(0px 0px 4px black);
 }
 .lnk-github svg {
   font-size: 0.3em;
   color: var(--color-background);
+}
+.lnk-github .icn-svg {
+  transform: translate(0, -0.2em) scale(1.2);
 }
 .lnk-github:hover {
   color: var(--color-focus);
