@@ -3,10 +3,11 @@ export {
     log, max, min, pow, random, round, sin, sqrt, tan, PI
 } from './constants';
 
+import { enhanceDetailsOpen, enhanceDetailsSettings } from './constants';
 
 import { bindSettingUpdates, bindResetBtn, updateAllSettings } from './bindUpdates.js';
-import {saveSettingsToLocalStorage} from './localStorage';
-import {settingsToQueryString} from './getSettings_query';
+import { getPropFromLocalStorage, saveSettingsToLocalStorage } from './localStorage';
+import { getQueryParams, settingsToQueryString } from './getSettings_query';
 
 import { injectSpriteSheet, injectIcons, injectIconSpriteMap } from "./injectIcons";
 import { bindDarkmodeBtn } from './bindDarkmode';
@@ -22,7 +23,9 @@ import { loadMDs } from './loadMD.js';
 import { getZipUrl } from './getZip';
 import { enhanceCode } from './enhance-code';
 
-import {enhanceInputs} from './enhanceInputs_main';
+import { enhanceInputs } from './enhanceInputs_main';
+import { textToAnchorUrl } from './enhanceDetails_helpers.js';
+import { initDetailStates } from './enhanceDetails_state_toggle.js';
 
 
 
@@ -70,7 +73,7 @@ export function enhanceInputsAutoInit() {
          * for input background fills
          */
         let bodyColor = window.getComputedStyle(document.body).backgroundColor;
-        bodyColor = (bodyColor==='rgba(0, 0, 0, 0)' || bodyColor==='transparent') ? 'rgb(255, 255, 255)': bodyColor;
+        bodyColor = (bodyColor === 'rgba(0, 0, 0, 0)' || bodyColor === 'transparent') ? 'rgb(255, 255, 255)' : bodyColor;
         document.documentElement.style.setProperty('--color-background', bodyColor)
 
 
@@ -103,8 +106,26 @@ export function enhanceInputsAutoInit() {
         // enhance codes
         enhanceCode();
 
+
+
+        // get details settings
+        let storageName = enhanceInputsSettings.storageName;
+
+        // change details open state
+        let detailsSettings = initDetailStates(storageName);
+
+        // save to inputs obj
+        enhanceInputsSettings.detailsOpen = detailsSettings
+
+        // save to details global
+        enhanceDetailsSettings.detailsOpen = detailsSettings
+
+
         //enhance details
-        enhanceDetailsAutoInit();
+        enhanceDetailsAutoInit(enhanceInputsSettings);
+
+        // save settings
+        saveSettingsToLocalStorage(enhanceInputsSettings, storageName)
 
     }
 
@@ -113,10 +134,12 @@ export function enhanceInputsAutoInit() {
 
 
 
-export {enhanceInputs as enhanceInputs};
-export {enhanceDetails as enhanceDetails}; 
-export {saveSettingsToLocalStorage as saveSettingsToLocalStorage}
-export {settingsToQueryString as settingsToQueryString} 
+
+export { enhanceInputs as enhanceInputs };
+export { enhanceDetails as enhanceDetails };
+export { saveSettingsToLocalStorage as saveSettingsToLocalStorage }
+export { settingsToQueryString as settingsToQueryString }
+export { getQueryParams as getQueryParams }
 
 // Browser global
 if (typeof window !== 'undefined') {
@@ -126,7 +149,8 @@ if (typeof window !== 'undefined') {
     //window.updateAllSettings = updateAllSettings;
     window.saveSettingsToLocalStorage = saveSettingsToLocalStorage;
     window.settingsToQueryString = settingsToQueryString;
-    
+    window.getQueryParams = getQueryParams;
+
     // addons
     window.getZipUrl = getZipUrl;
     window.enhanceDetails = enhanceDetails;

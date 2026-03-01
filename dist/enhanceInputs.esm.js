@@ -6,16 +6,18 @@ const {
 // get quer params
 const queryParams = Object.fromEntries(new URLSearchParams(document.location.search));
 
+const enhanceDetailsSettings = {};
+
 /**
  * wrapper to get 
  * all input values
  */
 function getSettingValueFromInputs(inputs, settings={}) {
 
-    
     inputs.forEach((inp) => {
         getSettingValueFromInput(inp, settings);
     });
+
     return settings;
 }
 
@@ -94,6 +96,42 @@ function saveSettingsToLocalStorage$1(settings = {}, storageName = '') {
     }
 }
 
+// add to localStorage
+function savePropToLocalStorage(storageName = '', property = '', value = '') {
+    let storage = localStorage.getItem(storageName);
+    if (storage) {
+        let settings = JSON.parse(storage);
+        // add new property
+        if (settings) {
+            settings[property] = value;
+
+            // save back to storage
+            let json = JSON.stringify(settings);
+            localStorage.setItem(storageName, json);
+            
+            console.log('savePropToLocalStorage', value, settings);
+        }
+    }
+}
+
+// add to localStorage
+function getPropFromLocalStorage(storageName = '', property = '') {
+    let storage = localStorage.getItem(storageName);
+    let value = null;
+
+    if (storage) {
+        let settings = JSON.parse(storage);
+
+        // add new property
+        if (settings && settings[property] !== undefined) {
+            value = settings[property];
+        }
+
+    }
+
+    return value;
+}
+
 /**
  * sync input values with localstorage
  */
@@ -121,19 +159,19 @@ function setInputValueFromSettings(settings = {}) {
             else if (isSelect) {
                 let options = Array.from(inp.options);
 
-                for (let i=0; i<options.length; i++){
+                for (let i = 0; i < options.length; i++) {
                     let option = options[i];
                     let labelVal = option.label.trim();
 
                     // prefer label text
-                    if(option.label && value == labelVal){
+                    if (option.label && value == labelVal) {
                         option.selected = true;
                         break;
                     }
                     else {
 
                         let isSelected = value === option.value;
-                        if(isSelected){
+                        if (isSelected) {
                             break;
                         }
 
@@ -871,7 +909,9 @@ function initTabsAria(groupNode) {
 
 const summaryIcons = {
     'arrow-right': `<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>`,
-    'chevron': `<svg stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" ><path d="m8.3 4.5 7.5 7.5-7.5 7.5" /></svg>`
+    'chevron': `<svg stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" ><path d="m8.3 4.5 7.5 7.5-7.5 7.5" /></svg>`,
+    'plus':`<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4.5v15m7.5-7.5h-15" /></svg>`,
+    'plusMinus':`<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4.5v15m7.5-7.5h-15" /><path d="M5 12h14" /></svg>`
 };
 
 /**
@@ -938,6 +978,27 @@ function textToAnchorUrl(text) {
     return anchorId;
 }
 
+function initDetailStates(storageName) {
+
+    let detailsSettings = getPropFromLocalStorage(storageName, 'detailsOpen') || {};
+    let details = document.body.querySelectorAll('details');
+
+    for (let i = 0, l = details.length; i < l; i++) {
+        let detail = details[i];
+        let summary = detail.querySelector('summary');
+        let id = textToAnchorUrl(summary.textContent);
+
+        if(detailsSettings[id]===undefined){
+            detailsSettings[id] = detail.open;
+        }
+
+        detail.open = detailsSettings[id]; 
+    }
+
+    return detailsSettings
+
+}
+
 function bindDetailsOpenbtns() {
 
     let btns = document.querySelectorAll('button[data-details], a[data-details]');
@@ -975,24 +1036,25 @@ function bindDetailsOpenbtns() {
     });
 }
 
-function closeDetails(parentEl = null, exclude=null) {
+function closeDetails(parentEl = null, exclude = null) {
     parentEl = parentEl ? parentEl : document.body;
     let details = parentEl.querySelectorAll('details[open]');
     toggleDetails(details, exclude);
+
 }
 
-function toggleDetails(details = null, exclude=null) {
+function toggleDetails(details = null, exclude = null) {
     details.forEach(detail => {
 
         let nodeName = detail.nodeName.toLowerCase();
         let summary = nodeName === 'summary' ? detail : detail.querySelector('summary');
-        if(!exclude || summary!==exclude){
+        if (!exclude || summary !== exclude) {
             summary.dispatchEvent(new Event('click'));
         }
     });
 }
 
-function bindDetailsEvents(detail, detailsContent, summary, expanded, type = '') {
+function bindDetailsEvents(detail, detailsContent, summary, expanded, type = '', storageName = '') {
 
     let parent = detail.parentNode.closest('[data-details]') || detail.parentNode.closest('.details-enhanced');
 
@@ -1022,11 +1084,13 @@ function bindDetailsEvents(detail, detailsContent, summary, expanded, type = '')
             let detailsContent = current.parentNode.querySelector('.details-content');
             let summaryMarker = current.querySelector('.summary-marker');
 
+            let id = current.id;
+
             // close others in accordion mode
-            if(type==='accordion'){
+            if (type === 'accordion') {
                 closeDetails(parent, summary);
             }
-        
+
             // collapse
             if (expanded) {
                 expanded = false;
@@ -1036,6 +1100,10 @@ function bindDetailsEvents(detail, detailsContent, summary, expanded, type = '')
 
                 summary.classList.remove("summary-expanded");
                 summaryMarker.classList.replace("summary-marker-expanded", "summary-marker-collapsed");
+
+                // add to open cache
+
+                enhanceDetailsSettings.detailsOpen[id] = false;
 
             }
             // expand
@@ -1051,7 +1119,13 @@ function bindDetailsEvents(detail, detailsContent, summary, expanded, type = '')
                     detailsContent.classList.add("details-content-expanded");
                 }, 10);
 
+                // add to open cache
+                enhanceDetailsSettings.detailsOpen[id] = true;
+
             }
+
+            // save to local storage
+            savePropToLocalStorage(storageName, 'detailsOpen', enhanceDetailsSettings.detailsOpen);
 
         });
 
@@ -1061,10 +1135,10 @@ function bindDetailsEvents(detail, detailsContent, summary, expanded, type = '')
 
 }
 
-function enhanceDetailsAutoInit() {
+function enhanceDetailsAutoInit(settings={}) {
     let detailsToEnhance = document.querySelectorAll('.details-enhanced, [data-details], [data-enhance-inputs]');
     if (detailsToEnhance.length) {
-        enhanceDetails();
+        enhanceDetails(settings);
     }
 }
 
@@ -1077,11 +1151,12 @@ function enhanceDetails(options = {}) {
             icon: '',
             round: false,
             right: false,
-            plus: false
+            plus: false,
+            storageName: ''
         },
         ...options
     };
-    let { target, icon, round, right } = options;
+    let { target, icon, round, right, storageName } = options;
 
     // selector el
     let selection = document.querySelector(target);
@@ -1096,12 +1171,12 @@ function enhanceDetails(options = {}) {
      *  loop through details
      */
 
-    for(let i=0, l=details.length; l&&i<l; i++ ){
+    for (let i = 0, l = details.length; l && i < l; i++) {
 
         let detail = details[i];
 
         // prevent duplicate initialization
-        if(detail.classList.contains('details-enhanced-active')){
+        if (detail.classList.contains('details-enhanced-active')) {
             continue
         }
 
@@ -1197,7 +1272,7 @@ function enhanceDetails(options = {}) {
             };
         }
 
-        let { icon, round, right, plus, type='' } = optionsFinal;
+        let { icon, round, right, plus, type = '', storageName = {} } = optionsFinal;
 
         /** 
          * add toggle icon
@@ -1214,9 +1289,10 @@ function enhanceDetails(options = {}) {
         }
 
         // plus/minus style
+
         if ((icon == '+' || icon == 'plus' || plus)) {
-            markerIconCustom = '';
-            summarMarkerStyle = 'summary-marker-plus';
+            markerIconCustom = summaryIcons['plusMinus'] ;
+            summarMarkerStyle = 'summary-marker-multi summary-marker-plusminus';
         }
 
         // right or left alignment
@@ -1225,16 +1301,17 @@ function enhanceDetails(options = {}) {
         }
 
         // custom svg icon
-        if (markerIconCustom) summarMarkerStyle = 'summary-marker-icon';
+        if (markerIconCustom) summarMarkerStyle += ' summary-marker-icon';
 
         let markerIcon = `<span class="summary-marker ${classModifiers} ${summarMarkerStyle} ${summarMarkerAlignment} ${summaryMarkerState}" aria-hidden="true" focusable="false">${markerIconCustom}</span>`;
+
         summary.insertAdjacentHTML("afterbegin", markerIcon);
 
         detail.classList.add('details', 'details-enhanced', 'details-enhanced-active');
         summary.classList.add("summary");
 
         // add event listeners
-        bindDetailsEvents(detail, detailsContent, summary, expanded, type);
+        bindDetailsEvents(detail, detailsContent, summary, expanded, type, storageName);
 
     }
 
@@ -2944,7 +3021,7 @@ function enhanceInputs({
     cacheToStorage = true,
     storageName = '',
     embedSprite = true,
-    icons = 'inputs'
+    icons = 'inputs',
 } = {}) {
 
     /**
@@ -2992,7 +3069,7 @@ function enhanceInputs({
     }
 
     let parentEl = document.querySelector(parent) ? document.querySelector(parent) : document.body;
-    let inputs = parentEl.querySelectorAll(selector);
+    let inputs = [...parentEl.querySelectorAll(selector)];
 
     // default button style 
     let buttons = parentEl.querySelectorAll('button');
@@ -3123,7 +3200,7 @@ function enhanceInputsAutoInit() {
          * for input background fills
          */
         let bodyColor = window.getComputedStyle(document.body).backgroundColor;
-        bodyColor = (bodyColor==='rgba(0, 0, 0, 0)' || bodyColor==='transparent') ? 'rgb(255, 255, 255)': bodyColor;
+        bodyColor = (bodyColor === 'rgba(0, 0, 0, 0)' || bodyColor === 'transparent') ? 'rgb(255, 255, 255)' : bodyColor;
         document.documentElement.style.setProperty('--color-background', bodyColor);
 
         // Initialize
@@ -3151,7 +3228,22 @@ function enhanceInputsAutoInit() {
         // enhance codes
         enhanceCode();
 
-        enhanceDetailsAutoInit();
+        // get details settings
+        let storageName = enhanceInputsSettings.storageName;
+
+        // change details open state
+        let detailsSettings = initDetailStates(storageName);
+
+        // save to inputs obj
+        enhanceInputsSettings.detailsOpen = detailsSettings;
+
+        // save to details global
+        enhanceDetailsSettings.detailsOpen = detailsSettings;
+
+        enhanceDetailsAutoInit(enhanceInputsSettings);
+
+        // save settings
+        saveSettingsToLocalStorage$1(enhanceInputsSettings, storageName);
 
     }
 
@@ -3167,7 +3259,7 @@ if (typeof window !== 'undefined') {
     window.saveSettingsToLocalStorage = saveSettingsToLocalStorage$1;
     window.settingsToQueryString = settingsToQueryString;
     window.getQueryParams = getQueryParams;
-    
+
     // addons
     window.getZipUrl = getZipUrl;
     window.enhanceDetails = enhanceDetails;

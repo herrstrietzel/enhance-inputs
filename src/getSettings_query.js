@@ -1,9 +1,15 @@
 
 import { normalizeStr } from './string_helpers';
 
+// get quer params
+export function getQueryParams(){
+    return Object.fromEntries(new URLSearchParams(document.location.search));
+}
+
+
 export function updateSettingsFromQuery(query = {}, settings = {}) {
     let settingsNew = settings;
-    //console.log('query', query);
+    //console.log('!!!query', query);
 
     for (let prop in query) {
         let value = query[prop];
@@ -12,6 +18,12 @@ export function updateSettingsFromQuery(query = {}, settings = {}) {
         if (settings.defaults.hasOwnProperty(prop)) {
             settingsNew[prop] = value
         }
+    }
+
+    // update localStorage
+    let storageName = settings.storageName
+    if(storageName) {
+        saveSettingsToLocalStorage(settings, storageName)
     }
 
     //console.log('settingsNew', settingsNew);
@@ -48,11 +60,11 @@ export function settingsToQueryString(settings = {}, exclude = ["defaults"], max
             let projectedLength = currentLength + (queryParts.length > 0 ? 1 : 0) + param.length; // +1 for '&'
             let newLength = param.length + 1
 
-            if (currentLength + newLength < maxLength ) {
+            if (currentLength + newLength < maxLength) {
                 queryParts.push(param);
                 currentLength += newLength;
             } else {
-                console.warn(`Skipping "${k}" — adding it would exceed maxLength (${maxLength}).`);
+                //console.warn(`Skipping "${k}" — adding it would exceed maxLength (${maxLength}).`);
             }
         };
 

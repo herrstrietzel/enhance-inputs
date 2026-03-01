@@ -1,17 +1,18 @@
 import { summaryIcons, getDetailsCSSOptions, replaceUmlauts, textToAnchorUrl } from './enhanceDetails_helpers';
 import { bindDetailsEvents, bindDetailsOpenbtns, closeDetails, openDetails } from './enhanceDetails_state_toggle';
 
+import {enhanceDetailsSettings, enhanceDetailsOpen} from './constants';
+import { getPropFromLocalStorage } from './localStorage';
 
-export function enhanceDetailsAutoInit() {
+export function enhanceDetailsAutoInit(settings={}) {
     let detailsToEnhance = document.querySelectorAll('.details-enhanced, [data-details], [data-enhance-inputs]');
     if (detailsToEnhance.length) {
-        enhanceDetails()
+        enhanceDetails(settings)
     }
 }
 
 
 export function enhanceDetails(options = {}) {
-
 
     // default options
     options = {
@@ -20,11 +21,12 @@ export function enhanceDetails(options = {}) {
             icon: '',
             round: false,
             right: false,
-            plus: false
+            plus: false,
+            storageName: ''
         },
         ...options
     }
-    let { target, icon, round, right } = options;
+    let { target, icon, round, right, storageName } = options;
 
 
     // selector el
@@ -41,12 +43,12 @@ export function enhanceDetails(options = {}) {
      *  loop through details
      */
 
-    for(let i=0, l=details.length; l&&i<l; i++ ){
+    for (let i = 0, l = details.length; l && i < l; i++) {
 
         let detail = details[i];
 
         // prevent duplicate initialization
-        if(detail.classList.contains('details-enhanced-active')){
+        if (detail.classList.contains('details-enhanced-active')) {
             continue
         }
 
@@ -148,7 +150,9 @@ export function enhanceDetails(options = {}) {
         }
 
         //extract final options
-        let { icon, round, right, plus, type='' } = optionsFinal;
+        let { icon, round, right, plus, type = '', storageName = {} } = optionsFinal;
+        //console.log(target, icon, round, right, storageName);
+
 
         /** 
          * add toggle icon
@@ -165,10 +169,18 @@ export function enhanceDetails(options = {}) {
         }
 
         // plus/minus style
+        /*
         if ((icon == '+' || icon == 'plus' || plus)) {
             markerIconCustom = '';
             summarMarkerStyle = 'summary-marker-plus';
         }
+            */
+
+        if ((icon == '+' || icon == 'plus' || plus)) {
+            markerIconCustom = summaryIcons['plusMinus'] ;
+            summarMarkerStyle = 'summary-marker-multi summary-marker-plusminus';
+        }
+
 
         // right or left alignment
         if (right) {
@@ -176,11 +188,11 @@ export function enhanceDetails(options = {}) {
         }
 
         // custom svg icon
-        if (markerIconCustom) summarMarkerStyle = 'summary-marker-icon';
+        if (markerIconCustom) summarMarkerStyle += ' summary-marker-icon';
 
         let markerIcon = `<span class="summary-marker ${classModifiers} ${summarMarkerStyle} ${summarMarkerAlignment} ${summaryMarkerState}" aria-hidden="true" focusable="false">${markerIconCustom}</span>`;
-        summary.insertAdjacentHTML("afterbegin", markerIcon);
 
+        summary.insertAdjacentHTML("afterbegin", markerIcon);
 
 
         //add custom class names to prevent multiple processing
@@ -188,11 +200,15 @@ export function enhanceDetails(options = {}) {
         summary.classList.add("summary");
 
         // add event listeners
-        bindDetailsEvents(detail, detailsContent, summary, expanded, type)
+        bindDetailsEvents(detail, detailsContent, summary, expanded, type, storageName)
+
+        //cacheOpenDetails(optionsFinal)
+
 
     }
 
     bindDetailsOpenbtns()
+
 
 }
 

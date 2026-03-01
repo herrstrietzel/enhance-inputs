@@ -13,6 +13,7 @@ import { parseCSP_Atts } from './csp';
 
 import { addUI_elements } from './addUI_els';
 import { loadSamples } from './loadSamples.js';
+import {enhanceDetailsOpen} from './constants';
 
 
 
@@ -25,9 +26,9 @@ export function enhanceInputs({
     getQuery = true,
     // save settings to local storage
     cacheToStorage = true,
-    storageName = 'settings',
+    storageName = '',
     embedSprite = true,
-    icons = 'inputs'
+    icons = 'inputs',
 } = {}) {
 
 
@@ -55,6 +56,8 @@ export function enhanceInputs({
      */
     let settingsStorage = '';
     let settingsCache = {};
+    let settings = {}
+
 
     if (cacheToStorage) {
         if (!storageName) {
@@ -72,12 +75,23 @@ export function enhanceInputs({
         } catch {
             console.warn('No valid settings JSON');
         }
+        settings.storageName=storageName
     }
 
 
-    let settings = {}
     let parentEl = document.querySelector(parent) ? document.querySelector(parent) : document.body;
-    let inputs = parentEl.querySelectorAll(selector);
+    let inputs = [...parentEl.querySelectorAll(selector)];
+
+
+    /*
+    // include details
+    if(cacheDetails){
+        let summanries = []
+        summanries = document.body.querySelectorAll('summary');
+        //inputs.push(...summanries)    
+        //console.log('inputs', inputs);
+    }
+    */
 
     // default button style 
     let buttons = parentEl.querySelectorAll('button');
@@ -131,13 +145,6 @@ export function enhanceInputs({
 
     settings = getSettingValueFromInputs(inputs, settings)
 
-    // include strorage name
-    if(cacheToStorage) {
-        settings.storageName = storageName
-    }
-
-
-
     // bind input events
     bindSettingUpdates(inputs, settings, storageName, cacheToUrl)
 
@@ -151,7 +158,6 @@ export function enhanceInputs({
      * and adding extra buttons
      */
     enhanceInputStyles(inputs);
-
 
     /**
      * add icons if 

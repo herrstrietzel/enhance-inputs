@@ -40,7 +40,8 @@
   --icon-width: 1em;
   --icn-stroke-width: 2px;
   --icn-scale: 1.333;
-  --icn-basline-shift: -0.075em;
+  /* --icn-basline-shift: -0.075em; */
+  --icn-basline-shift: 0em;
 }
 
 .darkmode {
@@ -1332,19 +1333,6 @@ table th:last-child:after {
   background: #eee;
 }
 
-:where(.enhanceInputs, [data-enhance-inputs]) {
-  /* multi selects*/
-  /* hide search delete buttons */
-  /* Firefox */
-  /* reset */
-  /** range slider **/
-  /***** Chrome, Safari, Opera and Edge Chromium styles *****/
-  /* slider track */
-  /******** Firefox styles ********/
-  /* slider track */
-  /* slider thumb */
-  /* range with number */
-}
 :where(.enhanceInputs, [data-enhance-inputs]) fieldset {
   padding-top: 1rem;
   padding-left: 0;
@@ -1387,11 +1375,17 @@ table th:last-child:after {
   cursor: pointer;
   position: relative;
 }
+:where(.enhanceInputs, [data-enhance-inputs]) {
+  /* multi selects*/
+}
 :where(.enhanceInputs, [data-enhance-inputs]) select[multiple] {
   width: 100%;
   border: var(--border-width-input) solid var(--color-border);
   background-color: var(--color-background-input);
   border-radius: var(--border-radius);
+}
+:where(.enhanceInputs, [data-enhance-inputs]) {
+  /* hide search delete buttons */
 }
 :where(.enhanceInputs, [data-enhance-inputs]) input[type=search]::-webkit-search-decoration,
 :where(.enhanceInputs, [data-enhance-inputs]) input[type=search]::-webkit-search-cancel-button,
@@ -1399,8 +1393,14 @@ table th:last-child:after {
 :where(.enhanceInputs, [data-enhance-inputs]) input[type=search]::-webkit-search-results-decoration {
   display: none;
 }
+:where(.enhanceInputs, [data-enhance-inputs]) {
+  /* Firefox */
+}
 :where(.enhanceInputs, [data-enhance-inputs]) input[type=search]::-moz-search-clear-button {
   display: none;
+}
+:where(.enhanceInputs, [data-enhance-inputs]) {
+  /* reset */
 }
 :where(.enhanceInputs, [data-enhance-inputs]) input::file-selector-button,
 :where(.enhanceInputs, [data-enhance-inputs]) button,
@@ -1425,6 +1425,9 @@ table th:last-child:after {
 :where(.enhanceInputs, [data-enhance-inputs]) select:focus-within {
   outline: none;
 }
+:where(.enhanceInputs, [data-enhance-inputs]) {
+  /** range slider **/
+}
 :where(.enhanceInputs, [data-enhance-inputs]) input[type=range] {
   /*
   -webkit-appearance: none;
@@ -1443,6 +1446,10 @@ table th:last-child:after {
   width: 0.75em;
   line-height: 0px;
   transform: translateY(0.05em);
+}
+:where(.enhanceInputs, [data-enhance-inputs]) {
+  /***** Chrome, Safari, Opera and Edge Chromium styles *****/
+  /* slider track */
 }
 :where(.enhanceInputs, [data-enhance-inputs]) input[type=range]::-webkit-slider-runnable-track {
   background-color: var(--color-range-track);
@@ -1470,10 +1477,17 @@ table th:last-child:after {
   --color-range-track: var(--color-focus);
   --color-range-thumb: var(--color-focus);
 }
+:where(.enhanceInputs, [data-enhance-inputs]) {
+  /******** Firefox styles ********/
+  /* slider track */
+}
 :where(.enhanceInputs, [data-enhance-inputs]) input[type=range]::-moz-range-track {
   background-color: var(--color-range-track);
   border-radius: 1em;
   height: var(--height-range-track);
+}
+:where(.enhanceInputs, [data-enhance-inputs]) {
+  /* slider thumb */
 }
 :where(.enhanceInputs, [data-enhance-inputs]) input[type=range]::-moz-range-thumb {
   /* transform: translateY(calc(-50% + var(--height-range-track) * 0.5)); */
@@ -1492,6 +1506,9 @@ table th:last-child:after {
 :where(.enhanceInputs, [data-enhance-inputs]) input[type=range]:focus-visible::-moz-slider-thumb {
   filter: var(--filter-focus);
 }
+:where(.enhanceInputs, [data-enhance-inputs]) {
+  /* range with number */
+}
 :where(.enhanceInputs, [data-enhance-inputs]) .input-wrap-range-num {
   gap: 1em;
 }
@@ -1502,7 +1519,8 @@ table th:last-child:after {
 */
 .icn-wrp {
   display: inline-flex;
-  align-items: center;
+  /* align-items: center; */
+  align-items: flex-start;
   height: 1em;
 }
 
@@ -1907,6 +1925,15 @@ pre {
   */
   color: var(--color-text);
   transition: 0.3s color, 0.3s background-color;
+}
+.pre-header .btn-copy:hover, .pre-header .btn-copy:focus {
+  background: var(--color-focus);
+  color: var(--code-bg);
+}
+.pre-header .btn-copy:hover svg, .pre-header .btn-copy:focus svg {
+  color: inherit;
+}
+.pre-header .btn-copy {
   /*
   svg {
     font-size: 1em;
@@ -1918,13 +1945,6 @@ pre {
     //transform: translate(-0.05em, 0);
   }
     */
-}
-.pre-header .btn-copy:hover, .pre-header .btn-copy:focus {
-  background: var(--color-focus);
-  color: var(--code-bg);
-}
-.pre-header .btn-copy:hover svg, .pre-header .btn-copy:focus svg {
-  color: inherit;
 }
 
 /* Code blocks */
@@ -2019,7 +2039,7 @@ code[class*=language-]:focus {
 
 details {
   --transition-duration: 0.3s;
-  --marker-icon: "❯";
+  --marker-icon: '\276F';
   --marker-scale: scale(1);
   --marker-translate: translate(0, 0);
   --marker-rounded-padding: 0.1em;
@@ -2226,6 +2246,29 @@ summary.summary:before {
   margin-left: auto;
 }
 
+.summary:focus,
+.summary:focus-visible {
+  outline: none;
+  color: var(--color-focus);
+}
+
+.summary-marker-multi.summary-marker-collapsed path:nth-child(2) {
+  display: none;
+}
+
+.summary-marker-multi.summary-marker-expanded path:nth-child(1) {
+  display: none;
+}
+
+/* optical adjustment for plus/minus toggle */
+.summary-marker-plusminus {
+  transform: translate(0, 0.15em);
+}
+
+.summary-marker-plusminus.summary-marker-expanded {
+  transform: translate(0, 0.15em) rotate(180deg);
+}
+
 /** hide on init */
 .enhance-inputs-init {
   opacity: 0;
@@ -2341,6 +2384,15 @@ button.icn-inj:before,
   /* reduce bottom padding for baseline adjustment */
   padding: var(--padding-input) var(--padding-input) calc(var(--padding-input) * 1) var(--padding-input);
   line-height: 1.5em;
+}
+.btn-default input:focus, .input-submit input:focus, .btn-default input:focus-visible, .input-submit input:focus-visible,
+.input-wrap-boxed input:focus,
+.input-wrap-boxed input:focus-visible {
+  border: none;
+  outline: none;
+}
+.btn-default, .input-submit,
+.input-wrap-boxed {
   /*
   &:focus-within:after {
       content: '';
@@ -2356,12 +2408,6 @@ button.icn-inj:before,
   }
   */
 }
-.btn-default input:focus, .input-submit input:focus, .btn-default input:focus-visible, .input-submit input:focus-visible,
-.input-wrap-boxed input:focus,
-.input-wrap-boxed input:focus-visible {
-  border: none;
-  outline: none;
-}
 .btn-default:focus, .input-submit:focus, .btn-default:focus-within, .input-submit:focus-within,
 .input-wrap-boxed:focus,
 .input-wrap-boxed:focus-within {
@@ -2376,6 +2422,20 @@ button.icn-inj:before,
   background-color: var(--color-background-input);
   text-align: center;
   font-weight: 700;
+  padding: 0.4em 0.5em 0.5em 0.5em;
+  display: inline-flex;
+  padding: 0.5em;
+  line-height: 1em;
+  border-radius: 0.3rem;
+  align-items: center;
+}
+
+.btn-round {
+  display: inline-flex;
+  padding: 0.5em;
+  line-height: 1em;
+  border-radius: 0.3rem;
+  align-items: center;
 }
 
 .btn-neg, .input-submit {
@@ -2391,11 +2451,11 @@ button.icn-inj:before,
   gap: var(--icn-margin);
 }
 
-.btn-neg:focus, .input-submit:focus {
-  color: var(--color-text-neg);
-}
 .btn-neg:focus .icn-svg, .input-submit:focus .icn-svg {
   color: var(--color-icon);
+}
+.btn-neg:focus, .input-submit:focus {
+  color: var(--color-text-neg);
 }
 
 .btn-default:hover, .input-submit:hover {

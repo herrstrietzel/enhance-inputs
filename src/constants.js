@@ -6,3 +6,6 @@ export const {
 
 // get quer params
 export const queryParams = Object.fromEntries(new URLSearchParams(document.location.search));
+
+export const enhanceDetailsSettings = {};
+export let enhanceDetailsOpen = {};

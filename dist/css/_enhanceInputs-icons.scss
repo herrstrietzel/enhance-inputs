@@ -10,7 +10,8 @@
 
 .icn-wrp {
   display: inline-flex;
-  align-items: center;
+  /* align-items: center; */
+  align-items: flex-start;
   height: 1em
 }
 

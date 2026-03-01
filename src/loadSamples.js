@@ -15,13 +15,54 @@ export function loadSamples(parent = null) {
             let optionDefault = new Option('Choose Sample', '')
             select.append(optionDefault)
 
-            if(items){
-                for(let key in items ){
-                    let option = new Option(key, items[key])
-                    select.append(option)
-                }
-            }
 
+            if (items) {
+
+                // group to optgroups if present by underscore prefix
+                let optGroups = { misc: [] }
+
+                for (let key in items) {
+                    let value = items[key].trim()
+                    let labelArr = key.split('__').filter(Boolean);
+                    let label = labelArr.length > 1 ? labelArr.slice(1).join(' ') : key;
+
+                    let option = new Option(label, value)
+
+                    let group = labelArr.length > 1 ? labelArr[0] : '';
+                    if (group) {
+                        if (!optGroups[group]) {
+                            optGroups[group] = []
+                        }
+                        optGroups[group].push(option)
+                    } else {
+                        optGroups['misc'].push(option)
+                    }
+                }
+
+                // sort alphabetically
+                let props = Object.keys(optGroups).sort()
+
+                if(props.length){
+                    let optGroupsSort= {}
+                    for(let prop of props){
+                        optGroupsSort[prop] = optGroups[prop].sort((a, b) => a.label.localeCompare(b.label))
+                    }
+                    optGroups = optGroupsSort
+                }
+
+
+                for (let group in optGroups) {
+                    let options = optGroups[group]
+                    let optGroup = document.createElement('optgroup')
+                    optGroup.label = group;
+                    options.forEach(option => {
+                        optGroup.append(option)
+                    })
+                    select.append(optGroup)
+                }
+
+
+            }
 
         })
     }

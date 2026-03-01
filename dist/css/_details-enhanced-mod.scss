@@ -230,3 +230,33 @@ summary.summary {
     order: 1;
     margin-left: auto;
 }
+
+
+.summary:focus,
+.summary:focus-visible{
+outline:none;
+color: var(--color-focus)
+}
+
+
+.summary-marker-multi.summary-marker-collapsed path:nth-child(2){
+display:none
+}
+
+.summary-marker-multi.summary-marker-expanded path:nth-child(1){
+display:none
+}
+
+
+
+/* optical adjustment for plus/minus toggle */
+
+.summary-marker-plusminus{
+transform: translate(0, 0.15em);
+}
+
+
+.summary-marker-plusminus.summary-marker-expanded{
+transform: translate(0, 0.15em) rotate(180deg);
+}
+

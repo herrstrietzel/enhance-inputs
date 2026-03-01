@@ -94,7 +94,6 @@ button.icn-inj,
     width: 100%;
 }
 
-
 .input-wrap-textarea {
     margin-bottom: 1rem;
 }
@@ -108,7 +107,6 @@ button.icn-inj,
 .input-wrap-number {
     width: 100%;
 }
-
 
 button.icn-inj:before,
 .input-wrap-icon:before {
@@ -195,7 +193,22 @@ button.icn-inj:before,
     background-color: var(--color-background-input);
     text-align: center;
     font-weight: 700;
+    padding: 0.4em 0.5em 0.5em 0.5em;
+    display: inline-flex;
+    padding: 0.5em;
+    line-height: 1em;
+    border-radius: 0.3rem;
+    align-items: center;
 }
+
+.btn-round{
+    display: inline-flex;
+    padding: 0.5em;
+    line-height: 1em;
+    border-radius: 0.3rem;
+    align-items: center;
+}
+
 
 .btn-neg {
     --color-icon: var(--color-text-neg, #fff);

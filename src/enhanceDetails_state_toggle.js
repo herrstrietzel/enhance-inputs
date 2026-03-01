@@ -1,3 +1,28 @@
+import { enhanceDetailsSettings, enhanceDetailsOpen } from './constants';
+import { textToAnchorUrl } from './enhanceDetails_helpers';
+import { getPropFromLocalStorage, savePropToLocalStorage } from './localStorage';
+
+export function initDetailStates(storageName) {
+
+    let detailsSettings = getPropFromLocalStorage(storageName, 'detailsOpen') || {}
+    let details = document.body.querySelectorAll('details');
+
+    for (let i = 0, l = details.length; i < l; i++) {
+        let detail = details[i]
+        let summary = detail.querySelector('summary')
+        let id = textToAnchorUrl(summary.textContent);
+
+        if(detailsSettings[id]===undefined){
+            detailsSettings[id] = detail.open
+        }
+
+        detail.open = detailsSettings[id] 
+    }
+
+    return detailsSettings
+
+}
+
 
 export function bindDetailsOpenbtns() {
 
@@ -39,24 +64,26 @@ export function bindDetailsOpenbtns() {
 
 
 
-export function closeDetails(parentEl = null, exclude=null) {
+export function closeDetails(parentEl = null, exclude = null) {
     parentEl = parentEl ? parentEl : document.body
     let details = parentEl.querySelectorAll('details[open]')
     toggleDetails(details, exclude)
+
+
 }
 
-export function openDetails(parentEl = null, exclude=null) {
+export function openDetails(parentEl = null, exclude = null) {
     parentEl = parentEl ? parentEl : document.body
     let details = parentEl.querySelectorAll('details:not([open])')
     toggleDetails(details, exclude)
 }
 
-export function toggleDetails(details = null, exclude=null) {
+export function toggleDetails(details = null, exclude = null) {
     details.forEach(detail => {
 
         let nodeName = detail.nodeName.toLowerCase()
         let summary = nodeName === 'summary' ? detail : detail.querySelector('summary')
-        if(!exclude || summary!==exclude){
+        if (!exclude || summary !== exclude) {
             summary.dispatchEvent(new Event('click'))
         }
     })
@@ -64,13 +91,14 @@ export function toggleDetails(details = null, exclude=null) {
 
 
 
-
-
-
-
-export function bindDetailsEvents(detail, detailsContent, summary, expanded, type = '') {
+export function bindDetailsEvents(detail, detailsContent, summary, expanded, type = '', storageName = '') {
 
     let parent = detail.parentNode.closest('[data-details]') || detail.parentNode.closest('.details-enhanced');
+
+
+    //let enhanceDetailsOpen = getPropFromLocalStorage(storageName, 'detailsOpen')
+    //console.log(enhanceDetailsSettings);
+    //console.log('storageName', storageName);
 
     // prevent duplicate events
     if (!summary.classList.contains('summary-active')) {
@@ -98,11 +126,14 @@ export function bindDetailsEvents(detail, detailsContent, summary, expanded, typ
             let detailsContent = current.parentNode.querySelector('.details-content');
             let summaryMarker = current.querySelector('.summary-marker');
 
+            let id = current.id
+            //console.log('id', id);
+
             // close others in accordion mode
-            if(type==='accordion'){
+            if (type === 'accordion') {
                 closeDetails(parent, summary)
             }
-        
+
             // collapse
             if (expanded) {
                 expanded = false;
@@ -113,6 +144,12 @@ export function bindDetailsEvents(detail, detailsContent, summary, expanded, typ
                 summary.classList.remove("summary-expanded");
                 summaryMarker.classList.replace("summary-marker-expanded", "summary-marker-collapsed");
 
+                // add to open cache
+                //enhanceDetailsOpen.delete(id)
+                //console.log(enhanceDetailsSettings.detailsOpen);
+
+                enhanceDetailsSettings.detailsOpen[id] = false
+
             }
             // expand
             else if (!expanded) {
@@ -121,20 +158,23 @@ export function bindDetailsEvents(detail, detailsContent, summary, expanded, typ
                 summary.classList.add("summary-expanded");
                 summaryMarker.classList.replace("summary-marker-collapsed", "summary-marker-expanded");
 
-
                 // tiny delay for expand transition
                 let timeout = setTimeout(() => {
                     detail.classList.add("details-expanded");
                     detailsContent.classList.add("details-content-expanded");
                 }, 10);
 
+                // add to open cache
+                enhanceDetailsSettings.detailsOpen[id] = true
+
             }
+
+            // save to local storage
+            savePropToLocalStorage(storageName, 'detailsOpen', enhanceDetailsSettings.detailsOpen)
 
         });
 
         summary.classList.add('summary-active')
-
-
 
     }
 

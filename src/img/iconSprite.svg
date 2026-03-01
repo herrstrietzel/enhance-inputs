@@ -1,14 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="svgIcons sr-only" width="0" height="0"
   aria-hidden="true">
 
+  <symbol viewBox="0 0 24 24" id="plus">
+    <path d="M12 4.5v15m7.5-7.5h-15" />
+  </symbol>
+
+  <symbol viewBox="0 0 24 24" id="minus">
+    <path d="M5 12h14" />
+  </symbol>
 
   <!-- social media -->
 
 
-  <svg viewBox="0 0 24 24" id="youtube">
+  <symbol viewBox="0 0 24 24" id="youtube">
     <path
       d="M22.5 6.4a2.8 2.8 0 00-1.9-2c-1.7-.4-8.6-.4-8.6-.4s-6.9 0-8.6 .5a2.8 2.8 0 00-1.9 2 29 29 0 00-.5 5.3 29 29 0 000.5 5.3 2.8 2.8 0 001.9 1.9c1.7 .5 8.6 .5 8.6 .5s6.9 0 8.6-.5a2.8 2.8 0 001.9-2 29 29 0 000.5-5.2 29 29 0 00-.5-5.4zm-12.7 8.6 5.7-3.2-5.7-3.3 0 6.5z" />
-  </svg>
+  </symbol>
 
 
   <!-- checkbox -->
@@ -611,14 +618,14 @@
       d="M19.5 14.3v-2.7a3.4 3.4 0 00-3.4-3.3h-1.5a1.1 1.1 0 01-1.1-1.2v-1.5a3.4 3.4 0 00-3.4-3.3h-1.8m0 12.7h7.5m-7.5 3h3.7m-1.5-15.7h-4.9c-.6 0-1.1 .5-1.1 1.1v17.2c0 .6 .5 1.2 1.1 1.2l12.8 0c0.6 0 1.1-.6 1.1-1.2v-9.3a9 9 0 00-9-9z" />
   </symbol>
 
-    <symbol viewBox="0 0 24 24" id="ellipsis-horizontal">
-        <path id="pathEllipsis"
-            d="M6 12a1 1 0 11-2 0 1 1 0 112 0m7 0a1 1 0 11-2 0 1 1 0 112 0m7 0a1 1 0 11-2 0 1 1 0 112 0" />
-    </symbol>
+  <symbol viewBox="0 0 24 24" id="ellipsis-horizontal">
+    <path id="pathEllipsis"
+      d="M6 12a1 1 0 11-2 0 1 1 0 112 0m7 0a1 1 0 11-2 0 1 1 0 112 0m7 0a1 1 0 11-2 0 1 1 0 112 0" />
+  </symbol>
 
-    <symbol viewBox="0 0 24 24" id="ellipsis-vertical">
-        <use href="#pathEllipsis" transform="rotate(90 12 12)" />
-    </symbol>
+  <symbol viewBox="0 0 24 24" id="ellipsis-vertical">
+    <use href="#pathEllipsis" transform="rotate(90 12 12)" />
+  </symbol>
 
 
   <symbol viewBox="0 0 24 24" id="envelope-open">

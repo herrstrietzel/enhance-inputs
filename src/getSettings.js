@@ -6,10 +6,10 @@
  */
 export function getSettingValueFromInputs(inputs, settings={}) {
 
-    
     inputs.forEach((inp) => {
         getSettingValueFromInput(inp, settings)
     });
+
     return settings;
 }
 
