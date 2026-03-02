@@ -119,6 +119,7 @@ export function enhanceInputsAutoInit() {
 
         // save to details global
         enhanceDetailsSettings.detailsOpen = detailsSettings
+        enhanceDetailsSettings.storageName = storageName
 
 
         //enhance details

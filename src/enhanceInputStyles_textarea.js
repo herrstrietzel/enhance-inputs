@@ -36,6 +36,7 @@ export function enhanceTextarea(el = null, classWrap = 'input-wrap-textarea', cl
         el.parentNode.insertBefore(wrap, el)
     }
 
+
     let header = wrap.querySelector(`${classWrapHeader}`)
 
     //already processed – skip
@@ -121,6 +122,16 @@ export function enhanceTextarea(el = null, classWrap = 'input-wrap-textarea', cl
     })
 
     header.insertAdjacentHTML('beforeend', html)
+
+        // add custom resizer icon
+    let resizerIcon = 
+    `<svg class="icn-svg icn-picker-resize" viewBox="0 0 24 24">
+    <use href="#resizer" />
+  </svg>`
+
+  wrap.insertAdjacentHTML('beforeend', resizerIcon)
+    //document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+
 
     // add toolbar funcionality
     bindTextAreaToolbar(header, classWrap, classWrapHeader, classWrapToolbar);

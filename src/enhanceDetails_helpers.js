@@ -5,7 +5,6 @@ export const summaryIcons = {
     'plusMinus':`<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4.5v15m7.5-7.5h-15" /><path d="M5 12h14" /></svg>`
 }
 
-
 /**
  * helpers
  */

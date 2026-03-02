@@ -11,12 +11,7 @@ export function initDetailStates(storageName) {
         let detail = details[i]
         let summary = detail.querySelector('summary')
         let id = textToAnchorUrl(summary.textContent);
-
-        if(detailsSettings[id]===undefined){
-            detailsSettings[id] = detail.open
-        }
-
-        detail.open = detailsSettings[id] 
+        detail.open = detailsSettings[id]!==undefined ? detailsSettings[id] : detail.open
     }
 
     return detailsSettings
@@ -91,14 +86,11 @@ export function toggleDetails(details = null, exclude = null) {
 
 
 
-export function bindDetailsEvents(detail, detailsContent, summary, expanded, type = '', storageName = '') {
+export function bindDetailsEvents(detail, detailsContent, summary, expanded, type = '') {
 
     let parent = detail.parentNode.closest('[data-details]') || detail.parentNode.closest('.details-enhanced');
 
-
-    //let enhanceDetailsOpen = getPropFromLocalStorage(storageName, 'detailsOpen')
-    //console.log(enhanceDetailsSettings);
-    //console.log('storageName', storageName);
+    let storageName = enhanceDetailsSettings.storageName;
 
     // prevent duplicate events
     if (!summary.classList.contains('summary-active')) {

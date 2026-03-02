@@ -987,12 +987,7 @@ function initDetailStates(storageName) {
         let detail = details[i];
         let summary = detail.querySelector('summary');
         let id = textToAnchorUrl(summary.textContent);
-
-        if(detailsSettings[id]===undefined){
-            detailsSettings[id] = detail.open;
-        }
-
-        detail.open = detailsSettings[id]; 
+        detail.open = detailsSettings[id]!==undefined ? detailsSettings[id] : detail.open;
     }
 
     return detailsSettings
@@ -1054,9 +1049,11 @@ function toggleDetails(details = null, exclude = null) {
     });
 }
 
-function bindDetailsEvents(detail, detailsContent, summary, expanded, type = '', storageName = '') {
+function bindDetailsEvents(detail, detailsContent, summary, expanded, type = '') {
 
     let parent = detail.parentNode.closest('[data-details]') || detail.parentNode.closest('.details-enhanced');
+
+    let storageName = enhanceDetailsSettings.storageName;
 
     // prevent duplicate events
     if (!summary.classList.contains('summary-active')) {
@@ -1311,7 +1308,7 @@ function enhanceDetails(options = {}) {
         summary.classList.add("summary");
 
         // add event listeners
-        bindDetailsEvents(detail, detailsContent, summary, expanded, type, storageName);
+        bindDetailsEvents(detail, detailsContent, summary, expanded, type);
 
     }
 
@@ -2540,6 +2537,14 @@ function enhanceTextarea(el = null, classWrap = 'input-wrap-textarea', classWrap
 
     header.insertAdjacentHTML('beforeend', html);
 
+        // add custom resizer icon
+    let resizerIcon = 
+    `<svg class="icn-svg icn-picker-resize" viewBox="0 0 24 24">
+    <use href="#resizer" />
+  </svg>`;
+
+  wrap.insertAdjacentHTML('beforeend', resizerIcon);
+
     // add toolbar funcionality
     bindTextAreaToolbar(header, classWrap, classWrapHeader, classWrapToolbar);
 
@@ -3239,6 +3244,7 @@ function enhanceInputsAutoInit() {
 
         // save to details global
         enhanceDetailsSettings.detailsOpen = detailsSettings;
+        enhanceDetailsSettings.storageName = storageName;
 
         enhanceDetailsAutoInit(enhanceInputsSettings);
 

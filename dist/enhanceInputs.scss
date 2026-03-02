@@ -42,6 +42,26 @@ body {
 }
 
 
+.hide-picker {
+ // padding-right:0em;
+  mask-image: linear-gradient(
+      to right,
+      black calc(100% - var(--resizer-size, 1rem)),
+      transparent calc(100% - var(--resizer-size, 1rem))
+    ),
+    linear-gradient(
+      to bottom,
+      black calc(100% - var(--resizer-size, 1rem)),
+      transparent calc(100% - var(--resizer-size, 1rem))
+    );
+  /*mask-composite: exclude; */
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  width: 100%;
+}
+
+
+
 .input {
     color: inherit;
     font-family: inherit;
@@ -145,8 +165,9 @@ button.icn-inj:before,
     border: var(--border-width-input) solid var(--color-border);
     border-radius: var(--border-radius);
 
-    /* reduce bottom padding for baseline adjustment */
-    padding: var(--padding-input) var(--padding-input) calc(var(--padding-input) * 1) var(--padding-input);
+    /* reduce top padding for baseline adjustment */
+    padding: calc(var(--padding-input) * 0.8) var(--padding-input) var(--padding-input) var(--padding-input);
+
 
     //padding: var(--padding-input);
     line-height: 1.5em;
@@ -249,7 +270,7 @@ button.icn-inj:before,
 
 
 .drp-shd {
-    box-shadow: 1px 1px 3px var(--color-text)
+    box-shadow: 1px 1px 4px var(--color-text)
 }
 
 
@@ -423,10 +444,13 @@ p:has(.input-wrap-radio) {
     display: none;
 }
 
+
 .input-select-one,
 .input-select-one option {
-    padding: var(--padding-input) var(--padding-input) calc(var(--padding-input) * 0.666) var(--padding-input);
+    padding: calc(var(--padding-input) * 0.8) 0 var(--padding-input) var(--padding-input);
 }
+
+
 
 
 .input-select-one {
@@ -475,7 +499,7 @@ option{
 
 .input-wrap-select-one:focus-within {
     appearance: base-select;
-    box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.5)
+    box-shadow: 0px 0px 4px 1px var(--color-focus)
 }
 
 
@@ -611,8 +635,9 @@ option{
 }
 
 
-/** txtarea */
 
+
+/** textarea */
 .input-textarea {
     @extend .wdt-100, .dsp-blc;
     resize: vertical;
@@ -632,7 +657,6 @@ option{
 
 .input-wrap-textarea-header {
     @extend .dsp-flx, .alg-itm-cnt;
-    margin-bottom: 1em;
     width: 100%;
 }
 
@@ -641,11 +665,40 @@ option{
     flex: 0 0 auto;
     gap: 0.2em;
     margin-left: auto;
+    margin-right:-0.2em;
 }
 
 .input-wrap-textarea-header {
     --icn-basline-shift: -0.125em;
+    position: relative;
 }
+
+
+label.input-wrap-textarea {
+    overflow: hidden;
+}
+
+.input-wrap-textarea-header:before {
+
+    content: '';
+    display: block;
+    position: absolute;
+    z-index: 1;
+    width: calc(100% - var(--padding-input));
+    height: 2em;
+    left: calc(var(--padding-input) * -1);
+    left: 0;
+    pointer-events: none;
+    box-shadow: -30px 10px 15px 5px var(--color-background);
+}
+
+.input-textarea {
+    @extend .hide-picker;
+    padding-top: 1em;
+}
+
+
+
 
 .input-wrap-inline {
     @extend .dsp-inl-blc;
@@ -871,7 +924,7 @@ a.btn-default {
     }
 
     .icn-svg {
-        transform: translate(0,-0.2em) scale(1.2);
+        transform: translate(0, -0.2em) scale(1.2);
     }
 
 

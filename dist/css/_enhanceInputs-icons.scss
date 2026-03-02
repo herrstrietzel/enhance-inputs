@@ -15,6 +15,26 @@
   height: 1em
 }
 
+.icn-wrp-question.icn-wrp-left {
+  margin-right: 0
+}
+
+.input-wrap-boxed .icn-picker-resize {
+  position: absolute;
+  right: 0.25em;
+  bottom: 0.25em;
+  height: 0.65em;
+  opacity:0
+}
+
+.icn-picker-resize {
+  transition:0.2s;
+  pointer-events: none;
+}
+
+.input-wrap-boxed:hover .icn-picker-resize {
+    opacity:1
+}
 
 /* adjust baseline alignment for inline-flex */
 .icn-wrp:before {
@@ -65,6 +85,7 @@
   right: var(--padding-input);
   pointer-events: none;
   padding: 0 calc(var(--padding-input));
+  transform: translate(0, 0.1em);
 }
 
 
@@ -131,7 +152,8 @@
 /* omit circle for round or non square icons */
 svg {
 
-  &.icn-svg{
+  &.icn-svg {
+
     &.icn-checkbox-switch,
     &.icn-checkbox-switch-checked,
     &.icn-radio,
@@ -140,7 +162,7 @@ svg {
     &.icn-checkbox-checked {
       border: none !important;
       background-color: transparent;
-      stroke:var(--color-icon);
+      stroke: var(--color-icon);
       padding: 0;
 
     }
@@ -161,6 +183,7 @@ svg {
 
 /* disable line rounding */
 .icn-sharp {
+
   svg,
   use {
     stroke-linecap: square;
