@@ -875,7 +875,7 @@
   </symbol>
 
   <symbol viewBox="0 0 24 24" id="resizer">
-    <path d="m 14 8 v6 h-6 m11 -11 v16 h-16" />
+    <path d="M 14 8 v6 h-6 m11 -11 v16 h-16" />
   </symbol>
 
 

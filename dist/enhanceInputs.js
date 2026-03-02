@@ -112,7 +112,7 @@
                 let json = JSON.stringify(settings);
                 localStorage.setItem(storageName, json);
                 
-                console.log('savePropToLocalStorage', value, settings);
+
             }
         }
     }
