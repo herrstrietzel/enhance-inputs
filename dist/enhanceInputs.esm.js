@@ -298,11 +298,10 @@ function bindSettingUpdates(inputs, settings = {}, storageName = 'settings', toQ
 
                 // trigger custom event
 
-                
                 // exclude elements to prevent trigger update event
-                let isIgnoredInput = inp.dataset.ignore==='true';
-                if(!isIgnoredInput){
-                document.dispatchEvent(settingsUpdate);
+                let isIgnoredInput = inp.dataset.ignore === 'true';
+                if (!isIgnoredInput) {
+                    document.dispatchEvent(settingsUpdate);
                 }
 
             });
@@ -331,6 +330,7 @@ function updateSyncedInput(input = null, settings = {}) {
  */
 function resetSettings(settings = {}) {
     if (settings.defaults) Object.assign(settings, settings.defaults);
+
 }
 
 function bindResetBtn(settings = {}, storageName = 'settings') {
@@ -342,10 +342,13 @@ function bindResetBtn(settings = {}, storageName = 'settings') {
             resetSettings(settings);
 
             // delete local storage
+
             localStorage.removeItem(storageName);
 
             // update inputs
             setInputValueFromSettings(settings);
+
+            // reset open details
 
             // update localStorage
             saveSettingsToLocalStorage$1(settings, storageName);

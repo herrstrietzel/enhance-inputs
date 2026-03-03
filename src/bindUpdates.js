@@ -6,6 +6,7 @@ import { getSettingValueFromInputs, getSettingValueFromInput } from './getSettin
 import { syncInputsWithCache, setInputValueFromSettings, saveSettingsToLocalStorage } from './localStorage.js';
 
 import { updateQueryParams, settingsToQueryString } from './getSettings_query.js';
+import { enhanceDetailsSettings } from './constants.js';
 
 // custom event for settings update
 export const settingsUpdate = new Event('settingsChange');
@@ -39,11 +40,11 @@ export function bindSettingUpdates(inputs, settings = {}, storageName = 'setting
 
                 // trigger custom event
                 //document.dispatchEvent(new Event('settingsChange'))
-                
+
                 // exclude elements to prevent trigger update event
-                let isIgnoredInput = inp.dataset.ignore==='true';
-                if(!isIgnoredInput){
-                document.dispatchEvent(settingsUpdate)
+                let isIgnoredInput = inp.dataset.ignore === 'true';
+                if (!isIgnoredInput) {
+                    document.dispatchEvent(settingsUpdate)
                 }
 
             })
@@ -107,6 +108,7 @@ export function updateSyncedInput(input = null, settings = {}) {
  */
 export function resetSettings(settings = {}) {
     if (settings.defaults) Object.assign(settings, settings.defaults);
+    //return settings;
 }
 
 
@@ -117,19 +119,27 @@ export function bindResetBtn(settings = {}, storageName = 'settings') {
     btnsReset.forEach(btn => {
         btn.addEventListener('click', e => {
 
+            //settings = {}
             resetSettings(settings)
 
             // delete local storage
+            //localStorage.setItem(storageName, {})
             localStorage.removeItem(storageName)
 
             // update inputs
             setInputValueFromSettings(settings)
+
+            // reset open details
+            //enhanceDetailsSettings.detailsOpen = {}
 
             // update localStorage
             saveSettingsToLocalStorage(settings, storageName)
 
             // delete query params
             updateQueryParams({})
+
+
+            //console.log(settings, enhanceDetailsSettings.detailsOpen);
 
             // trigger custom event
             document.dispatchEvent(settingsUpdate)
