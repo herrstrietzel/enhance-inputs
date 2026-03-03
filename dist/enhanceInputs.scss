@@ -265,7 +265,7 @@ button.icn-inj:before,
     background-color: var(--color-background-hover);
     color: var(--color-text-hover);
     border-color: var(--color-background-hover);
-    transform: scale(1.1)
+    /* transform: scale(1.1) */
 }
 
 
@@ -676,6 +676,7 @@ option{
 
 label.input-wrap-textarea {
     overflow: hidden;
+    min-height: 10lh;
 }
 
 .input-wrap-textarea-header:before {
@@ -969,4 +970,25 @@ table {
 
 .draggable {
     cursor: move;
+}
+
+
+.input-number-btns .input-number-btn{
+margin-right:0.05em;
+
+font-size:1.2em;
+width:1.2em;
+height:1.2em;
+line-height:0.25em;
+border-radius:50%;
+padding-bottom:0.25em;
+font-weight:700;
+
+
+
+
+/*
+background-color:#ccc;
+
+*/
 }

@@ -543,6 +543,30 @@ code {
   width: 5%;
 }
 
+:root {
+  --scroll-thumb: #000;
+  --scroll-width: 8px;
+  --scroll-width-thin: 5px;
+  /* --color-scroll-track: var(--color-text); */
+  --color-scroll-track: var(--color-border, #000);
+  --color-scroll-bg: var(--color-background);
+  --color-scroll-thumb: var(--color-border);
+  --color-scroll-thumb-body: var(--color-focus);
+  --color-scroll-thumb-hover: var(--color-focus);
+}
+
+/*
+.aside {
+
+    position: relative;
+
+    background-image: linear-gradient(90deg, var(--color-scroll-bg) 0%, var(--color-scroll-bg) 41%, var(--color-scroll-track, #000) 41%, var(--color-scroll-track) 59%, var(--color-scroll-bg) 59%, var(--color-scroll-bg) 1em);
+
+    background-position: 100%;
+}
+
+*/
+/* mozilla FF */
 @-moz-document url-prefix() {
   body {
     scrollbar-width: thin;
@@ -554,17 +578,29 @@ code {
     scrollbar-width: thin;
     scrollbar-color: red var(--color-scroll-bg);
     scrollbar-color: var(--color-scroll-thumb) var(--color-scroll-bg);
+    scrollbar-color: var(--color-scroll-thumb) transparent;
+  }
+  .aside {
+    position: relative;
+    /*background-color:green; */
+    background-image: linear-gradient(90deg, var(--color-scroll-bg) 0%, var(--color-scroll-bg) 41%, var(--color-scroll-track, #000) 41%, var(--color-scroll-track) 59%, var(--color-scroll-bg) 59%, var(--color-scroll-bg) 1em);
+    background-position: calc(100% + 0px);
+    background-size: 6px;
+    background-repeat: no-repeat;
+    /*
+    &:before {
+        content: '';
+        position: absolute;
+        width: 4px;
+        height: 100%;
+        right: -2px;
+        background: red;
+        z-index: 1000;
+    }
+        */
   }
 }
 .scroll-content {
-  --scroll-thumb: #000;
-  --scroll-width: 8px;
-  /* --color-scroll-track: var(--color-text); */
-  --color-scroll-track: var(--color-border, #000);
-  --color-scroll-bg: var(--color-background);
-  --color-scroll-thumb: var(--color-border);
-  --color-scroll-thumb-body: var(--color-focus);
-  --color-scroll-thumb-hover: var(--color-focus);
   height: 100%;
   max-height: 100vh;
   overflow-y: auto;
@@ -607,7 +643,8 @@ code {
     border-radius: 0.5em;
   }
   .scroll-content-ld:hover::-webkit-scrollbar-thumb {
-    background: var(--color-scroll-thumb);
+    /*background: var(--color-scroll-thumb);*/
+    background: var(--color-focus);
     border-radius: 0.5em;
     outline: 4px solid var(--color-background);
   }
@@ -674,9 +711,7 @@ body::-webkit-scrollbar-track,
     background: transparent;
 }
 
-.scroll-content-thin::-webkit-scrollbar {
-    width: calc(var(--scroll-width) * 0.5);
-}
+
 
 .scroll-content::-webkit-scrollbar-thumb {
     background-color: var(--color-scroll-thumb);
@@ -689,10 +724,6 @@ body::-webkit-scrollbar-track,
 */
 /* show on hover */
 /*
-.scroll-content-hover::-webkit-scrollbar-thumb,
-.scroll-content-hover::-webkit-scrollbar {
-    background: transparent;
-}
 
 .scroll-content-hover:hover::-webkit-scrollbar-thumb {
     background: var(--color-scroll-thumb);
@@ -703,6 +734,17 @@ body.scroll-content::-webkit-scrollbar-thumb {
     background-color: var(--color-scroll-thumb-body)!important;
 }
 */
+.scroll-content-thin {
+  --scroll-width: var(--scroll-width-thin);
+}
+
+.scroll-content-hover {
+  --color-scroll-thumb: transparent;
+}
+.scroll-content-hover:hover, .scroll-content-hover:focus {
+  --color-scroll-thumb: var(--color-focus);
+}
+
 /*
 .scroll-content::-webkit-scrollbar-thumb {
   background: transparent;
@@ -2501,7 +2543,7 @@ button.icn-inj:before,
   background-color: var(--color-background-hover);
   color: var(--color-text-hover);
   border-color: var(--color-background-hover);
-  transform: scale(1.1);
+  /* transform: scale(1.1) */
 }
 
 .drp-shd {
@@ -2800,6 +2842,7 @@ option{
 
 label.input-wrap-textarea {
   overflow: hidden;
+  min-height: 10lh;
 }
 
 .input-wrap-textarea-header:before {
@@ -3024,4 +3067,19 @@ a.input-submit:before {
 
 .draggable {
   cursor: move;
+}
+
+.input-number-btns .input-number-btn {
+  margin-right: 0.05em;
+  font-size: 1.2em;
+  width: 1.2em;
+  height: 1.2em;
+  line-height: 0.25em;
+  border-radius: 50%;
+  padding-bottom: 0.25em;
+  font-weight: 700;
+  /*
+  background-color:#ccc;
+
+  */
 }/*# sourceMappingURL=enhanceInputs.css.map */
