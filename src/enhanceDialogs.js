@@ -75,6 +75,7 @@ export function initDialogs(dialogSelector = "[data-dialog]") {
             btnClose.textContent = '×';
             dialogHeader.append(btnClose)
             //dialogHeader.insertBefore(btnClose, dialog.children[0])
+            dialog.classList.add('sr-only')
         }
 
 
@@ -106,6 +107,7 @@ export function initDialogs(dialogSelector = "[data-dialog]") {
             }
 
             // show modal
+            dialog.classList.remove('sr-only')
             dialog.showModal();
 
         });

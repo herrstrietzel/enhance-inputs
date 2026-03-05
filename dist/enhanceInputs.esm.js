@@ -1511,6 +1511,7 @@ function initDialogs(dialogSelector = "[data-dialog]") {
             btnClose.textContent = '×';
             dialogHeader.append(btnClose);
 
+            dialog.classList.add('sr-only');
         }
 
         if (dataSrc && !iframe) {
@@ -1540,6 +1541,7 @@ function initDialogs(dialogSelector = "[data-dialog]") {
             }
 
             // show modal
+            dialog.classList.remove('sr-only');
             dialog.showModal();
 
         });
