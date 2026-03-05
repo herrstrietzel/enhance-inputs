@@ -18,16 +18,15 @@ export function initDialogs(dialogSelector = "[data-dialog]") {
     dialogBtns.forEach(dialogBtn => {
         let selector = dialogBtn.dataset.dialog;
         let dataSrc = dialogBtn.dataset.dialogSrc;
-        let dialogTitle = dialogBtn.dataset.dialogTitle;
+        let dialogTitle = dialogBtn.dataset?.dialogTitle || '';
         let dialog = document.querySelector(`${selector}`)
 
         // no dialog - exit
         if (!dialog) return false;
 
 
-
         // make draggable
-        dialog.classList.add('draggable')
+        dialog.classList.add('draggable', 'dialog')
 
         let dialogWrap = dialog.closest('.dialog-wrap');
         let dialogHeader = dialog.querySelector('.dialog-header');
@@ -51,7 +50,7 @@ export function initDialogs(dialogSelector = "[data-dialog]") {
         if (!dialogContent) {
             let children = [...dialog.children];
             dialogContent = document.createElement('div')
-            dialogContent.classList.add('dialog-content',);
+            dialogContent.classList.add('dialog-content','scroll-content');
             dialog.append(dialogContent)
             dialogContent.append(...children);
         }
@@ -59,7 +58,10 @@ export function initDialogs(dialogSelector = "[data-dialog]") {
         if (!dialogHeader) {
             dialogHeader = document.createElement('header');
             dialogHeader.classList.add('dialog-header', 'drag-handle');
+
+            if(dialogTitle){}
             dialogHeader.insertAdjacentHTML('afterbegin', `<p class="dialog-header-title ">${dialogTitle}</p>`)
+
             dialog.insertBefore(dialogHeader, dialog.children[0])
         }
 

@@ -43,21 +43,17 @@ body {
 
 
 .hide-picker {
- // padding-right:0em;
-  mask-image: linear-gradient(
-      to right,
-      black calc(100% - var(--resizer-size, 1rem)),
-      transparent calc(100% - var(--resizer-size, 1rem))
-    ),
-    linear-gradient(
-      to bottom,
-      black calc(100% - var(--resizer-size, 1rem)),
-      transparent calc(100% - var(--resizer-size, 1rem))
-    );
-  /*mask-composite: exclude; */
-  mask-repeat: no-repeat;
-  mask-size: 100% 100%;
-  width: 100%;
+    // padding-right:0em;
+    mask-image: linear-gradient(to right,
+            black calc(100% - var(--resizer-size, 1rem)),
+            transparent calc(100% - var(--resizer-size, 1rem))),
+        linear-gradient(to bottom,
+            black calc(100% - var(--resizer-size, 1rem)),
+            transparent calc(100% - var(--resizer-size, 1rem)));
+    /*mask-composite: exclude; */
+    mask-repeat: no-repeat;
+    mask-size: 100% 100%;
+    width: 100%;
 }
 
 
@@ -381,6 +377,7 @@ label .input-number {
 
 .input-number-btns {
     width: max-content;
+    font-family: monospace;
 }
 
 .input-number-btns .input-number-btn {
@@ -390,13 +387,28 @@ label .input-number {
     //border: none;
     font-weight: 700;
     color: var(--color-icon);
-    padding: 0 0.1em 0 0.1em;
+
+    margin-right: 0.05em;
+    font-size: 1.2em;
+    line-height: 1.5em;
+    width: 1.2em;
+    height: 1.2em;
+    border-radius: 50%;
+
+    padding: 0 0.1em 0 0em;
+    padding-bottom: 0.25em;
 
     &:focus {
         color: var(--color-focus);
         outline: 1px solid var(--color-focus);
     }
 }
+
+
+.input-number-btns .input-number-btn {
+
+}
+
 
 
 /* checkbox and radio */
@@ -433,6 +445,8 @@ p:has(.input-wrap-checkbox),
 p:has(.input-wrap-radio) {
     line-height: 1.5em
 }
+
+
 
 
 /* selects */
@@ -665,7 +679,7 @@ option{
     flex: 0 0 auto;
     gap: 0.2em;
     margin-left: auto;
-    margin-right:-0.2em;
+    margin-right: -0.2em;
 }
 
 .input-wrap-textarea-header {
@@ -973,22 +987,46 @@ table {
 }
 
 
-.input-number-btns .input-number-btn{
-margin-right:0.05em;
-
-font-size:1.2em;
-width:1.2em;
-height:1.2em;
-line-height:0.25em;
-border-radius:50%;
-padding-bottom:0.25em;
-font-weight:700;
 
 
 
+.input-wrap-checkbox-switch {
+    --icn-basline-shift: 0.05em;
+    gap: 0.3em;
+    padding-left: 0.1em;
+    margin-bottom: 0.2em;
 
-/*
-background-color:#ccc;
+    use {
+        stroke-width: var(--icn-stroke-width);
+        --fillSwitch1: transparent;
+        --fillSwitch2: transparent;
+        --strokeSwitch1: var(--color-icon);
+        --strokeSwitch2: var(--color-icon);
+        --transSwitch: 0px;
+    }
 
-*/
+}
+
+.input-wrap-checkbox-switch:has(input:checked) {
+    use {
+        --fillSwitch1: var(--color-icon);
+        --fillSwitch2: var(--color-background);
+        --transSwitch: 12px;
+    }
+}
+
+
+.input-wrap-radio:hover,
+.input-wrap-checkbox:hover {
+    cursor: pointer
+}
+
+.label-span {
+    font-weight: 400
+}
+
+.label-span-text,
+.label-span-number,
+.label-span-textarea {
+    font-weight: 700
 }

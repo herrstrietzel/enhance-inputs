@@ -103,6 +103,16 @@
             d="M12 2h12a10 10 0 0110 10l0 0a10 10 0 01-10 10h-12a10 10 0 01-10-10l0 0a10 10 0 0110-10zm6 10a6 6 0 10-12 0 6 6 0 1012 0" />
     </symbol>
 
+    <symbol viewBox="0 0 36 24" id="checkbox-switch-ani">
+        <path
+            d="M12 22c-5.5 0-10-4.5-10-10s4.5-10 10-10h12c5.5 0 10 4.5 10 10s-4.5 10-10 10z"
+            style="fill: var(--fillSwitch1); stroke: var(--strokeSwitch1); transition:0.3s;" />
+
+        <path d="M18 12c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6"
+            style="fill:var(--fillSwitch2, #fff); stroke:var(--strokeSwitch2); transform:translate(var(--transSwitch, 0),0); transition:0.3s;" />
+    </symbol>
+
+
     <symbol viewBox="0 0 36 24" id="checkbox-switch-checked">
         <path style="fill:currentColor;"
             d="M12 2h12a10 10 0 0110 10l0 0a10 10 0 01-10 10h-12a10 10 0 01-10-10l0 0a10 10 0 0110-10z m20 10a8 8 0 10-16 0 8 8 0 1016 0" />

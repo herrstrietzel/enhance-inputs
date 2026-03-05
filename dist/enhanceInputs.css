@@ -1724,7 +1724,7 @@ svg.icn-svg.icn-checkbox-switch, svg.icn-svg.icn-checkbox-switch-checked, svg.ic
   */
 :root {
   --transition-delay-modal: 0s;
-  --transition-duration-modal: 0.2s;
+  --transition-duration-modal: 0.3s;
 }
 
 .dialog {
@@ -1734,17 +1734,21 @@ svg.icn-svg.icn-checkbox-switch, svg.icn-svg.icn-checkbox-switch-checked, svg.ic
   position: fixed;
   width: 75%;
   border-radius: 0.3em;
-  padding: 1em 1em 1em 1em;
+  padding: 0.5em 0.5em 0.75em 0.75em;
   border: none;
   filter: drop-shadow(0.5em 0.5em 0.5em rgba(0, 0, 0, 0.4));
-  visibility: hidden;
   border: 1px solid var(--color-bg-orig, #000);
   left: 0;
   top: 0;
+  transform: scale(0.5);
+  opacity: 0;
+  transition: 0.3s opacity, 0.3s transform ease-in-out;
+  z-index: 999;
   margin-top: 5vh;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
+  visibility: hidden;
 }
 .dialog:focus {
   outline: none;
@@ -1756,7 +1760,7 @@ svg.icn-svg.icn-checkbox-switch, svg.icn-svg.icn-checkbox-switch-checked, svg.ic
 .dialog-content {
   flex: 1;
   width: 100%;
-  padding-right: 1em;
+  padding-right: 0.3em;
 }
 .dialog-content * {
   max-width: 100%;
@@ -1764,7 +1768,7 @@ svg.icn-svg.icn-checkbox-switch, svg.icn-svg.icn-checkbox-switch-checked, svg.ic
 
 .dialog-header {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   margin-bottom: 1.5em;
 }
 
@@ -1789,9 +1793,7 @@ dialog::backdrop {
 }
 
 /* add transitions */
-dialog,
 .dialog-wrap::before {
-  display: block;
   transition: var(--transition-duration-modal) var(--transition-delay-modal) opacity;
   opacity: 0;
 }
@@ -1803,12 +1805,9 @@ dialog,
   inset: 0;
   background-color: var(--color-text-orig, #000);
   pointer-events: none;
+  z-index: 6666;
 }
 
-.dialog-wrap:has(dialog[open]),
-.dialog-active {
-  z-index: 999;
-}
 .dialog-wrap:has(dialog[open]):before,
 .dialog-active:before {
   opacity: 0.75;
@@ -1817,13 +1816,15 @@ dialog,
 .dialog-active dialog {
   opacity: 1;
   visibility: visible;
+  transform: scale(1);
+  transition: 0.2s opacity;
 }
 
 /** btns **/
 .dialog-btn-close {
   color: var(--color-focus, #000);
-  position: static;
-  font-size: 48px;
+  position: relative;
+  font-size: 2rem;
   line-height: 0;
   width: auto;
   display: block;
@@ -1833,6 +1834,9 @@ dialog,
   cursor: pointer;
   user-select: none;
   margin-left: auto;
+  height: 1rem;
+  right: -0.15em;
+  top: -0.15em;
 }
 
 .pre-wrap:has(textarea) {
@@ -2633,13 +2637,21 @@ label .input-number {
 
 .input-number-btns {
   width: max-content;
+  font-family: monospace;
 }
 
 .input-number-btns .input-number-btn {
   background: transparent;
   font-weight: 700;
   color: var(--color-icon);
-  padding: 0 0.1em 0 0.1em;
+  margin-right: 0.05em;
+  font-size: 1.2em;
+  line-height: 1.5em;
+  width: 1.2em;
+  height: 1.2em;
+  border-radius: 50%;
+  padding: 0 0.1em 0 0em;
+  padding-bottom: 0.25em;
 }
 .input-number-btns .input-number-btn:focus {
   color: var(--color-focus);
@@ -3069,17 +3081,38 @@ a.input-submit:before {
   cursor: move;
 }
 
-.input-number-btns .input-number-btn {
-  margin-right: 0.05em;
-  font-size: 1.2em;
-  width: 1.2em;
-  height: 1.2em;
-  line-height: 0.25em;
-  border-radius: 50%;
-  padding-bottom: 0.25em;
-  font-weight: 700;
-  /*
-  background-color:#ccc;
+.input-wrap-checkbox-switch {
+  --icn-basline-shift: 0.05em;
+  gap: 0.3em;
+  padding-left: 0.1em;
+  margin-bottom: 0.2em;
+}
+.input-wrap-checkbox-switch use {
+  stroke-width: var(--icn-stroke-width);
+  --fillSwitch1: transparent;
+  --fillSwitch2: transparent;
+  --strokeSwitch1: var(--color-icon);
+  --strokeSwitch2: var(--color-icon);
+  --transSwitch: 0px;
+}
 
-  */
+.input-wrap-checkbox-switch:has(input:checked) use {
+  --fillSwitch1: var(--color-icon);
+  --fillSwitch2: var(--color-background);
+  --transSwitch: 12px;
+}
+
+.input-wrap-radio:hover,
+.input-wrap-checkbox:hover {
+  cursor: pointer;
+}
+
+.label-span {
+  font-weight: 400;
+}
+
+.label-span-text,
+.label-span-number,
+.label-span-textarea {
+  font-weight: 700;
 }/*# sourceMappingURL=enhanceInputs.css.map */

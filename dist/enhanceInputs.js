@@ -319,9 +319,14 @@
 
         if (inputSyncedName) {
             let inputSynced = document.querySelector(`[name=${inputSyncedName}]`);
+
             if (inputSynced) {
                 let val = input.value;
-                inputSynced.value = val;
+                if(input.type==='checkbox'){
+                    inputSynced.checked = input.checked ;
+                }else {
+                    inputSynced.value = val;
+                }
                 settings[inputSyncedName] = val;
             }
         }
@@ -1457,14 +1462,14 @@
         dialogBtns.forEach(dialogBtn => {
             let selector = dialogBtn.dataset.dialog;
             let dataSrc = dialogBtn.dataset.dialogSrc;
-            let dialogTitle = dialogBtn.dataset.dialogTitle;
+            let dialogTitle = dialogBtn.dataset?.dialogTitle || '';
             let dialog = document.querySelector(`${selector}`);
 
             // no dialog - exit
             if (!dialog) return false;
 
             // make draggable
-            dialog.classList.add('draggable');
+            dialog.classList.add('draggable', 'dialog');
 
             let dialogWrap = dialog.closest('.dialog-wrap');
             let dialogHeader = dialog.querySelector('.dialog-header');
@@ -1487,7 +1492,7 @@
             if (!dialogContent) {
                 let children = [...dialog.children];
                 dialogContent = document.createElement('div');
-                dialogContent.classList.add('dialog-content',);
+                dialogContent.classList.add('dialog-content','scroll-content');
                 dialog.append(dialogContent);
                 dialogContent.append(...children);
             }
@@ -1496,6 +1501,7 @@
                 dialogHeader = document.createElement('header');
                 dialogHeader.classList.add('dialog-header', 'drag-handle');
                 dialogHeader.insertAdjacentHTML('afterbegin', `<p class="dialog-header-title ">${dialogTitle}</p>`);
+
                 dialog.insertBefore(dialogHeader, dialog.children[0]);
             }
 
@@ -2841,7 +2847,8 @@
 
             let inputIcons = {
                 checkbox: 'checkbox checkbox-checked',
-                'checkbox-switch': 'checkbox-switch checkbox-switch-checked',
+
+                'checkbox-switch': 'checkbox-switch-ani',
                 radio: 'radio radio-checked',
                 'select-one': 'chevron-down',
                 date: 'calendar',
@@ -2850,6 +2857,7 @@
                 search: 'magnifying-glass'
             };
 
+            
             let { icon = '', iconPos = 'left' } = input.dataset;
             let dataType = input.dataset.type || null;
 
@@ -2857,6 +2865,8 @@
                 type = dataType ? dataType : type;
                 let iconNames = icon ? icon : inputIcons[type];
                 let dataImg = input.dataset.img;
+
+                wrap.classList.add(`input-wrap-${type}`);
 
                 // use img instead of icon
                 if(dataImg){

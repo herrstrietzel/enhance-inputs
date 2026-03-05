@@ -93,9 +93,14 @@ export function updateSyncedInput(input = null, settings = {}) {
 
     if (inputSyncedName) {
         let inputSynced = document.querySelector(`[name=${inputSyncedName}]`)
+        //console.log('inputSynced', inputSynced);
         if (inputSynced) {
             let val = input.value
-            inputSynced.value = val;
+            if(input.type==='checkbox'){
+                inputSynced.checked = input.checked ;
+            }else{
+                inputSynced.value = val;
+            }
             settings[inputSyncedName] = val;
         }
     }

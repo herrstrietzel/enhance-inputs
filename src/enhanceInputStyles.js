@@ -99,7 +99,8 @@ export async function enhanceInputStyles(inputs = []) {
 
         let inputIcons = {
             checkbox: 'checkbox checkbox-checked',
-            'checkbox-switch': 'checkbox-switch checkbox-switch-checked',
+            //'checkbox-switch': 'checkbox-switch checkbox-switch-checked',
+            'checkbox-switch': 'checkbox-switch-ani',
             radio: 'radio radio-checked',
             'select-one': 'chevron-down',
             date: 'calendar',
@@ -108,14 +109,20 @@ export async function enhanceInputStyles(inputs = []) {
             search: 'magnifying-glass'
         }
 
+        
         let { icon = '', iconPos = 'left' } = input.dataset;
         let dataType = input.dataset.type || null;
         //let dataPos = input.dataset.iconPos || 'left';
+
+        //console.log('inputIcons', inputIcons);
 
         if (inputIcons[type] || icon) {
             type = dataType ? dataType : type
             let iconNames = icon ? icon : inputIcons[type];
             let dataImg = input.dataset.img
+
+            wrap.classList.add(`input-wrap-${type}`);
+
 
             // use img instead of icon
             if(dataImg){
