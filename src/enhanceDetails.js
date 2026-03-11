@@ -181,7 +181,12 @@ export function enhanceDetails(options = {}) {
             summarMarkerStyle = 'summary-marker-multi summary-marker-plusminus';
         }
 
+        if(icon==='question'){
+            markerIconCustom = summaryIcons['question'] ;
+            summarMarkerStyle = 'summary-marker-question';
+        }
 
+        
         // right or left alignment
         if (right) {
             summarMarkerAlignment = 'summary-marker-right';

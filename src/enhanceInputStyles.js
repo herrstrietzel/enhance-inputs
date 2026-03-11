@@ -108,7 +108,6 @@ export async function enhanceInputStyles(inputs = []) {
             time: 'clock',
             search: 'magnifying-glass'
         }
-
         
         let { icon = '', iconPos = 'left' } = input.dataset;
         let dataType = input.dataset.type || null;

@@ -922,7 +922,8 @@
         'arrow-right': `<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>`,
         'chevron': `<svg stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" ><path d="m8.3 4.5 7.5 7.5-7.5 7.5" /></svg>`,
         'plus':`<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4.5v15m7.5-7.5h-15" /></svg>`,
-        'plusMinus':`<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4.5v15m7.5-7.5h-15" /><path d="M5 12h14" /></svg>`
+        'plusMinus':`<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4.5v15m7.5-7.5h-15" /><path d="M5 12h14" /></svg>`,
+        'question': `<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" style="stroke-width:var(--icn-stroke-width, 2px)" stroke-linejoin="round" d="M21 12a9 9 0 01-18 0 9 9 0 0118 0m-12.1-4c0.9-.9 1.9-1.4 3.1-1.4 2 0 3.4 1.2 3.4 2.5 0 2.7-3.4 2.2-3.4 4.9m-.5 2.5h1v1h-1z" /></svg>`
     };
 
     /**
@@ -1303,6 +1304,12 @@
                 summarMarkerStyle = 'summary-marker-multi summary-marker-plusminus';
             }
 
+            if(icon==='question'){
+                markerIconCustom = summaryIcons['question'] ;
+                summarMarkerStyle = 'summary-marker-question';
+            }
+
+            
             // right or left alignment
             if (right) {
                 summarMarkerAlignment = 'summary-marker-right';
@@ -2858,7 +2865,6 @@
                 time: 'clock',
                 search: 'magnifying-glass'
             };
-
             
             let { icon = '', iconPos = 'left' } = input.dataset;
             let dataType = input.dataset.type || null;
