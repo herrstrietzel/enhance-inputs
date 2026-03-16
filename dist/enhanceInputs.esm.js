@@ -920,7 +920,7 @@ const summaryIcons = {
     'chevron': `<svg stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" ><path d="m8.3 4.5 7.5 7.5-7.5 7.5" /></svg>`,
     'plus':`<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4.5v15m7.5-7.5h-15" /></svg>`,
     'plusMinus':`<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4.5v15m7.5-7.5h-15" /><path d="M5 12h14" /></svg>`,
-    'question': `<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" style="stroke-width:var(--icn-stroke-width, 2px)" stroke-linejoin="round" d="M21 12a9 9 0 01-18 0 9 9 0 0118 0m-12.1-4c0.9-.9 1.9-1.4 3.1-1.4 2 0 3.4 1.2 3.4 2.5 0 2.7-3.4 2.2-3.4 4.9m-.5 2.5h1v1h-1z" /></svg>`
+    'question': `<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" style="stroke-width:var(--icn-stroke-width, 2px)" stroke-linejoin="round" d="M21 12a1 1 0 01-18 0 1 1 0 0118 0m-11.5-3.5c.72-.72 1.52-1.12 2.48-1.12 1.6 0 2.72 .96 2.72 2 0 2.16-2.72 1.76-2.72 3.92m-.48 2.7h1v1h-1z" /></svg>`
 };
 
 /**
@@ -2692,7 +2692,7 @@ function bindTextAreaToolbar(header = null, classWrap = '', classWrapHeader = ''
     });
 }
 
-function addInfos(selector = '[data-enhance-inputs] [data-info]') {
+function addInfos(selector = '[data-enhance-inputs] [data-info], [data-enhance-inputs] [aria-description]') {
 
     let infoEls = document.querySelectorAll(`${selector}`);
 
@@ -2704,7 +2704,7 @@ function addInfos(selector = '[data-enhance-inputs] [data-info]') {
         let isButton = el.nodeName.toLowerCase() === 'button';
         let wrp = isButton ? el : el.closest('.input-wrap');
 
-        let infoText = el.dataset.info;
+        let infoText = el.dataset.info || el.getAttribute('aria-description');
         let btnInfo =
             `
         <button type="button" class="btn-info" data-icon="question" aria-label="show info">
@@ -2713,7 +2713,6 @@ function addInfos(selector = '[data-enhance-inputs] [data-info]') {
             ${infoText}
         </div>`;
 
-        
         if (!wrp) {
             wrp = document.createElement('div');
             wrp.classList.add('input-wrap', 'input-wrap-inline');
@@ -2724,7 +2723,7 @@ function addInfos(selector = '[data-enhance-inputs] [data-info]') {
         wrp.insertAdjacentHTML('beforeend', btnInfo);
 
         let btn = wrp.querySelector('.btn-info');
-        if(btn){
+        if (btn) {
             btn.addEventListener('click', (e) => {
                 if (!btn.classList.contains('btn-info-active')) {
                     btn.classList.add('btn-info-active');
@@ -2732,9 +2731,9 @@ function addInfos(selector = '[data-enhance-inputs] [data-info]') {
                     btn.classList.remove('btn-info-active');
                 }
             });
-    
+
             btn.addEventListener('blur', (e) => {
-                    btn.classList.remove('btn-info-active');
+               btn.classList.remove('btn-info-active');
             });
         }
     }

@@ -540,11 +540,11 @@ option{
 .tooltip {
     @extend .pst-abs, .dsp-blc, .pnt-evn-non, .usr-slc-non;
     opacity: 0;
-    font-size: 1rem;
+    font-size: 0.8125rem;
     line-height: 1.2em;
     padding: 0.5em;
     bottom: -0.75em;
-    right: 0;
+    right: -0.1em;
     background-color: var(--color-focus);
     color: #fff;
     width: calc(100% + var(--padding-input));
@@ -559,15 +559,15 @@ option{
     transform: translateY(calc(100% - var(--padding-input, 1rem) * 1.5));
     z-index: 1000;
     filter: drop-shadow(0.1rem 0.1rem 0.1rem rgba(0, 0, 0, 0.3));
-    transition: 0.3s opacity;
+    transition: 0.01s opacity;
+    //transition: none;
+
     max-width: fit-content;
-
-
 
     &:before {
         @extend .pst-abs;
         content: '';
-        right: 0.2rem;
+        right: 0;
         top: -1.5em;
         border: 1em solid transparent;
         border-bottom-color: var(--color-focus);

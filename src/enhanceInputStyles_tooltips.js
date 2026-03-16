@@ -1,5 +1,5 @@
 
-export function addInfos(selector = '[data-enhance-inputs] [data-info]') {
+export function addInfos(selector = '[data-enhance-inputs] [data-info], [data-enhance-inputs] [aria-description]') {
 
     let infoEls = document.querySelectorAll(`${selector}`)
     //console.log(titeleEls);
@@ -21,7 +21,7 @@ export function addInfos(selector = '[data-enhance-inputs] [data-info]') {
         btnInfo.dataset.icon='question';
         */
 
-        let infoText = el.dataset.info;
+        let infoText = el.dataset.info || el.getAttribute('aria-description');
         let btnInfo =
             `
         <button type="button" class="btn-info" data-icon="question" aria-label="show info">
@@ -30,7 +30,7 @@ export function addInfos(selector = '[data-enhance-inputs] [data-info]') {
             ${infoText}
         </div>`;
 
-        
+
         if (!wrp) {
             wrp = document.createElement('div')
             wrp.classList.add('input-wrap', 'input-wrap-inline');
@@ -41,7 +41,7 @@ export function addInfos(selector = '[data-enhance-inputs] [data-info]') {
         wrp.insertAdjacentHTML('beforeend', btnInfo);
 
         let btn = wrp.querySelector('.btn-info');
-        if(btn){
+        if (btn) {
             btn.addEventListener('click', (e) => {
                 if (!btn.classList.contains('btn-info-active')) {
                     btn.classList.add('btn-info-active')
@@ -49,9 +49,9 @@ export function addInfos(selector = '[data-enhance-inputs] [data-info]') {
                     btn.classList.remove('btn-info-active')
                 }
             });
-    
+
             btn.addEventListener('blur', (e) => {
-                    btn.classList.remove('btn-info-active')
+               btn.classList.remove('btn-info-active')
             })
         }
     }

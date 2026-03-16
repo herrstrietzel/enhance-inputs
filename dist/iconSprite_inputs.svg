@@ -253,8 +253,14 @@
     </symbol>
 
 
-    <symbol viewBox="0 0 24 24" id="question-mark-circle_back">
+    <symbol viewBox="0 0 24 24" id="question-mark-circle">
         <path id="pathQuestion"
+            d="M21 12a1 1 0 01-18 0 1 1 0 0118 0m-11.5-3c.72-.72 1.52-1.12 2.48-1.12 1.6 0 2.72 .96 2.72 2 0 2.16-2.72 1.76-2.72 3.92m-.48 2.7h1v1h-1z" />
+    </symbol>
+
+
+    <symbol viewBox="0 0 24 24" id="question-mark-circle_back">
+        <path id="pathQuestion_back"
             d="M12 4a1 1 0 110 18 1 1 0 110-18zm-2.5 6.5a2.7 2.7 90 112.5 2.5v1.5m-.5 3h1v1h-1z" />
     </symbol>
 
