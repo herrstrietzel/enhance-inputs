@@ -275,6 +275,7 @@
 
     // custom event for settings update
     const settingsUpdate = new Event('settingsChange');
+    const settingsUpdateSecondary = new Event('settingsChangeSecondary');
 
     // add event listeners
     function bindSettingUpdates(inputs, settings = {}, storageName = 'settings', toQuery = false) {
@@ -302,10 +303,17 @@
                     // trigger custom event
 
                     // exclude elements to prevent trigger update event
-                    let isIgnoredInput = inp.dataset.ignore === 'true';
-                    if (!isIgnoredInput) {
+
+                    let isIgnoredInput = inp.dataset.ignore || false;
+                    let isSecondary = inp.dataset.secondary || false;
+
+                    if (!isIgnoredInput && !isSecondary) {
                         document.dispatchEvent(settingsUpdate);
                     }
+                    else if (isSecondary) {
+                        document.dispatchEvent(settingsUpdateSecondary);
+                    }
+                    
 
                 });
                 inp.classList.add('input-active');
@@ -322,9 +330,9 @@
 
             if (inputSynced) {
                 let val = input.value;
-                if(input.type==='checkbox'){
-                    inputSynced.checked = input.checked ;
-                }else {
+                if (input.type === 'checkbox') {
+                    inputSynced.checked = input.checked;
+                } else {
                     inputSynced.value = val;
                 }
                 settings[inputSyncedName] = val;
@@ -337,7 +345,12 @@
      * reset btn
      */
     function resetSettings(settings = {}) {
-        if (settings.defaults) Object.assign(settings, settings.defaults);
+
+        if (settings.defaults) {
+            Object.assign(settings, settings.defaults);
+            // reset details open states
+            settings.detailsOpen={};
+        }
 
     }
 
@@ -3192,6 +3205,32 @@
 
     }
 
+    function bindMenuOpen(){
+      let anchors = document.querySelectorAll('[data-menu-anchor]');  
+      anchors.forEach((anchor,i)=>{
+        
+        let anchorName = `--menu-anchor-${i}`;
+        anchor.style.anchorName = anchorName;
+
+        let target = anchor.dataset.menuAnchor;
+        let menuEl = document.querySelector(`[data-menu="${target}"]`);
+        menuEl.style.positionAnchor = anchorName;
+
+        anchor.addEventListener('click', e=>{
+          let current = e.currentTarget;
+          
+          if(current.classList.contains('menu-btn-active')){
+            current.classList.remove('menu-btn-active');
+            menuEl.classList.remove('menu-active');
+          }else {
+            current.classList.add('menu-btn-active');
+            menuEl.classList.add('menu-active');
+          }
+        });
+        
+      });
+    }
+
     // enhance inputs ready
     let enhanceInputsReady = new Event('enhanceReady');
 
@@ -3237,6 +3276,7 @@
             // Dispatch event to notify others that settings are ready
             const event = new CustomEvent('settingsChange');
             document.dispatchEvent(event);
+            document.dispatchEvent(new CustomEvent('settingsChangeSecondary'));
 
             // translate
             translatePipeText();
@@ -3255,6 +3295,9 @@
 
             // enhance codes
             enhanceCode();
+
+            // add drop down menues
+            bindMenuOpen();
 
             // get details settings
             let storageName = enhanceInputsSettings.storageName;

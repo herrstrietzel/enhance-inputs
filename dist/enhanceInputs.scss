@@ -10,6 +10,8 @@
 @use './css/enhance_code' as *;
 @use './css/details-enhanced-mod' as *;
 
+
+
 /** hide on init */
 .enhance-inputs-init {
     opacity: 0;
@@ -92,6 +94,11 @@ label:has(+.input-wrap-boxed) {
 .btn-default,
 button {
     user-select: none;
+}
+
+
+.btn-inline{
+margin:0!important
 }
 
 button.icn-inj,

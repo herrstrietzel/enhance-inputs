@@ -26,6 +26,7 @@ import { enhanceCode } from './enhance-code';
 import { enhanceInputs } from './enhanceInputs_main';
 import { textToAnchorUrl } from './enhanceDetails_helpers.js';
 import { initDetailStates } from './enhanceDetails_state_toggle.js';
+import { bindMenuOpen } from './enhanceMenues.js';
 
 
 
@@ -83,6 +84,7 @@ export function enhanceInputsAutoInit() {
         // Dispatch event to notify others that settings are ready
         const event = new CustomEvent('settingsChange');
         document.dispatchEvent(event);
+        document.dispatchEvent(new CustomEvent('settingsChangeSecondary'));
 
 
         // translate
@@ -106,6 +108,8 @@ export function enhanceInputsAutoInit() {
         // enhance codes
         enhanceCode();
 
+        // add drop down menues
+        bindMenuOpen();
 
 
         // get details settings
